@@ -1,7 +1,7 @@
 package main
 
 import (
-	"Luka/Service"
+	"Luka/Provider"
 	pb "Luka/proto"
 	"Luka/util"
 	"golang.org/x/net/context"
@@ -24,7 +24,7 @@ func main(){
 		log.Println(errTCP)
 	}
 	defer conn.Close()
-	RegisterClient := pb.NewRemoteCallClient(conn)
+	RegisterClient := pb.NewKeeperClient(conn)
 	// Contact the server and print out its response.
 	name := conf.KeeperName
 	reply, errGRPC := RegisterClient.Register(context.Background(),
@@ -37,8 +37,8 @@ func main(){
 		log.Println(errGRPC)
 	}
 	//todo 注册所有函数
-	Service.WeakUp()
-	_ = Service.AddFunc("Add", Add)
+	Provider.WeakUp()
+	_ = Provider.AddFunc("Add", Add)
 	log.Printf("Status: %s", reply.Status)
 	if reply.Status == util.OK {
 		sev , errTCP := net.Listen("tcp" , conf.ServicePort)
@@ -46,7 +46,7 @@ func main(){
 			log.Println(errTCP)
 		}
 		s := grpc.NewServer()
-		pb.RegisterRemoteCallServer(s , &Service.Server{})
+		pb.RegisterRemoteCallServer(s , &Provider.Server{})
 		if err := s.Serve(sev); err != nil {
 			log.Println(err)
 		}

@@ -1,7 +1,7 @@
 package main
 
 import (
-	"Luka/Service"
+	"Luka/Keeper"
 	pb "Luka/proto"
 	"Luka/util"
 	"google.golang.org/grpc"
@@ -22,9 +22,9 @@ func main(){
 		log.Println(errTCP)
 	}
 	s := grpc.NewServer()
-	pb.RegisterRemoteCallServer(s , &Service.Server{})
+	pb.RegisterKeeperServer(s, &Keeper.Server{})
 	// 心跳机制
-	go Service.CircleConfirm()
+	go Keeper.CircleConfirm()
 	if err := s.Serve(sev); err != nil {
 		log.Println(err)
 	}

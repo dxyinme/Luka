@@ -29,201 +29,6 @@ const (
 // of the legacy proto package is being used.
 const _ = proto.ProtoPackageIsVersion4
 
-type Empty struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-}
-
-func (x *Empty) Reset() {
-	*x = Empty{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_RemoteCall_proto_msgTypes[0]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *Empty) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*Empty) ProtoMessage() {}
-
-func (x *Empty) ProtoReflect() protoreflect.Message {
-	mi := &file_RemoteCall_proto_msgTypes[0]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use Empty.ProtoReflect.Descriptor instead.
-func (*Empty) Descriptor() ([]byte, []int) {
-	return file_RemoteCall_proto_rawDescGZIP(), []int{0}
-}
-
-type ConfirmReply struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	Status string `protobuf:"bytes,1,opt,name=status,proto3" json:"status,omitempty"`
-}
-
-func (x *ConfirmReply) Reset() {
-	*x = ConfirmReply{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_RemoteCall_proto_msgTypes[1]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *ConfirmReply) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*ConfirmReply) ProtoMessage() {}
-
-func (x *ConfirmReply) ProtoReflect() protoreflect.Message {
-	mi := &file_RemoteCall_proto_msgTypes[1]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use ConfirmReply.ProtoReflect.Descriptor instead.
-func (*ConfirmReply) Descriptor() ([]byte, []int) {
-	return file_RemoteCall_proto_rawDescGZIP(), []int{1}
-}
-
-func (x *ConfirmReply) GetStatus() string {
-	if x != nil {
-		return x.Status
-	}
-	return ""
-}
-
-type RegisterRequest struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
-	Host string `protobuf:"bytes,2,opt,name=Host,proto3" json:"Host,omitempty"`
-	Port string `protobuf:"bytes,3,opt,name=Port,proto3" json:"Port,omitempty"`
-}
-
-func (x *RegisterRequest) Reset() {
-	*x = RegisterRequest{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_RemoteCall_proto_msgTypes[2]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *RegisterRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*RegisterRequest) ProtoMessage() {}
-
-func (x *RegisterRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_RemoteCall_proto_msgTypes[2]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use RegisterRequest.ProtoReflect.Descriptor instead.
-func (*RegisterRequest) Descriptor() ([]byte, []int) {
-	return file_RemoteCall_proto_rawDescGZIP(), []int{2}
-}
-
-func (x *RegisterRequest) GetName() string {
-	if x != nil {
-		return x.Name
-	}
-	return ""
-}
-
-func (x *RegisterRequest) GetHost() string {
-	if x != nil {
-		return x.Host
-	}
-	return ""
-}
-
-func (x *RegisterRequest) GetPort() string {
-	if x != nil {
-		return x.Port
-	}
-	return ""
-}
-
-type RegisterReply struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	Status string `protobuf:"bytes,1,opt,name=status,proto3" json:"status,omitempty"`
-}
-
-func (x *RegisterReply) Reset() {
-	*x = RegisterReply{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_RemoteCall_proto_msgTypes[3]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *RegisterReply) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*RegisterReply) ProtoMessage() {}
-
-func (x *RegisterReply) ProtoReflect() protoreflect.Message {
-	mi := &file_RemoteCall_proto_msgTypes[3]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use RegisterReply.ProtoReflect.Descriptor instead.
-func (*RegisterReply) Descriptor() ([]byte, []int) {
-	return file_RemoteCall_proto_rawDescGZIP(), []int{3}
-}
-
-func (x *RegisterReply) GetStatus() string {
-	if x != nil {
-		return x.Status
-	}
-	return ""
-}
-
 type CallRequest struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -237,7 +42,7 @@ type CallRequest struct {
 func (x *CallRequest) Reset() {
 	*x = CallRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_RemoteCall_proto_msgTypes[4]
+		mi := &file_RemoteCall_proto_msgTypes[0]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -250,7 +55,7 @@ func (x *CallRequest) String() string {
 func (*CallRequest) ProtoMessage() {}
 
 func (x *CallRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_RemoteCall_proto_msgTypes[4]
+	mi := &file_RemoteCall_proto_msgTypes[0]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -263,7 +68,7 @@ func (x *CallRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CallRequest.ProtoReflect.Descriptor instead.
 func (*CallRequest) Descriptor() ([]byte, []int) {
-	return file_RemoteCall_proto_rawDescGZIP(), []int{4}
+	return file_RemoteCall_proto_rawDescGZIP(), []int{0}
 }
 
 func (x *CallRequest) GetFuncName() string {
@@ -300,7 +105,7 @@ type CallReply struct {
 func (x *CallReply) Reset() {
 	*x = CallReply{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_RemoteCall_proto_msgTypes[5]
+		mi := &file_RemoteCall_proto_msgTypes[1]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -313,7 +118,7 @@ func (x *CallReply) String() string {
 func (*CallReply) ProtoMessage() {}
 
 func (x *CallReply) ProtoReflect() protoreflect.Message {
-	mi := &file_RemoteCall_proto_msgTypes[5]
+	mi := &file_RemoteCall_proto_msgTypes[1]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -326,7 +131,7 @@ func (x *CallReply) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CallReply.ProtoReflect.Descriptor instead.
 func (*CallReply) Descriptor() ([]byte, []int) {
-	return file_RemoteCall_proto_rawDescGZIP(), []int{5}
+	return file_RemoteCall_proto_rawDescGZIP(), []int{1}
 }
 
 func (x *CallReply) GetStatus() string {
@@ -350,46 +155,121 @@ func (x *CallReply) GetTypeList() []string {
 	return nil
 }
 
+type RemoteEmpty struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+}
+
+func (x *RemoteEmpty) Reset() {
+	*x = RemoteEmpty{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_RemoteCall_proto_msgTypes[2]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *RemoteEmpty) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*RemoteEmpty) ProtoMessage() {}
+
+func (x *RemoteEmpty) ProtoReflect() protoreflect.Message {
+	mi := &file_RemoteCall_proto_msgTypes[2]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use RemoteEmpty.ProtoReflect.Descriptor instead.
+func (*RemoteEmpty) Descriptor() ([]byte, []int) {
+	return file_RemoteCall_proto_rawDescGZIP(), []int{2}
+}
+
+type RemoteConfirmReply struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Status string `protobuf:"bytes,1,opt,name=status,proto3" json:"status,omitempty"`
+}
+
+func (x *RemoteConfirmReply) Reset() {
+	*x = RemoteConfirmReply{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_RemoteCall_proto_msgTypes[3]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *RemoteConfirmReply) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*RemoteConfirmReply) ProtoMessage() {}
+
+func (x *RemoteConfirmReply) ProtoReflect() protoreflect.Message {
+	mi := &file_RemoteCall_proto_msgTypes[3]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use RemoteConfirmReply.ProtoReflect.Descriptor instead.
+func (*RemoteConfirmReply) Descriptor() ([]byte, []int) {
+	return file_RemoteCall_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *RemoteConfirmReply) GetStatus() string {
+	if x != nil {
+		return x.Status
+	}
+	return ""
+}
+
 var File_RemoteCall_proto protoreflect.FileDescriptor
 
 var file_RemoteCall_proto_rawDesc = []byte{
 	0x0a, 0x10, 0x52, 0x65, 0x6d, 0x6f, 0x74, 0x65, 0x43, 0x61, 0x6c, 0x6c, 0x2e, 0x70, 0x72, 0x6f,
-	0x74, 0x6f, 0x12, 0x05, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0x07, 0x0a, 0x05, 0x45, 0x6d, 0x70,
-	0x74, 0x79, 0x22, 0x26, 0x0a, 0x0c, 0x43, 0x6f, 0x6e, 0x66, 0x69, 0x72, 0x6d, 0x52, 0x65, 0x70,
-	0x6c, 0x79, 0x12, 0x16, 0x0a, 0x06, 0x73, 0x74, 0x61, 0x74, 0x75, 0x73, 0x18, 0x01, 0x20, 0x01,
-	0x28, 0x09, 0x52, 0x06, 0x73, 0x74, 0x61, 0x74, 0x75, 0x73, 0x22, 0x4d, 0x0a, 0x0f, 0x72, 0x65,
-	0x67, 0x69, 0x73, 0x74, 0x65, 0x72, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x12, 0x0a,
-	0x04, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x6e, 0x61, 0x6d,
-	0x65, 0x12, 0x12, 0x0a, 0x04, 0x48, 0x6f, 0x73, 0x74, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52,
-	0x04, 0x48, 0x6f, 0x73, 0x74, 0x12, 0x12, 0x0a, 0x04, 0x50, 0x6f, 0x72, 0x74, 0x18, 0x03, 0x20,
-	0x01, 0x28, 0x09, 0x52, 0x04, 0x50, 0x6f, 0x72, 0x74, 0x22, 0x27, 0x0a, 0x0d, 0x72, 0x65, 0x67,
-	0x69, 0x73, 0x74, 0x65, 0x72, 0x52, 0x65, 0x70, 0x6c, 0x79, 0x12, 0x16, 0x0a, 0x06, 0x73, 0x74,
-	0x61, 0x74, 0x75, 0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x73, 0x74, 0x61, 0x74,
-	0x75, 0x73, 0x22, 0x65, 0x0a, 0x0b, 0x43, 0x61, 0x6c, 0x6c, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73,
-	0x74, 0x12, 0x1a, 0x0a, 0x08, 0x66, 0x75, 0x6e, 0x63, 0x4e, 0x61, 0x6d, 0x65, 0x18, 0x03, 0x20,
-	0x01, 0x28, 0x09, 0x52, 0x08, 0x66, 0x75, 0x6e, 0x63, 0x4e, 0x61, 0x6d, 0x65, 0x12, 0x1e, 0x0a,
-	0x0a, 0x70, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x4c, 0x69, 0x73, 0x74, 0x18, 0x01, 0x20, 0x03, 0x28,
-	0x09, 0x52, 0x0a, 0x70, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x4c, 0x69, 0x73, 0x74, 0x12, 0x1a, 0x0a,
-	0x08, 0x54, 0x79, 0x70, 0x65, 0x4c, 0x69, 0x73, 0x74, 0x18, 0x02, 0x20, 0x03, 0x28, 0x09, 0x52,
-	0x08, 0x54, 0x79, 0x70, 0x65, 0x4c, 0x69, 0x73, 0x74, 0x22, 0x5f, 0x0a, 0x09, 0x43, 0x61, 0x6c,
-	0x6c, 0x52, 0x65, 0x70, 0x6c, 0x79, 0x12, 0x16, 0x0a, 0x06, 0x73, 0x74, 0x61, 0x74, 0x75, 0x73,
-	0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x73, 0x74, 0x61, 0x74, 0x75, 0x73, 0x12, 0x1e,
-	0x0a, 0x0a, 0x70, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x4c, 0x69, 0x73, 0x74, 0x18, 0x01, 0x20, 0x03,
-	0x28, 0x09, 0x52, 0x0a, 0x70, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x4c, 0x69, 0x73, 0x74, 0x12, 0x1a,
-	0x0a, 0x08, 0x54, 0x79, 0x70, 0x65, 0x4c, 0x69, 0x73, 0x74, 0x18, 0x02, 0x20, 0x03, 0x28, 0x09,
-	0x52, 0x08, 0x54, 0x79, 0x70, 0x65, 0x4c, 0x69, 0x73, 0x74, 0x32, 0xa8, 0x01, 0x0a, 0x0a, 0x52,
-	0x65, 0x6d, 0x6f, 0x74, 0x65, 0x43, 0x61, 0x6c, 0x6c, 0x12, 0x3a, 0x0a, 0x08, 0x52, 0x65, 0x67,
-	0x69, 0x73, 0x74, 0x65, 0x72, 0x12, 0x16, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x72, 0x65,
-	0x67, 0x69, 0x73, 0x74, 0x65, 0x72, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x14, 0x2e,
-	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x72, 0x65, 0x67, 0x69, 0x73, 0x74, 0x65, 0x72, 0x52, 0x65,
-	0x70, 0x6c, 0x79, 0x22, 0x00, 0x12, 0x2e, 0x0a, 0x07, 0x43, 0x6f, 0x6e, 0x66, 0x69, 0x72, 0x6d,
-	0x12, 0x0c, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x45, 0x6d, 0x70, 0x74, 0x79, 0x1a, 0x13,
-	0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x43, 0x6f, 0x6e, 0x66, 0x69, 0x72, 0x6d, 0x52, 0x65,
-	0x70, 0x6c, 0x79, 0x22, 0x00, 0x12, 0x2e, 0x0a, 0x04, 0x43, 0x61, 0x6c, 0x6c, 0x12, 0x12, 0x2e,
-	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x43, 0x61, 0x6c, 0x6c, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73,
-	0x74, 0x1a, 0x10, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x43, 0x61, 0x6c, 0x6c, 0x52, 0x65,
-	0x70, 0x6c, 0x79, 0x22, 0x00, 0x42, 0x09, 0x5a, 0x07, 0x2e, 0x3b, 0x70, 0x72, 0x6f, 0x74, 0x6f,
-	0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x74, 0x6f, 0x12, 0x05, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0x65, 0x0a, 0x0b, 0x43, 0x61, 0x6c,
+	0x6c, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x1a, 0x0a, 0x08, 0x66, 0x75, 0x6e, 0x63,
+	0x4e, 0x61, 0x6d, 0x65, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x66, 0x75, 0x6e, 0x63,
+	0x4e, 0x61, 0x6d, 0x65, 0x12, 0x1e, 0x0a, 0x0a, 0x70, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x4c, 0x69,
+	0x73, 0x74, 0x18, 0x01, 0x20, 0x03, 0x28, 0x09, 0x52, 0x0a, 0x70, 0x61, 0x72, 0x61, 0x6d, 0x73,
+	0x4c, 0x69, 0x73, 0x74, 0x12, 0x1a, 0x0a, 0x08, 0x54, 0x79, 0x70, 0x65, 0x4c, 0x69, 0x73, 0x74,
+	0x18, 0x02, 0x20, 0x03, 0x28, 0x09, 0x52, 0x08, 0x54, 0x79, 0x70, 0x65, 0x4c, 0x69, 0x73, 0x74,
+	0x22, 0x5f, 0x0a, 0x09, 0x43, 0x61, 0x6c, 0x6c, 0x52, 0x65, 0x70, 0x6c, 0x79, 0x12, 0x16, 0x0a,
+	0x06, 0x73, 0x74, 0x61, 0x74, 0x75, 0x73, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x73,
+	0x74, 0x61, 0x74, 0x75, 0x73, 0x12, 0x1e, 0x0a, 0x0a, 0x70, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x4c,
+	0x69, 0x73, 0x74, 0x18, 0x01, 0x20, 0x03, 0x28, 0x09, 0x52, 0x0a, 0x70, 0x61, 0x72, 0x61, 0x6d,
+	0x73, 0x4c, 0x69, 0x73, 0x74, 0x12, 0x1a, 0x0a, 0x08, 0x54, 0x79, 0x70, 0x65, 0x4c, 0x69, 0x73,
+	0x74, 0x18, 0x02, 0x20, 0x03, 0x28, 0x09, 0x52, 0x08, 0x54, 0x79, 0x70, 0x65, 0x4c, 0x69, 0x73,
+	0x74, 0x22, 0x0d, 0x0a, 0x0b, 0x52, 0x65, 0x6d, 0x6f, 0x74, 0x65, 0x45, 0x6d, 0x70, 0x74, 0x79,
+	0x22, 0x2c, 0x0a, 0x12, 0x52, 0x65, 0x6d, 0x6f, 0x74, 0x65, 0x43, 0x6f, 0x6e, 0x66, 0x69, 0x72,
+	0x6d, 0x52, 0x65, 0x70, 0x6c, 0x79, 0x12, 0x16, 0x0a, 0x06, 0x73, 0x74, 0x61, 0x74, 0x75, 0x73,
+	0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x73, 0x74, 0x61, 0x74, 0x75, 0x73, 0x32, 0x78,
+	0x0a, 0x0a, 0x52, 0x65, 0x6d, 0x6f, 0x74, 0x65, 0x43, 0x61, 0x6c, 0x6c, 0x12, 0x2e, 0x0a, 0x04,
+	0x43, 0x61, 0x6c, 0x6c, 0x12, 0x12, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x43, 0x61, 0x6c,
+	0x6c, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x10, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f,
+	0x2e, 0x43, 0x61, 0x6c, 0x6c, 0x52, 0x65, 0x70, 0x6c, 0x79, 0x22, 0x00, 0x12, 0x3a, 0x0a, 0x07,
+	0x43, 0x6f, 0x6e, 0x66, 0x69, 0x72, 0x6d, 0x12, 0x12, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e,
+	0x52, 0x65, 0x6d, 0x6f, 0x74, 0x65, 0x45, 0x6d, 0x70, 0x74, 0x79, 0x1a, 0x19, 0x2e, 0x70, 0x72,
+	0x6f, 0x74, 0x6f, 0x2e, 0x52, 0x65, 0x6d, 0x6f, 0x74, 0x65, 0x43, 0x6f, 0x6e, 0x66, 0x69, 0x72,
+	0x6d, 0x52, 0x65, 0x70, 0x6c, 0x79, 0x22, 0x00, 0x42, 0x09, 0x5a, 0x07, 0x2e, 0x3b, 0x70, 0x72,
+	0x6f, 0x74, 0x6f, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -404,24 +284,20 @@ func file_RemoteCall_proto_rawDescGZIP() []byte {
 	return file_RemoteCall_proto_rawDescData
 }
 
-var file_RemoteCall_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
+var file_RemoteCall_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
 var file_RemoteCall_proto_goTypes = []interface{}{
-	(*Empty)(nil),           // 0: proto.Empty
-	(*ConfirmReply)(nil),    // 1: proto.ConfirmReply
-	(*RegisterRequest)(nil), // 2: proto.registerRequest
-	(*RegisterReply)(nil),   // 3: proto.registerReply
-	(*CallRequest)(nil),     // 4: proto.CallRequest
-	(*CallReply)(nil),       // 5: proto.CallReply
+	(*CallRequest)(nil),        // 0: proto.CallRequest
+	(*CallReply)(nil),          // 1: proto.CallReply
+	(*RemoteEmpty)(nil),        // 2: proto.RemoteEmpty
+	(*RemoteConfirmReply)(nil), // 3: proto.RemoteConfirmReply
 }
 var file_RemoteCall_proto_depIdxs = []int32{
-	2, // 0: proto.RemoteCall.Register:input_type -> proto.registerRequest
-	0, // 1: proto.RemoteCall.Confirm:input_type -> proto.Empty
-	4, // 2: proto.RemoteCall.Call:input_type -> proto.CallRequest
-	3, // 3: proto.RemoteCall.Register:output_type -> proto.registerReply
-	1, // 4: proto.RemoteCall.Confirm:output_type -> proto.ConfirmReply
-	5, // 5: proto.RemoteCall.Call:output_type -> proto.CallReply
-	3, // [3:6] is the sub-list for method output_type
-	0, // [0:3] is the sub-list for method input_type
+	0, // 0: proto.RemoteCall.Call:input_type -> proto.CallRequest
+	2, // 1: proto.RemoteCall.Confirm:input_type -> proto.RemoteEmpty
+	1, // 2: proto.RemoteCall.Call:output_type -> proto.CallReply
+	3, // 3: proto.RemoteCall.Confirm:output_type -> proto.RemoteConfirmReply
+	2, // [2:4] is the sub-list for method output_type
+	0, // [0:2] is the sub-list for method input_type
 	0, // [0:0] is the sub-list for extension type_name
 	0, // [0:0] is the sub-list for extension extendee
 	0, // [0:0] is the sub-list for field type_name
@@ -434,54 +310,6 @@ func file_RemoteCall_proto_init() {
 	}
 	if !protoimpl.UnsafeEnabled {
 		file_RemoteCall_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Empty); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_RemoteCall_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ConfirmReply); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_RemoteCall_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*RegisterRequest); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_RemoteCall_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*RegisterReply); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_RemoteCall_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*CallRequest); i {
 			case 0:
 				return &v.state
@@ -493,8 +321,32 @@ func file_RemoteCall_proto_init() {
 				return nil
 			}
 		}
-		file_RemoteCall_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
+		file_RemoteCall_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*CallReply); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_RemoteCall_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*RemoteEmpty); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_RemoteCall_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*RemoteConfirmReply); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -512,7 +364,7 @@ func file_RemoteCall_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_RemoteCall_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   6,
+			NumMessages:   4,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
@@ -538,9 +390,8 @@ const _ = grpc.SupportPackageIsVersion6
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type RemoteCallClient interface {
-	Register(ctx context.Context, in *RegisterRequest, opts ...grpc.CallOption) (*RegisterReply, error)
-	Confirm(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*ConfirmReply, error)
 	Call(ctx context.Context, in *CallRequest, opts ...grpc.CallOption) (*CallReply, error)
+	Confirm(ctx context.Context, in *RemoteEmpty, opts ...grpc.CallOption) (*RemoteConfirmReply, error)
 }
 
 type remoteCallClient struct {
@@ -549,24 +400,6 @@ type remoteCallClient struct {
 
 func NewRemoteCallClient(cc grpc.ClientConnInterface) RemoteCallClient {
 	return &remoteCallClient{cc}
-}
-
-func (c *remoteCallClient) Register(ctx context.Context, in *RegisterRequest, opts ...grpc.CallOption) (*RegisterReply, error) {
-	out := new(RegisterReply)
-	err := c.cc.Invoke(ctx, "/proto.RemoteCall/Register", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *remoteCallClient) Confirm(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*ConfirmReply, error) {
-	out := new(ConfirmReply)
-	err := c.cc.Invoke(ctx, "/proto.RemoteCall/Confirm", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
 }
 
 func (c *remoteCallClient) Call(ctx context.Context, in *CallRequest, opts ...grpc.CallOption) (*CallReply, error) {
@@ -578,65 +411,34 @@ func (c *remoteCallClient) Call(ctx context.Context, in *CallRequest, opts ...gr
 	return out, nil
 }
 
+func (c *remoteCallClient) Confirm(ctx context.Context, in *RemoteEmpty, opts ...grpc.CallOption) (*RemoteConfirmReply, error) {
+	out := new(RemoteConfirmReply)
+	err := c.cc.Invoke(ctx, "/proto.RemoteCall/Confirm", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // RemoteCallServer is the server API for RemoteCall service.
 type RemoteCallServer interface {
-	Register(context.Context, *RegisterRequest) (*RegisterReply, error)
-	Confirm(context.Context, *Empty) (*ConfirmReply, error)
 	Call(context.Context, *CallRequest) (*CallReply, error)
+	Confirm(context.Context, *RemoteEmpty) (*RemoteConfirmReply, error)
 }
 
 // UnimplementedRemoteCallServer can be embedded to have forward compatible implementations.
 type UnimplementedRemoteCallServer struct {
 }
 
-func (*UnimplementedRemoteCallServer) Register(context.Context, *RegisterRequest) (*RegisterReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Register not implemented")
-}
-func (*UnimplementedRemoteCallServer) Confirm(context.Context, *Empty) (*ConfirmReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Confirm not implemented")
-}
 func (*UnimplementedRemoteCallServer) Call(context.Context, *CallRequest) (*CallReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Call not implemented")
+}
+func (*UnimplementedRemoteCallServer) Confirm(context.Context, *RemoteEmpty) (*RemoteConfirmReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Confirm not implemented")
 }
 
 func RegisterRemoteCallServer(s *grpc.Server, srv RemoteCallServer) {
 	s.RegisterService(&_RemoteCall_serviceDesc, srv)
-}
-
-func _RemoteCall_Register_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(RegisterRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(RemoteCallServer).Register(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/proto.RemoteCall/Register",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(RemoteCallServer).Register(ctx, req.(*RegisterRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _RemoteCall_Confirm_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Empty)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(RemoteCallServer).Confirm(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/proto.RemoteCall/Confirm",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(RemoteCallServer).Confirm(ctx, req.(*Empty))
-	}
-	return interceptor(ctx, in, info, handler)
 }
 
 func _RemoteCall_Call_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -657,21 +459,35 @@ func _RemoteCall_Call_Handler(srv interface{}, ctx context.Context, dec func(int
 	return interceptor(ctx, in, info, handler)
 }
 
+func _RemoteCall_Confirm_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RemoteEmpty)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RemoteCallServer).Confirm(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/proto.RemoteCall/Confirm",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RemoteCallServer).Confirm(ctx, req.(*RemoteEmpty))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 var _RemoteCall_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "proto.RemoteCall",
 	HandlerType: (*RemoteCallServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "Register",
-			Handler:    _RemoteCall_Register_Handler,
+			MethodName: "Call",
+			Handler:    _RemoteCall_Call_Handler,
 		},
 		{
 			MethodName: "Confirm",
 			Handler:    _RemoteCall_Confirm_Handler,
-		},
-		{
-			MethodName: "Call",
-			Handler:    _RemoteCall_Call_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

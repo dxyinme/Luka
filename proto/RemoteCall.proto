@@ -5,25 +5,8 @@ package proto;
 option go_package = ".;proto";
 
 service RemoteCall {
-    rpc Register (registerRequest) returns (registerReply) {}
-    rpc Confirm (Empty) returns (ConfirmReply) {}
-    rpc Call (CallRequest) returns (CallReply) {}
-}
-
-message Empty {}
-
-message ConfirmReply {
-    string status = 1;
-}
-
-message registerRequest {
-    string name = 1;
-    string Host = 2;
-    string Port = 3;
-}
-
-message registerReply {
-    string status = 1;
+    rpc Call(CallRequest) returns (CallReply) {}
+    rpc Confirm (RemoteEmpty) returns (RemoteConfirmReply) {}
 }
 
 message CallRequest {
@@ -36,4 +19,10 @@ message CallReply {
     string status = 3;
     repeated string paramsList = 1;
     repeated string TypeList = 2;
+}
+
+message RemoteEmpty {}
+
+message RemoteConfirmReply {
+    string status = 1;
 }

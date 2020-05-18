@@ -1,4 +1,4 @@
-package Service
+package Keeper
 
 import (
 	pb "Luka/proto"
@@ -35,7 +35,7 @@ func CircleConfirm(){
 				log.Println(errTCP)
 			}
 			c := pb.NewRemoteCallClient(conn)
-			r, errGRPC := c.Confirm(context.Background(),&pb.Empty{})
+			r, errGRPC := c.Confirm(context.Background(), &pb.RemoteEmpty{})
 			if errGRPC != nil {
 				log.Println(errGRPC)
 				continue
