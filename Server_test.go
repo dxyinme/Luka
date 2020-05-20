@@ -7,10 +7,6 @@ import (
 )
 
 
-func TestServer(t *testing.T){
-
-}
-
 func TestCall(t *testing.T){
 	s:=func(a,b int)int{
 		return a+b

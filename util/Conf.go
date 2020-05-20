@@ -2,7 +2,9 @@ package util
 
 import (
 	"gopkg.in/yaml.v2"
+	"io"
 	"io/ioutil"
+	"log"
 )
 
 const (
@@ -30,4 +32,13 @@ func ReadYAML(filename string) (*YAML , error) {
 		return nil , errYAMLParse
 	}
 	return conf,nil
+}
+
+// 读取body
+func ReadBody(bodyIo io.Reader) []byte {
+	body,errRESP := ioutil.ReadAll(bodyIo)
+	if errRESP != nil {
+		log.Println(errRESP)
+	}
+	return body
 }
