@@ -41,6 +41,7 @@ func (p *Pool) Init(runtimeNumber int, total int) {
 	p.TaskQueue = make(chan *TaskWork, total)
 }
 
+// 开启一个goroutine池
 func (p *Pool) Start() {
 	go func(){
 		for !p.isStop {
@@ -66,11 +67,15 @@ func (p *Pool) Stop() {
 	p.isStop = true
 	close(p.TaskQueue)
 }
+
 // 增加一个任务
 func (p *Pool) AddTask(task *TaskWork) {
 	p.TaskQueue <- task
 }
 
+// 新建一个新的池
+// RuntimeNumber int 同时存在的goroutine数量
+// total int 管道总大小
 func NewPool(RuntimeNumber int,total int) *Pool {
 	ret := &Pool{}
 	ret.Init(RuntimeNumber,total)

@@ -1,10 +1,8 @@
 package main
 
 import (
-	"Luka/Keeper"
 	"Luka/util"
 	"log"
-	"net/http"
 )
 
 
@@ -15,7 +13,4 @@ func main(){
 	}
 	log.Println(conf)
 	log.Println("hello Register!!!")
-	Keeper.CircleConfirm()
-	http.HandleFunc("/Register", Keeper.Register)
-	_ = http.ListenAndServe(conf.RegisterHost+conf.RegisterPort, nil)
 }

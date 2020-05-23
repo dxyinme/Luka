@@ -1,5 +1,0 @@
-ServiceHost : "127.0.0.1"
-ServicePort : ":9955"
-RegisterHost : "127.0.0.1"
-RegisterPort : ":6965"
-KeeperName : "TEST"
