@@ -1,8 +1,12 @@
 package main
 
 import (
+	"Luka/Keeper"
+	pb "Luka/proto"
 	"Luka/util"
+	"google.golang.org/grpc"
 	"log"
+	"net"
 )
 
 
@@ -13,4 +17,13 @@ func main(){
 	}
 	log.Println(conf)
 	log.Println("hello Register!!!")
+	lis, errTCP := net.Listen("tcp",conf.RegisterPort)
+	if errTCP != nil {
+		log.Fatalf("failed to listen %v",conf.RegisterPort)
+	}
+	serverRegister := grpc.NewServer()
+	pb.RegisterRegisterServer(serverRegister,&Keeper.Server{})
+	if errGRPC := serverRegister.Serve(lis) ; errGRPC != nil {
+		log.Println(errGRPC)
+	}
 }

@@ -1,0 +1,15 @@
+syntax = "proto3";
+package proto;
+option go_package = ".;proto";
+message RegisterRequest {
+    string Name = 1;
+    string Host = 2;
+    string Port = 3;
+}
+message RegisterReply {
+    string Status = 1;
+}
+
+service Register {
+    rpc register(RegisterRequest) returns (RegisterReply) {}
+}
