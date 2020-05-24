@@ -2,9 +2,7 @@ package util
 
 import (
 	"gopkg.in/yaml.v2"
-	"io"
 	"io/ioutil"
-	"log"
 )
 
 const (
@@ -16,10 +14,11 @@ const (
 type YAML struct {
 	RegisterHost string `yaml:"RegisterHost"`
 	RegisterPort string `yaml:"RegisterPort"`
-	ServiceHost string `yaml:"ServiceHost"`
-	ServicePort string `yaml:"ServicePort"`
-	KeeperName string `yaml:"KeeperName"`
+	RedisHost    string `yaml:"redisHost"`
+	KeeperName   string `yaml:"KeeperName"`
 }
+
+var globalConf YAML
 
 func ReadYAML(filename string) (*YAML , error) {
 	yamlFile , errYAML := ioutil.ReadFile(filename)
@@ -31,14 +30,10 @@ func ReadYAML(filename string) (*YAML , error) {
 	if errYAMLParse != nil {
 		return nil , errYAMLParse
 	}
+	globalConf = *conf
 	return conf,nil
 }
 
-// 读取body
-func ReadBody(bodyIo io.Reader) []byte {
-	body,errRESP := ioutil.ReadAll(bodyIo)
-	if errRESP != nil {
-		log.Println(errRESP)
-	}
-	return body
+func GetRedisHost() string {
+	return globalConf.RedisHost
 }

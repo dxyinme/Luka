@@ -1,2 +1,3 @@
 RegisterHost : "127.0.0.1"
 RegisterPort : ":6965"
+redisHost : "127.0.0.1:6379"

@@ -21,6 +21,7 @@ func main(){
 	if errTCP != nil {
 		log.Fatalf("failed to listen %v",conf.RegisterPort)
 	}
+	Keeper.ResetRedis()
 	serverRegister := grpc.NewServer()
 	pb.RegisterRegisterServer(serverRegister,&Keeper.Server{})
 	if errGRPC := serverRegister.Serve(lis) ; errGRPC != nil {

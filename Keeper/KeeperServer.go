@@ -16,7 +16,7 @@ func (s *Server) Register(ctx context.Context, in *pb.RegisterRequest) (*pb.Regi
 	log.Print(ctx)
 	newKeeper := &Keeper{
 		Name:     in.Name,
-		isOnline: false,
+		IsOnline: false,
 		Host:     in.Host,
 		Port:     in.Port,
 	}
