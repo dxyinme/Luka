@@ -1,7 +1,8 @@
 syntax = "proto3";
 package proto;
 option go_package = ".;proto";
-message RegisterRequest {
+
+message ClientConnectRequest {
     string Name = 1;
     string Host = 2;
     string Port = 3;
@@ -11,5 +12,5 @@ message RegisterReply {
 }
 
 service Register {
-    rpc register(RegisterRequest) returns (RegisterReply) {}
+    rpc register(ClientConnectRequest) returns (RegisterReply) {}
 }

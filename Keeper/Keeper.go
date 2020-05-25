@@ -3,7 +3,6 @@ package Keeper
 import (
 	"Luka/util"
 	"encoding/json"
-	"fmt"
 	"github.com/garyburd/redigo/redis"
 	"log"
 )
@@ -27,19 +26,19 @@ func ResetRedis() {
 		log.Fatal(errRedis)
 	}
 	redisConn = c
+	_, errRedis = redisConn.Do("FLUSHALL")
+	if errRedis != nil {
+		log.Fatal(errRedis)
+	}
 }
 
 func SetKeeper(Name string , s *Keeper) error {
-	_,errCK := redis.String(redisConn.Do("GET",Name))
-	if errCK != redis.ErrNil {
-		return fmt.Errorf("this %s has existed" , Name)
-	}
 	byteStr,errJson := json.Marshal(s)
 	if errJson != nil {
 		return errJson
 	}
 	str := string(byteStr)
-	_,errRedis := redisConn.Do("SET",Name,str)
+	_,errRedis := redisConn.Do("SET", Name, str, "EX", util.GetRedisLife())
 	if errRedis != nil {
 		return errRedis
 	}

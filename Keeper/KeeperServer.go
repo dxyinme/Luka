@@ -2,6 +2,7 @@ package Keeper
 
 import (
 	pb "Luka/proto"
+	"Luka/util"
 	"golang.org/x/net/context"
 	"log"
 )
@@ -12,7 +13,7 @@ type Server struct {
 	Name string `json:"name"`
 }
 
-func (s *Server) Register(ctx context.Context, in *pb.RegisterRequest) (*pb.RegisterReply, error) {
+func (s *Server) Register(ctx context.Context, in *pb.ClientConnectRequest) (*pb.RegisterReply, error) {
 	log.Print(ctx)
 	newKeeper := &Keeper{
 		Name:     in.Name,
@@ -22,11 +23,12 @@ func (s *Server) Register(ctx context.Context, in *pb.RegisterRequest) (*pb.Regi
 	}
 	errRegister := SetKeeper(in.Name , newKeeper)
 	reply := &pb.RegisterReply{}
+	log.Println(errRegister)
 	if errRegister != nil {
 		reply.Status = errRegister.Error()
 		return reply,errRegister
 	} else {
-		reply.Status = "register OK"
+		reply.Status = util.OK
 		return reply,nil
 	}
 

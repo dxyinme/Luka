@@ -9,13 +9,12 @@ const (
 	OK = "OK"
 	FAIL = "FAIL"
 )
-// ServiceHost/ServicePort 是rpc提供者的
-// RegisterHost/RegisterPort 是rpc发现者的
+
 type YAML struct {
 	RegisterHost string `yaml:"RegisterHost"`
 	RegisterPort string `yaml:"RegisterPort"`
 	RedisHost    string `yaml:"redisHost"`
-	KeeperName   string `yaml:"KeeperName"`
+	RedisLife    int    `yaml:"redisLife"`
 }
 
 var globalConf YAML
@@ -36,4 +35,8 @@ func ReadYAML(filename string) (*YAML , error) {
 
 func GetRedisHost() string {
 	return globalConf.RedisHost
+}
+
+func GetRedisLife() int {
+	return globalConf.RedisLife
 }
