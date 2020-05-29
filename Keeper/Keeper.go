@@ -2,23 +2,20 @@ package Keeper
 
 import (
 	"Luka/util"
-	"encoding/json"
 	"github.com/garyburd/redigo/redis"
 	"log"
 )
 
-type Keeper struct {
-	Name     string `json:"name"`
-	IsOnline bool   `json:"isOnline"`
-	Host     string `json:"host"`
-	Port     string `json:"port"`
-}
 
-func (k *Keeper) checkOnline() bool {
-	return k.IsOnline
+// keeper
+type Keeper struct {
+	Name          string `json:"name"`
+	KeeperUrl     string `json:"keeperUrl"`
 }
 
 var redisConn redis.Conn
+var set = make(map[string]bool)
+
 
 func ResetRedis() {
 	c,errRedis := redis.Dial("tcp", util.GetRedisHost())
@@ -32,16 +29,30 @@ func ResetRedis() {
 	}
 }
 
-func SetKeeper(Name string , s *Keeper) error {
-	byteStr,errJson := json.Marshal(s)
-	if errJson != nil {
-		return errJson
-	}
-	str := string(byteStr)
-	_,errRedis := redisConn.Do("SET", Name, str, "EX", util.GetRedisLife())
+func SetKeeper(Name,url string) error {
+	_,errRedis := redisConn.Do("SET", Name , url)
+	set[Name] = true
 	if errRedis != nil {
 		return errRedis
 	}
 	return nil
 }
 
+func randOne() string {
+	var c string
+	for key := range set {
+		c = key
+		break
+	}
+	return c
+}
+
+func GetKeeper() (string, string){
+	name := randOne()
+	log.Println(name)
+	url,errRedis := redis.String(redisConn.Do("GET",name))
+	if errRedis != nil {
+		log.Println(errRedis)
+	}
+	return name,url
+}

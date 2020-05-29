@@ -2,15 +2,27 @@ syntax = "proto3";
 package proto;
 option go_package = ".;proto";
 
-message ClientConnectRequest {
+message KeeperConnectRequest {
     string Name = 1;
-    string Host = 2;
-    string Port = 3;
+    string keeperUrl = 2;
 }
-message RegisterReply {
+
+message KeeperReply {
     string Status = 1;
 }
 
+message ClientConnectRequest {
+    string Name = 1;
+    string Password = 2;
+}
+
+message ClientReply {
+    string Status = 1;
+    string KeeperUrl = 2;
+    string Name = 3;
+}
+
 service Register {
-    rpc register(ClientConnectRequest) returns (RegisterReply) {}
+    rpc KeeperAdd(KeeperConnectRequest) returns (KeeperReply) {}
+    rpc ClientAdd(ClientConnectRequest) returns (ClientReply) {}
 }
