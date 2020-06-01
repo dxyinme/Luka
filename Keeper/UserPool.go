@@ -1,6 +1,9 @@
 package Keeper
 
-import "fmt"
+import (
+	"fmt"
+	"log"
+)
 
 
 type UserPool struct {
@@ -12,12 +15,14 @@ func NewUserPool() *UserPool {
 }
 
 // 增加/更新 用户连接
-func (up *UserPool) AddUser(name string) {
-	up.mp[name] = NewUser(name)
+func (up *UserPool) AddUser(user *User) {
+	log.Printf("user %s is login", user.name)
+	up.mp[user.name] = user
 }
 
 // 用户断开连接
 func (up *UserPool) DeleteUser(name string) error {
+
 	if up.mp[name] == nil {
 		return fmt.Errorf("%s is not connected" , name)
 	}

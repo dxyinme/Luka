@@ -1,4 +1,4 @@
 RegisterHost : "127.0.0.1"
 RegisterPort : ":6965"
-redisHost : "127.0.0.1:6379"
+redisHost : "www.dxyinme.xyz:6379"
 redisLife : 60

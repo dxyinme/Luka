@@ -1,58 +1,131 @@
 package Keeper
 
 import (
-	"golang.org/x/net/websocket"
+	"fmt"
+	"github.com/gorilla/websocket"
 	"log"
 	"sync"
-	"time"
 )
 
 const (
 	channelSize = 100
 )
+
+
 type User struct {
 	name string
-	ch *chan string
+	writeCh *chan []byte
+	readCh *chan []byte
+	closeSign *chan byte
+	ws *websocket.Conn
+	isClosed bool
+	mutex sync.Mutex
 }
 // 新建一个User
-func NewUser(name string) *User{
-	tmp := make(chan string, channelSize)
-	return &User{
-		name: name,
-		ch:  &tmp,
+func NewUser(name string, Ws *websocket.Conn) *User{
+	tmp1 := make(chan []byte, channelSize)
+	tmp2 := make(chan []byte, channelSize)
+	tmp3 := make(chan byte, 1)
+	now := &User{
+		name: 		name,
+		writeCh:  	&tmp1,
+		readCh:  	&tmp2,
+		closeSign:  &tmp3,
+		ws: 		Ws,
+		isClosed: 	false,
 	}
+	go now.readLoop()
+	go now.writeLoop()
+	return now
 }
 
-func (u *User) PostRecv(ws *websocket.Conn) {
-	var wg sync.WaitGroup
-	wg.Add(1)
-	go func () {
-		for {
-			var msg string
-			var ok bool
-			select {
-			case msg, ok = <-(*u.ch):
-			}
-			if !ok {
-				break
-			}
-			log.Println("send : " + msg)
-			for i := 1 ; i <= 5; i ++ {
-				errRecv := websocket.Message.Send(ws, msg)
-				if errRecv != nil {
-					log.Printf("Can't send because %v" ,errRecv)
-				} else {
-					break
-				}
-				time.Sleep(time.Second)
-			}
+// 将writeCh中的内容发送到客户端
+func (u *User) writeLoop() {
+	var (
+		data []byte
+		err error
+	)
+	for {
+		select {
+		case data = <- *u.writeCh:
+		case <- *u.closeSign:{
+			goto ERROR
 		}
-		wg.Done()
-	}()
-	wg.Wait()
+		}
+		if err = u.ws.WriteMessage(websocket.TextMessage,data);err != nil {
+			goto ERROR
+		}
+	}
+
+ERROR:
+	log.Println(u.Close())
 }
 
-//增加信息
-func (u *User) AddMessage(s string) {
-	*(u.ch) <- s
+// 接收长连接的消息,保存到readCh
+func (u *User) readLoop() {
+	var (
+		data []byte
+		err error
+	)
+	for {
+		if _,data,err = u.ws.ReadMessage(); err != nil {
+			goto ERROR
+		}
+		select {
+		case *u.readCh <- data:{
+			log.Println(u.name + " : " + string(data))
+		}
+		case  <- *u.closeSign:{
+			goto ERROR
+		}
+		}
+	}
+ERROR:
+	log.Println(u.Close())
+}
+
+//将信息写入writeCh
+func (u *User) AddMessage(s []byte) error {
+	select {
+	case *(u.writeCh) <- s:
+	case  <- (*u.closeSign):
+		return fmt.Errorf("write error : connection is closed")
+	}
+	return nil
+}
+
+//从readCh中读取信息
+func (u *User) GetMessage() ([]byte,error) {
+	var (
+		data []byte = nil
+		err error = nil
+	)
+	select {
+	case  data = <- (*u.readCh):
+	case  <- (*u.closeSign):{
+		err = fmt.Errorf("read error : connection is closed")
+	}
+	}
+	return data , err
+}
+
+func (u *User) Close() error {
+	var err error = nil
+	u.mutex.Lock()
+	if !u.isClosed {
+		u.isClosed = true
+		close(*u.closeSign)
+		err = u.ws.Close()
+	} else {
+		err = fmt.Errorf("has close")
+	}
+	u.mutex.Unlock()
+	return err
+}
+
+func (u *User) Serve() error {
+	select {
+	case <- *u.closeSign:
+	}
+	return nil
 }
