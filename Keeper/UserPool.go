@@ -22,7 +22,6 @@ func (up *UserPool) AddUser(user *User) {
 
 // 用户断开连接
 func (up *UserPool) DeleteUser(name string) error {
-
 	if up.mp[name] == nil {
 		return fmt.Errorf("%s is not connected" , name)
 	}

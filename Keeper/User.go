@@ -8,10 +8,11 @@ import (
 )
 
 const (
+	// 用户信息管道大小
 	channelSize = 100
 )
 
-
+// User , 用于创建一个websocket连通长连接。
 type User struct {
 	name string
 	writeCh *chan []byte
@@ -21,6 +22,7 @@ type User struct {
 	isClosed bool
 	mutex sync.Mutex
 }
+
 // 新建一个User
 func NewUser(name string, Ws *websocket.Conn) *User{
 	tmp1 := make(chan []byte, channelSize)
@@ -56,7 +58,6 @@ func (u *User) writeLoop() {
 			goto ERROR
 		}
 	}
-
 ERROR:
 	log.Println(u.Close())
 }
@@ -109,6 +110,7 @@ func (u *User) GetMessage() ([]byte,error) {
 	return data , err
 }
 
+// 该用户使用完毕， 关闭长连接
 func (u *User) Close() error {
 	var err error = nil
 	u.mutex.Lock()
@@ -123,6 +125,7 @@ func (u *User) Close() error {
 	return err
 }
 
+// 开启User
 func (u *User) Serve() error {
 	select {
 	case <- *u.closeSign:
