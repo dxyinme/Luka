@@ -6,7 +6,7 @@ import (
 	"net/http"
 )
 
-
+// 用于储存一组user以及他们的连接
 type Connector struct {
 	userPool *UserPool
 	upgrade websocket.Upgrader
@@ -41,7 +41,7 @@ func (cot *Connector) ConnectIt(w http.ResponseWriter, r *http.Request) {
 	cot.userPool.AddUser(user)
 	defer cot.userPool.DeleteUser(name)
 	if err = user.Serve(); err != nil {
-		log.Println(err)
+		log.Println("serve error:", err)
 	}
-	log.Println("close websocket :", user.Close())
+	log.Printf("%s close websocket error : %v", name, user.Close())
 }

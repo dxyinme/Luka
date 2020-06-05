@@ -59,7 +59,7 @@ func (u *User) writeLoop() {
 		}
 	}
 ERROR:
-	log.Println(u.Close())
+	u.Close()
 }
 
 // 接收长连接的消息,保存到readCh
@@ -82,7 +82,7 @@ func (u *User) readLoop() {
 		}
 	}
 ERROR:
-	log.Println(u.Close())
+	u.Close()
 }
 
 //将信息写入writeCh
@@ -118,8 +118,6 @@ func (u *User) Close() error {
 		u.isClosed = true
 		close(*u.closeSign)
 		err = u.ws.Close()
-	} else {
-		err = fmt.Errorf("has close")
 	}
 	u.mutex.Unlock()
 	return err
