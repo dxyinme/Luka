@@ -35,5 +35,5 @@ func (up *UserPool) GetUser(name string) *User {
 }
 
 func (up *UserPool) reSend() error {
-
+	return nil
 }
