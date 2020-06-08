@@ -8,14 +8,14 @@
 <h1>Luka hello!</h1>
 <form>
     <p>
-        name:    <input id="name" type="text" value="luka">
+        <label for="name">name:</label><input id="name" type="text" value="luka">
     </p>
     <p id="nameIs"></p>
 </form>
 <form>
     <p>
-        target:  <input id="target" type="text" value="">
-        Message: <input id="message" type="text" value="写点什么吧">
+        <label for="target">target:</label><input id="target" type="text" value=""> <br/><br/><br/>
+        <label for="message">Message:</label><input id="message" type="text" value="写点什么吧">
     </p>
 </form>
 <div>
@@ -23,7 +23,7 @@
         <h2>RECEIVE</h2>
     </div>
     <div id="send">
-        <h2>SEND</h2>>
+        <h2>SEND</h2>
     </div>
 </div>
 <button onclick="connect();">login</button>
