@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Hello</title>
+    <title>lukaClient</title>
 </head>
 <body>
 <h1>Luka hello!</h1>
@@ -19,7 +19,12 @@
     </p>
 </form>
 <div>
-    <p id="receive"></p>
+    <div id="receive">
+        <h2>RECEIVE</h2>
+    </div>
+    <div id="send">
+        <h2>SEND</h2>>
+    </div>
 </div>
 <button onclick="connect();">login</button>
 <button onclick="send();">Send Message</button>
@@ -27,30 +32,23 @@
 <script type="text/javascript">
     let sock = null;
     const wsUrl = "ws://127.0.0.1:10137/ConnectIt";
-    window.onload = function () {
-
-        console.log("onload");
-
-        // sock = new WebSocket(wsUrl);
-
-        sock.onopen = function () {
-            console.log("connected to " + wsUrl);
-        }
-
-        sock.onclose = function (e) {
-            console.log("connection closed (" + e.code + ")");
-        }
-
-        sock.onmessage = function (e) {
-            console.log("message received: " + e.data);
-            document.getElementById('receive').innerHTML += '<p>'+ e.data + '</p>'
-        }
-    };
-
     function connect() {
         const name = document.getElementById('name').value;
         sock = new WebSocket(wsUrl + '?name=' + name);
-        console.log("connected to " + wsUrl);
+        sock.onopen = function () {
+            console.log("connected to " + wsUrl + '?name=' + name) ;
+        }
+        sock.onclose = function (e) {
+            console.log("connection closed (" + e.code + ")");
+        }
+        sock.onmessage = function (e) {
+            console.log("message received: " + e.data);
+            s = JSON.parse(e.data)
+            document.getElementById('receive').innerHTML += '<p>'+ s['From'] +':</p>' + '<p>'+ s['Content'] +'</p>'
+        }
+        sock.onerror = function (e) {
+            console.debug(e)
+        }
         document.getElementById('nameIs').innerHTML += '<h2>'+ name + '</h2>'
     }
 
@@ -62,6 +60,7 @@
             Content   :msg,
             target    :target
         }));
+        document.getElementById('send').innerHTML += '<p> to '+ target +':</p>' + '<p>'+ msg +'</p>'
     }
 </script>
 </body>

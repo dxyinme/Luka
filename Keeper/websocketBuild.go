@@ -15,7 +15,7 @@ type Connector struct {
 func NewConnector(checkOrigin func(r *http.Request) bool) *Connector{
 	defer log.Println("NewConnector build finished")
 	return &Connector{
-		userPool: NewUserPool(),
+		userPool: InitUserPool(),
 		upgrade:  websocket.Upgrader{
 			CheckOrigin: checkOrigin,
 		},

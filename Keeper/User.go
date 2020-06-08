@@ -41,6 +41,7 @@ func NewUser(name string, Ws *websocket.Conn) *User{
 	}
 	go now.readLoop()
 	go now.writeLoop()
+	go now.readTransform()
 	return now
 }
 
@@ -58,11 +59,45 @@ func (u *User) writeLoop() {
 		}
 		}
 		if err = u.ws.WriteMessage(websocket.TextMessage,data);err != nil {
+			log.Println(err)
 			goto ERROR
 		}
+		fmt.Println("ws to:" + string(data))
 	}
 ERROR:
 	u.Close()
+}
+
+// 将消息加入转发内容，传入UserPool的转发队列进行转发
+func (u *User) readTransform() {
+	var (
+		msg []byte
+		err error
+	)
+	for {
+		msg,err = u.GetMessage()
+		if err != nil {
+			log.Printf("%s channel: %v\n", u.name, err)
+			goto ERROR
+		}
+		textMsg := chatMsg.NewTextMsgUnmarshal(msg)
+		// log.Println("keepUserPool:",keepUserPool)
+		if textMsg == nil {
+			log.Printf("[textMsg json error]")
+			continue
+		}
+		select {
+		case *keepUserPool.TextMsgCh <- *textMsg:{
+
+		}
+		case <- *keepUserPool.closeSign :{
+			goto ERROR
+		}
+		}
+
+	}
+ERROR:
+	UserPoolClose()
 }
 
 // 接收长连接的消息,保存到readCh
@@ -77,11 +112,11 @@ func (u *User) readLoop() {
 		}
 		select {
 		case *u.readCh <- data:{
-			t := chatMsg.NewTextMsgUnmarshal(data)
-			log.Println(u.name , " : " , t)
-			if err != nil {
-				log.Println("failed !")
-			}
+			//t := chatMsg.NewTextMsgUnmarshal(data)
+			//log.Println(u.name , " : " , t)
+			//if err != nil {
+			//	log.Println("failed !")
+			//}
 		}
 		case  <- *u.closeSign:{
 			goto ERROR
@@ -94,8 +129,11 @@ ERROR:
 
 //将信息写入writeCh
 func (u *User) AddMessage(s []byte) error {
+	fmt.Println(string(s))
 	select {
-	case *(u.writeCh) <- s:
+	case *(u.writeCh) <- s:{
+		fmt.Println("success: " + string(s))
+	}
 	case  <- (*u.closeSign):
 		return fmt.Errorf("write error : connection is closed")
 	}
