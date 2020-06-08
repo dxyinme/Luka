@@ -1,7 +1,7 @@
 package main
 
 import (
-	"Luka/Keeper"
+	"Luka/Master"
 	pb "Luka/proto"
 	"Luka/util"
 	"google.golang.org/grpc"
@@ -21,14 +21,8 @@ func main(){
 	if errTCP != nil {
 		log.Fatalf("failed to listen %v",conf.RegisterPort)
 	}
-	Keeper.ResetRedis()
-	//it := Keeper.SetKeeper("1", "1t")
-	//if it != nil {
-	//	log.Println(it)
-	//}
- 	//log.Println(Keeper.GetKeeper())
 	serverRegister := grpc.NewServer()
-	pb.RegisterRegisterServer(serverRegister,&Keeper.Server{})
+	pb.RegisterRegisterServer(serverRegister,&Master.Server{})
 	if errGRPC := serverRegister.Serve(lis) ; errGRPC != nil {
 		log.Println(errGRPC)
 	}

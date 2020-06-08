@@ -5,40 +5,6 @@
     <title>Hello</title>
 </head>
 <body>
-<script type="text/javascript">
-    var sock = null;
-    var wsuri = "ws://127.0.0.1:10137/ConnectIt";
-    window.onload = function () {
-
-        console.log("onload");
-
-        // sock = new WebSocket(wsuri);
-
-        sock.onopen = function () {
-            console.log("connected to " + wsuri);
-        }
-
-        sock.onclose = function (e) {
-            console.log("connection closed (" + e.code + ")");
-        }
-
-        sock.onmessage = function (e) {
-            console.log("message received: " + e.data);
-        }
-    };
-
-    function connect() {
-        var name = document.getElementById('name').value;
-        sock = new WebSocket(wsuri + '?name=' + name);
-        console.log("connected to " + wsuri);
-        document.getElementById('nameIs').innerHTML += '<h2>'+ name + '</h2>'
-    }
-
-    function send() {
-        var msg = document.getElementById('message').value;
-        sock.send(msg);
-    }
-</script>
 <h1>Luka hello!</h1>
 <form>
     <p>
@@ -48,11 +14,55 @@
 </form>
 <form>
     <p>
+        target:  <input id="target" type="text" value="">
         Message: <input id="message" type="text" value="写点什么吧">
     </p>
 </form>
-
+<div>
+    <p id="receive"></p>
+</div>
 <button onclick="connect();">login</button>
 <button onclick="send();">Send Message</button>
+
+<script type="text/javascript">
+    let sock = null;
+    const wsUrl = "ws://127.0.0.1:10137/ConnectIt";
+    window.onload = function () {
+
+        console.log("onload");
+
+        // sock = new WebSocket(wsUrl);
+
+        sock.onopen = function () {
+            console.log("connected to " + wsUrl);
+        }
+
+        sock.onclose = function (e) {
+            console.log("connection closed (" + e.code + ")");
+        }
+
+        sock.onmessage = function (e) {
+            console.log("message received: " + e.data);
+            document.getElementById('receive').innerHTML += '<p>'+ e.data + '</p>'
+        }
+    };
+
+    function connect() {
+        const name = document.getElementById('name').value;
+        sock = new WebSocket(wsUrl + '?name=' + name);
+        console.log("connected to " + wsUrl);
+        document.getElementById('nameIs').innerHTML += '<h2>'+ name + '</h2>'
+    }
+
+    function send() {
+        const msg = document.getElementById('message').value;
+        const target = document.getElementById('target').value;
+        sock.send(JSON.stringify({
+            From      :document.getElementById('name').value,
+            Content   :msg,
+            target    :target
+        }));
+    }
+</script>
 </body>
 </html>

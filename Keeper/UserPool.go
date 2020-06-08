@@ -33,3 +33,7 @@ func (up *UserPool) DeleteUser(name string) error {
 func (up *UserPool) GetUser(name string) *User {
 	return up.mp[name]
 }
+
+func (up *UserPool) reSend() error {
+
+}

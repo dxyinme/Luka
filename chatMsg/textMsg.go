@@ -14,7 +14,7 @@ const (
 )
 
 // 消息发送的格式
-type textMsg struct {
+type TextMsg struct {
 	// textMsg 是由哪个User发送的，From就是他的name,
 	// 用于唯一定位一个user,确定消息的来源。
 	From  		string
@@ -34,20 +34,19 @@ type textMsg struct {
 
 // 请保证调用这个函数的Keeper机器的时间必须与master-server一致
 // create a new chatMsg
-func NewTextMsg(from string, targetType targetTypeEnum, target string, content string) *textMsg {
-	return &textMsg{From: from, TargetType: targetType,
+func NewTextMsg(from string, targetType targetTypeEnum, target string, content string) *TextMsg {
+	return &TextMsg{From: from, TargetType: targetType,
 		Target: target, Content: content, MsgTime: time.Now().Unix()}
 }
 
 
 // create a new chatMsg by []byte
-func NewTextMsgUnmarshal(b []byte) *textMsg {
-	ret := &textMsg{}
+func NewTextMsgUnmarshal(b []byte) *TextMsg {
+	ret := &TextMsg{}
 	errJson := json.Unmarshal(b,ret)
 	if errJson != nil {
 		log.Println(errJson)
 		return nil
 	}
-	ret.MsgTime = time.Now().Unix()
 	return ret
 }

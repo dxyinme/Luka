@@ -1,6 +1,7 @@
 package Keeper
 
 import (
+	"Luka/chatMsg"
 	"fmt"
 	"github.com/gorilla/websocket"
 	"log"
@@ -15,7 +16,9 @@ const (
 // User , 用于创建一个websocket连通长连接。
 type User struct {
 	name string
+	// 发送到客户端的channel
 	writeCh *chan []byte
+	// 读取客户端写入的channel
 	readCh *chan []byte
 	closeSign *chan byte
 	ws *websocket.Conn
@@ -74,7 +77,11 @@ func (u *User) readLoop() {
 		}
 		select {
 		case *u.readCh <- data:{
-			log.Println(u.name + " : " + string(data))
+			t := chatMsg.NewTextMsgUnmarshal(data)
+			log.Println(u.name , " : " , t)
+			if err != nil {
+				log.Println("failed !")
+			}
 		}
 		case  <- *u.closeSign:{
 			goto ERROR
