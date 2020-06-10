@@ -31,46 +31,46 @@ func InitUserPool() *UserPool {
 		closeSign:	&tmp2,
 		isClosed:   false,
 	}
-	go keepUserPool.reSend()
+	go reSend()
 	log.Println("UserPool initial finished")
 	return keepUserPool
 }
 
 // 增加/更新 用户连接
-func (kup *UserPool)AddUser(user *User) {
-	kup.mp[user.name] = user
+func AddUser(user *User) {
+	keepUserPool.mp[user.name] = user
 	log.Printf("user %s is login", user.name)
 }
 
 // 用户断开连接
-func (kup *UserPool)DeleteUser(name string) error {
-	if kup.mp[name] == nil {
+func DeleteUser(name string) error {
+	if keepUserPool.mp[name] == nil {
 		return fmt.Errorf("%s is not connected" , name)
 	}
-	kup.mp[name] = nil
+	keepUserPool.mp[name] = nil
 	return nil
 }
 
 // 获取name的对应用户
-func (kup *UserPool)GetUser(name string) *User {
-	return kup.mp[name]
+func GetUser(name string) *User {
+	return keepUserPool.mp[name]
 }
 
 
 // 消息转发器
-func (kup *UserPool) reSend() {
+func reSend() {
 	var (
 		textData chatMsg.TextMsg
 	)
 	for {
 		select {
-		case  textData = <- (*kup.TextMsgCh) : {
+		case  textData = <- (*keepUserPool.TextMsgCh) : {
 			log.Println(textData)
 			textByte,errJson := json.Marshal(textData)
 			if errJson != nil {
 				log.Printf("[msg]:%s",errJson)
 			}
-			if target,ok := kup.mp[textData.Target]; ok && target != nil {
+			if target,ok := keepUserPool.mp[textData.Target]; ok && target != nil {
 				errAdd := target.AddMessage(textByte)
 				if errAdd != nil {
 					log.Printf("[reSend error] %v\n",errAdd)
@@ -79,7 +79,7 @@ func (kup *UserPool) reSend() {
 				log.Printf("user %s has logout\n",textData.Target)
 			}
 		}
-		case <- *kup.closeSign: {
+		case <- *keepUserPool.closeSign: {
 			goto ERROR
 		}
 		}

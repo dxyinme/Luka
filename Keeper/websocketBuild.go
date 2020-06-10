@@ -6,12 +6,12 @@ import (
 	"net/http"
 )
 
-// 用于储存一组user以及他们的连接
 type Connector struct {
 	userPool *UserPool
 	upgrade websocket.Upgrader
 }
 
+// 用于初始化Keeper的表 userPool 以及他们的连接
 func NewConnector(checkOrigin func(r *http.Request) bool) *Connector{
 	defer log.Println("NewConnector build finished")
 	return &Connector{
@@ -38,8 +38,8 @@ func (cot *Connector) ConnectIt(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	user = NewUser(name,conn)
-	cot.userPool.AddUser(user)
-	defer cot.userPool.DeleteUser(name)
+	AddUser(user)
+	defer DeleteUser(name)
 	if err = user.Serve(); err != nil {
 		log.Println("serve error:", err)
 	}
