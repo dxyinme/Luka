@@ -1,8 +1,8 @@
 package Keeper
 
 import (
+	"github.com/golang/glog"
 	"github.com/gorilla/websocket"
-	"log"
 	"net/http"
 )
 
@@ -13,7 +13,7 @@ type Connector struct {
 
 // 用于初始化Keeper的表 userPool 以及他们的连接
 func NewConnector(checkOrigin func(r *http.Request) bool) *Connector{
-	defer log.Println("NewConnector build finished")
+	defer glog.Info("NewConnector build finished")
 	return &Connector{
 		userPool: InitUserPool(),
 		upgrade:  websocket.Upgrader{
@@ -41,7 +41,7 @@ func (cot *Connector) ConnectIt(w http.ResponseWriter, r *http.Request) {
 	AddUser(user)
 	defer DeleteUser(name)
 	if err = user.Serve(); err != nil {
-		log.Println("serve error:", err)
+		glog.Errorln("serve error:", err)
 	}
-	log.Printf("%s close websocket error : %v", name, user.Close())
+	glog.Infof("%s close websocket error : %v", name, user.Close())
 }

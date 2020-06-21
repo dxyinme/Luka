@@ -3,8 +3,8 @@ package Keeper
 import (
 	"Luka/chatMsg"
 	"fmt"
+	"github.com/golang/glog"
 	"github.com/gorilla/websocket"
-	"log"
 	"sync"
 )
 
@@ -59,10 +59,10 @@ func (u *User) writeLoop() {
 		}
 		}
 		if err = u.ws.WriteMessage(websocket.TextMessage,data);err != nil {
-			log.Println(err)
+			glog.Errorln(err)
 			goto ERROR
 		}
-		fmt.Println("ws to:" + string(data))
+		glog.Info("ws to:" + string(data))
 	}
 ERROR:
 	u.Close()
@@ -77,13 +77,13 @@ func (u *User) readTransform() {
 	for {
 		msg,err = u.GetMessage()
 		if err != nil {
-			log.Printf("%s channel: %v\n", u.name, err)
+			glog.Errorf("%s channel: %v\n", u.name, err)
 			goto ERROR
 		}
 		textMsg := chatMsg.NewTextMsgUnmarshal(msg)
 		// log.Println("keepUserPool:",keepUserPool)
 		if textMsg == nil {
-			log.Printf("[textMsg json error]")
+			glog.Errorln("[textMsg json error]")
 			continue
 		}
 		select {
@@ -113,9 +113,9 @@ func (u *User) readLoop() {
 		select {
 		case *u.readCh <- data:{
 			//t := chatMsg.NewTextMsgUnmarshal(data)
-			//log.Println(u.name , " : " , t)
+			//glog.Info(u.name , " : " , t)
 			//if err != nil {
-			//	log.Println("failed !")
+			//	glog.Info("failed !")
 			//}
 		}
 		case  <- *u.closeSign:{
@@ -129,10 +129,10 @@ ERROR:
 
 //将信息写入writeCh
 func (u *User) AddMessage(s []byte) error {
-	fmt.Println(string(s))
+	glog.Info(string(s))
 	select {
 	case *(u.writeCh) <- s:{
-		fmt.Println("success: " + string(s))
+		glog.Info("success: " + string(s))
 	}
 	case  <- (*u.closeSign):
 		return fmt.Errorf("write error : connection is closed")

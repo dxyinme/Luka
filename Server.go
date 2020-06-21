@@ -4,8 +4,8 @@ import (
 	"Luka/Master"
 	pb "Luka/proto"
 	"Luka/util"
+	"github.com/golang/glog"
 	"google.golang.org/grpc"
-	"log"
 	"net"
 )
 
@@ -13,17 +13,17 @@ import (
 func main(){
 	conf,err := util.ReadYAML("Register.yaml")
 	if err != nil {
-		log.Println(err)
+		glog.Info(err)
 	}
-	log.Println(conf)
-	log.Println("hello Register!!!")
+	glog.Info(conf)
+	glog.Info("hello Register!!!")
 	lis, errTCP := net.Listen("tcp",conf.RegisterPort)
 	if errTCP != nil {
-		log.Fatalf("failed to listen %v",conf.RegisterPort)
+		glog.Fatalf("failed to listen %v",conf.RegisterPort)
 	}
 	serverRegister := grpc.NewServer()
 	pb.RegisterRegisterServer(serverRegister,&Master.Server{})
 	if errGRPC := serverRegister.Serve(lis) ; errGRPC != nil {
-		log.Println(errGRPC)
+		glog.Fatal(errGRPC)
 	}
 }

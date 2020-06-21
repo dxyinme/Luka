@@ -2,7 +2,7 @@ package chatMsg
 
 import (
 	"encoding/json"
-	"log"
+	"github.com/golang/glog"
 	"time"
 )
 
@@ -45,7 +45,7 @@ func NewTextMsgUnmarshal(b []byte) *TextMsg {
 	ret := &TextMsg{}
 	errJson := json.Unmarshal(b,ret)
 	if errJson != nil {
-		log.Println(errJson)
+		glog.Info(errJson)
 		return nil
 	}
 	return ret

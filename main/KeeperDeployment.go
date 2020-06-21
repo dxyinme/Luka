@@ -4,11 +4,14 @@ package main
 
 import (
 	"Luka/Keeper"
-	"log"
+	"flag"
+	"github.com/golang/glog"
 	"net/http"
 )
 // 一个 Keeper 有且只能有一个 Connector
 func main(){
+	flag.Parse()
+	defer glog.Flush()
 	newKeeper := Keeper.NewConnector(
 		// 跨域
 		func(r *http.Request) bool {
@@ -16,6 +19,6 @@ func main(){
 		})
 	http.HandleFunc("/ConnectIt",newKeeper.ConnectIt)
 	if err := http.ListenAndServe(":10137", nil); err != nil {
-		log.Fatal("ListenAndServe:", err)
+		glog.Fatal("ListenAndServe:", err)
 	}
 }

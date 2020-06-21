@@ -4,7 +4,7 @@ import (
 	"Luka/chatMsg"
 	"encoding/json"
 	"fmt"
-	"log"
+	"github.com/golang/glog"
 	"sync"
 )
 
@@ -32,14 +32,14 @@ func InitUserPool() *UserPool {
 		isClosed:   false,
 	}
 	go reSend()
-	log.Println("UserPool initial finished")
+	glog.Info("UserPool initial finished")
 	return keepUserPool
 }
 
 // 增加/更新 用户连接
 func AddUser(user *User) {
 	keepUserPool.mp[user.name] = user
-	log.Printf("user %s is login", user.name)
+	glog.Infof("user %s is login", user.name)
 }
 
 // 用户断开连接
@@ -65,18 +65,18 @@ func reSend() {
 	for {
 		select {
 		case  textData = <- (*keepUserPool.TextMsgCh) : {
-			log.Println(textData)
+			glog.Info(textData)
 			textByte,errJson := json.Marshal(textData)
 			if errJson != nil {
-				log.Printf("[msg]:%s",errJson)
+				glog.Infof("[msg]:%s",errJson)
 			}
 			if target,ok := keepUserPool.mp[textData.Target]; ok && target != nil {
 				errAdd := target.AddMessage(textByte)
 				if errAdd != nil {
-					log.Printf("[reSend error] %v\n",errAdd)
+					glog.Infof("[reSend error] %v\n",errAdd)
 				}
 			} else {
-				log.Printf("user %s has logout\n",textData.Target)
+				glog.Infof("user %s has logout\n",textData.Target)
 			}
 		}
 		case <- *keepUserPool.closeSign: {

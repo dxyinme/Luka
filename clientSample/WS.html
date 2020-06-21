@@ -31,7 +31,7 @@
 
 <script type="text/javascript">
     let sock = null;
-    const wsUrl = "ws://www.dxyinme.xyz:10137/ConnectIt";
+    const wsUrl = "ws://127.0.0.1:10137/ConnectIt";
     function connect() {
         const name = document.getElementById('name').value;
         sock = new WebSocket(wsUrl + '?name=' + name);
