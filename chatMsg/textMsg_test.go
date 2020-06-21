@@ -1,7 +1,7 @@
 package chatMsg
 
 import (
-	"github.com/golang/glog"
+	"log"
 	"testing"
 )
 
@@ -12,5 +12,5 @@ func TestNewTextMsg(t *testing.T) {
 		"lalala",
 		"what's up?",
 		)
-	glog.Info("time : %d\n",o.MsgTime)
+	log.Printf("time : %d\n",o.MsgTime)
 }
