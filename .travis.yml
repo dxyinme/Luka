@@ -7,5 +7,9 @@ env:
   - GO111MODULE=on
 
 script:
-  - go test -v ./...
-  - make
+  - go test -v chatMsg/..
+  - go test -v Keeper/..
+  - go test -v Master/..
+  - go test -v util/..
+  - make server
+  - make keeper
