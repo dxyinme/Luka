@@ -9,9 +9,12 @@ import (
 	"github.com/golang/glog"
 	"google.golang.org/grpc"
 )
-
+func InitialMaster() {
+	Master.InitialKeeperPool()
+}
 // 用于服务器注册和请求分配的 Master-server 详情见readme
 func main() {
+	InitialMaster()
 	conf, err := util.ReadYAML("Register.yaml")
 	if err != nil {
 		glog.Info(err)
