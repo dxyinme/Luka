@@ -16,6 +16,6 @@ tag : 贡献代码请移步 opensource 分支 :)
 <in linux>
 export GO111MODULE=on
 export GOPROXY=https://goproxy.io
-go build main/KeeperDeployment.go
-./KeeperDeployment
+make
+./bin/KeeperDeployment
 ```
