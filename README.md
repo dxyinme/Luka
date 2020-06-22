@@ -6,12 +6,11 @@
 
 <h3>a golang IM service</h3>
 
-
+tag : 贡献代码请移步 opensource 分支 :)
 
 **deployment Keeper (server is unnecessary)**
     
-        confirm your port 10137 is free, client-coder can
-    reference clientSample/WS.html
+        confirm your port 10137 is free, client-coder can reference clientSample/WS.html
 
 ```
 <in linux>
