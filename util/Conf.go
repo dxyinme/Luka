@@ -1,12 +1,13 @@
 package util
 
 import (
-	"gopkg.in/yaml.v2"
 	"io/ioutil"
+
+	"gopkg.in/yaml.v2"
 )
 
 const (
-	OK = "OK"
+	OK   = "OK"
 	FAIL = "FAIL"
 )
 
@@ -19,18 +20,18 @@ type YAML struct {
 
 var globalConf YAML
 
-func ReadYAML(filename string) (*YAML , error) {
-	yamlFile , errYAML := ioutil.ReadFile(filename)
+func ReadYAML(filename string) (*YAML, error) {
+	yamlFile, errYAML := ioutil.ReadFile(filename)
 	if errYAML != nil {
-		return nil , errYAML
+		return nil, errYAML
 	}
 	var conf = new(YAML)
-	errYAMLParse := yaml.Unmarshal(yamlFile , conf)
+	errYAMLParse := yaml.Unmarshal(yamlFile, conf)
 	if errYAMLParse != nil {
-		return nil , errYAMLParse
+		return nil, errYAMLParse
 	}
 	globalConf = *conf
-	return conf,nil
+	return conf, nil
 }
 
 func GetRedisHost() string {

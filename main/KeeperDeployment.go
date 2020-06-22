@@ -3,13 +3,15 @@
 package main
 
 import (
-	"Luka/Keeper"
 	"flag"
-	"github.com/golang/glog"
 	"net/http"
+
+	"github.com/dxyinme/Luka/Keeper"
+	"github.com/golang/glog"
 )
+
 // 一个 Keeper 有且只能有一个 Connector
-func main(){
+func main() {
 	flag.Parse()
 	defer glog.Flush()
 	newKeeper := Keeper.NewConnector(
@@ -17,7 +19,7 @@ func main(){
 		func(r *http.Request) bool {
 			return true
 		})
-	http.HandleFunc("/ConnectIt",newKeeper.ConnectIt)
+	http.HandleFunc("/ConnectIt", newKeeper.ConnectIt)
 	if err := http.ListenAndServe(":10137", nil); err != nil {
 		glog.Fatal("ListenAndServe:", err)
 	}

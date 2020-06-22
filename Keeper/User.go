@@ -1,11 +1,12 @@
 package Keeper
 
 import (
-	"Luka/chatMsg"
 	"fmt"
+	"sync"
+
+	"github.com/dxyinme/Luka/chatMsg"
 	"github.com/golang/glog"
 	"github.com/gorilla/websocket"
-	"sync"
 )
 
 const (
@@ -19,25 +20,25 @@ type User struct {
 	// 发送到客户端的channel
 	writeCh *chan []byte
 	// 读取客户端写入的channel
-	readCh *chan []byte
+	readCh    *chan []byte
 	closeSign *chan byte
-	ws *websocket.Conn
-	isClosed bool
-	mutex sync.Mutex
+	ws        *websocket.Conn
+	isClosed  bool
+	mutex     sync.Mutex
 }
 
 // 新建一个User
-func NewUser(name string, Ws *websocket.Conn) *User{
+func NewUser(name string, Ws *websocket.Conn) *User {
 	tmp1 := make(chan []byte, channelSize)
 	tmp2 := make(chan []byte, channelSize)
 	tmp3 := make(chan byte, 1)
 	now := &User{
-		name: 		name,
-		writeCh:  	&tmp1,
-		readCh:  	&tmp2,
-		closeSign:  &tmp3,
-		ws: 		Ws,
-		isClosed: 	false,
+		name:      name,
+		writeCh:   &tmp1,
+		readCh:    &tmp2,
+		closeSign: &tmp3,
+		ws:        Ws,
+		isClosed:  false,
 	}
 	go now.readLoop()
 	go now.writeLoop()
@@ -49,16 +50,17 @@ func NewUser(name string, Ws *websocket.Conn) *User{
 func (u *User) writeLoop() {
 	var (
 		data []byte
-		err error
+		err  error
 	)
 	for {
 		select {
-		case data = <- *u.writeCh:
-		case <- *u.closeSign:{
-			goto ERROR
+		case data = <-*u.writeCh:
+		case <-*u.closeSign:
+			{
+				goto ERROR
+			}
 		}
-		}
-		if err = u.ws.WriteMessage(websocket.TextMessage,data);err != nil {
+		if err = u.ws.WriteMessage(websocket.TextMessage, data); err != nil {
 			glog.Errorln(err)
 			goto ERROR
 		}
@@ -75,7 +77,7 @@ func (u *User) readTransform() {
 		err error
 	)
 	for {
-		msg,err = u.GetMessage()
+		msg, err = u.GetMessage()
 		if err != nil {
 			glog.Errorf("%s channel: %v\n", u.name, err)
 			goto ERROR
@@ -87,12 +89,14 @@ func (u *User) readTransform() {
 			continue
 		}
 		select {
-		case *keepUserPool.TextMsgCh <- *textMsg:{
+		case *keepUserPool.TextMsgCh <- *textMsg:
+			{
 
-		}
-		case <- *keepUserPool.closeSign :{
-			goto ERROR
-		}
+			}
+		case <-*keepUserPool.closeSign:
+			{
+				goto ERROR
+			}
 		}
 
 	}
@@ -104,23 +108,25 @@ ERROR:
 func (u *User) readLoop() {
 	var (
 		data []byte
-		err error
+		err  error
 	)
 	for {
-		if _,data,err = u.ws.ReadMessage(); err != nil {
+		if _, data, err = u.ws.ReadMessage(); err != nil {
 			goto ERROR
 		}
 		select {
-		case *u.readCh <- data:{
-			//t := chatMsg.NewTextMsgUnmarshal(data)
-			//glog.Info(u.name , " : " , t)
-			//if err != nil {
-			//	glog.Info("failed !")
-			//}
-		}
-		case  <- *u.closeSign:{
-			goto ERROR
-		}
+		case *u.readCh <- data:
+			{
+				//t := chatMsg.NewTextMsgUnmarshal(data)
+				//glog.Info(u.name , " : " , t)
+				//if err != nil {
+				//	glog.Info("failed !")
+				//}
+			}
+		case <-*u.closeSign:
+			{
+				goto ERROR
+			}
 		}
 	}
 ERROR:
@@ -131,28 +137,30 @@ ERROR:
 func (u *User) AddMessage(s []byte) error {
 	glog.Info(string(s))
 	select {
-	case *(u.writeCh) <- s:{
-		glog.Info("success: " + string(s))
-	}
-	case  <- (*u.closeSign):
+	case *(u.writeCh) <- s:
+		{
+			glog.Info("success: " + string(s))
+		}
+	case <-(*u.closeSign):
 		return fmt.Errorf("write error : connection is closed")
 	}
 	return nil
 }
 
 //从readCh中读取信息
-func (u *User) GetMessage() ([]byte,error) {
+func (u *User) GetMessage() ([]byte, error) {
 	var (
 		data []byte = nil
-		err error = nil
+		err  error  = nil
 	)
 	select {
-	case  data = <- (*u.readCh):
-	case  <- (*u.closeSign):{
-		err = fmt.Errorf("read error : connection is closed")
+	case data = <-(*u.readCh):
+	case <-(*u.closeSign):
+		{
+			err = fmt.Errorf("read error : connection is closed")
+		}
 	}
-	}
-	return data , err
+	return data, err
 }
 
 // 该用户使用完毕， 关闭长连接
@@ -171,7 +179,7 @@ func (u *User) Close() error {
 // 开启User
 func (u *User) Serve() error {
 	select {
-	case <- *u.closeSign:
+	case <-*u.closeSign:
 	}
 	return nil
 }
