@@ -1,22 +1,23 @@
 package Keeper
 
 import (
+	"net/http"
+
 	"github.com/golang/glog"
 	"github.com/gorilla/websocket"
-	"net/http"
 )
 
 type Connector struct {
 	userPool *UserPool
-	upgrade websocket.Upgrader
+	upgrade  websocket.Upgrader
 }
 
 // 用于初始化Keeper的表 userPool 以及他们的连接
-func NewConnector(checkOrigin func(r *http.Request) bool) *Connector{
+func NewConnector(checkOrigin func(r *http.Request) bool) *Connector {
 	defer glog.Info("NewConnector build finished")
 	return &Connector{
 		userPool: InitUserPool(),
-		upgrade:  websocket.Upgrader{
+		upgrade: websocket.Upgrader{
 			CheckOrigin: checkOrigin,
 		},
 	}
@@ -26,7 +27,7 @@ func NewConnector(checkOrigin func(r *http.Request) bool) *Connector{
 func (cot *Connector) ConnectIt(w http.ResponseWriter, r *http.Request) {
 	var (
 		conn *websocket.Conn
-		err error
+		err  error
 		user *User
 		name string
 		// data []byte
@@ -37,7 +38,7 @@ func (cot *Connector) ConnectIt(w http.ResponseWriter, r *http.Request) {
 	if conn, err = cot.upgrade.Upgrade(w, r, nil); err != nil {
 		return
 	}
-	user = NewUser(name,conn)
+	user = NewUser(name, conn)
 	AddUser(user)
 	defer DeleteUser(name)
 	if err = user.Serve(); err != nil {

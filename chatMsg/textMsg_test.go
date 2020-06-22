@@ -11,6 +11,6 @@ func TestNewTextMsg(t *testing.T) {
 		Single,
 		"lalala",
 		"what's up?",
-		)
-	log.Printf("time : %d\n",o.MsgTime)
+	)
+	log.Printf("time : %d\n", o.MsgTime)
 }

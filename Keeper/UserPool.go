@@ -1,11 +1,12 @@
 package Keeper
 
 import (
-	"Luka/chatMsg"
 	"encoding/json"
 	"fmt"
-	"github.com/golang/glog"
 	"sync"
+
+	"github.com/dxyinme/Luka/chatMsg"
+	"github.com/golang/glog"
 )
 
 const (
@@ -13,23 +14,23 @@ const (
 )
 
 type UserPool struct {
-	mp map[string] *User
+	mp        map[string]*User
 	TextMsgCh *chan chatMsg.TextMsg
 	closeSign *chan byte
-	isClosed bool
-	mutex sync.Mutex
+	isClosed  bool
+	mutex     sync.Mutex
 }
 
 var keepUserPool *UserPool
 
 func InitUserPool() *UserPool {
-	tmp1 := make(chan chatMsg.TextMsg,TextChannelSize)
-	tmp2 := make(chan byte,1)
+	tmp1 := make(chan chatMsg.TextMsg, TextChannelSize)
+	tmp2 := make(chan byte, 1)
 	keepUserPool = &UserPool{
-		mp:			map[string]*User{},
-		TextMsgCh:	&tmp1,
-		closeSign:	&tmp2,
-		isClosed:   false,
+		mp:        map[string]*User{},
+		TextMsgCh: &tmp1,
+		closeSign: &tmp2,
+		isClosed:  false,
 	}
 	go reSend()
 	glog.Info("UserPool initial finished")
@@ -45,7 +46,7 @@ func AddUser(user *User) {
 // 用户断开连接
 func DeleteUser(name string) error {
 	if keepUserPool.mp[name] == nil {
-		return fmt.Errorf("%s is not connected" , name)
+		return fmt.Errorf("%s is not connected", name)
 	}
 	keepUserPool.mp[name] = nil
 	return nil
@@ -56,7 +57,6 @@ func GetUser(name string) *User {
 	return keepUserPool.mp[name]
 }
 
-
 // 消息转发器
 func reSend() {
 	var (
@@ -64,24 +64,26 @@ func reSend() {
 	)
 	for {
 		select {
-		case  textData = <- (*keepUserPool.TextMsgCh) : {
-			glog.Info(textData)
-			textByte,errJson := json.Marshal(textData)
-			if errJson != nil {
-				glog.Infof("[msg]:%s",errJson)
-			}
-			if target,ok := keepUserPool.mp[textData.Target]; ok && target != nil {
-				errAdd := target.AddMessage(textByte)
-				if errAdd != nil {
-					glog.Infof("[reSend error] %v\n",errAdd)
+		case textData = <-(*keepUserPool.TextMsgCh):
+			{
+				glog.Info(textData)
+				textByte, errJson := json.Marshal(textData)
+				if errJson != nil {
+					glog.Infof("[msg]:%s", errJson)
 				}
-			} else {
-				glog.Infof("user %s has logout\n",textData.Target)
+				if target, ok := keepUserPool.mp[textData.Target]; ok && target != nil {
+					errAdd := target.AddMessage(textByte)
+					if errAdd != nil {
+						glog.Infof("[reSend error] %v\n", errAdd)
+					}
+				} else {
+					glog.Infof("user %s has logout\n", textData.Target)
+				}
 			}
-		}
-		case <- *keepUserPool.closeSign: {
-			goto ERROR
-		}
+		case <-*keepUserPool.closeSign:
+			{
+				goto ERROR
+			}
 		}
 	}
 ERROR:

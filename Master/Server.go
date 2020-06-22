@@ -1,16 +1,14 @@
 package Master
 
 import (
-	pb "Luka/proto"
+	pb "github.com/dxyinme/Luka/proto"
 	"golang.org/x/net/context"
 )
 
 // todo
 
 type Server struct {
-
 }
-
 
 // 增加Keeper
 func (s Server) KeeperAdd(ctx context.Context, in *pb.KeeperConnectRequest) (*pb.KeeperReply, error) {
