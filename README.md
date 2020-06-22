@@ -6,7 +6,6 @@
 
 <h3>a golang IM service</h3>
 
-tag : 贡献代码请移步 opensource 分支 :)
 
 **deployment Keeper (server is unnecessary)**
     
