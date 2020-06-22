@@ -11,9 +11,15 @@ GOTEST    := $(GO) test -p 4
 
 FILES     := $$(find . -name "*.go")
 
-default: server
+default: keeper
 
-server: 
+server:
+	@echo "generate masterServer"
+	$(GOBUILD) -o bin/MasterServer main/MasterServer.go
+	cp Register.yaml bin/
+
+keeper:
+	@echo "generate keeper"
 	$(GOBUILD) -o bin/KeeperDeployment main/KeeperDeployment.go
 
 fmt:

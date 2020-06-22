@@ -8,14 +8,18 @@ import (
 )
 
 type Connector struct {
-	userPool *UserPool
-	upgrade  websocket.Upgrader
+	keeperName 	string
+	userPool 	*UserPool
+	upgrade  	websocket.Upgrader
 }
 
 // 用于初始化Keeper的表 userPool 以及他们的连接
-func NewConnector(checkOrigin func(r *http.Request) bool) *Connector {
+func NewConnector(keeperNameNow string, checkOrigin func(r *http.Request) bool) *Connector {
 	defer glog.Info("NewConnector build finished")
+	glog.Infof("this keeper's name is %s \n", keeperNameNow)
+
 	return &Connector{
+		keeperName: keeperNameNow,
 		userPool: InitUserPool(),
 		upgrade: websocket.Upgrader{
 			CheckOrigin: checkOrigin,
