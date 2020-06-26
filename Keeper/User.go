@@ -85,7 +85,7 @@ func (u *User) readTransform() {
 		textMsg := chatMsg.NewTextMsgUnmarshal(msg)
 		// glog.Info("keepUserPool:",keepUserPool)
 		if textMsg == nil {
-			glog.Errorln("textMsg json error: %v\n" ,msg)
+			glog.Errorf("textMsg json error: %v\n" ,msg)
 			continue
 		}
 		select {
