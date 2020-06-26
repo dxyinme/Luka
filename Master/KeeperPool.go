@@ -4,14 +4,14 @@ import "fmt"
 
 // 用于保存不同的KeeperChannel
 type KeeperPool struct {
-	mp map[string] *KeeperChannel
+	mp map[string]*KeeperChannel
 }
 
 var KP *KeeperPool
 
 // 初始化 keeperPool
 func InitialKeeperPool() {
-	KP = &KeeperPool{mp: make(map[string] *KeeperChannel)}
+	KP = &KeeperPool{mp: make(map[string]*KeeperChannel)}
 }
 
 // 加入一个新的keeper

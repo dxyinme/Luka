@@ -8,16 +8,16 @@ import (
 	"github.com/golang/glog"
 )
 
-var(
+var (
 	keeperName string
 	keeperUrl  string
 	masterUrl  string
 )
 
 func InitialKeeper() {
-	flag.StringVar(&keeperName, "keeper","test","this keeper's name.")
-	flag.StringVar(&keeperUrl, "keeperUrl","127.0.0.1:10137","this keeper's url.")
-	flag.StringVar(&masterUrl, "masterUrl","127.0.0.1:6965","this master's url.")
+	flag.StringVar(&keeperName, "keeper", "test", "this keeper's name.")
+	flag.StringVar(&keeperUrl, "keeperUrl", "127.0.0.1:10137", "this keeper's url.")
+	flag.StringVar(&masterUrl, "masterUrl", "127.0.0.1:6965", "this master's url.")
 }
 
 // 一个 Keeper 有且只能有一个 Connector

@@ -16,15 +16,15 @@ const (
 
 // User , 用于创建一个websocket连通长连接。
 type User struct {
-	name string
+	name 		string
 	// 发送到客户端的channel
-	writeCh *chan []byte
+	writeCh 	*chan []byte
 	// 读取客户端写入的channel
-	readCh    *chan []byte
-	closeSign *chan byte
-	ws        *websocket.Conn
-	isClosed  bool
-	mutex     sync.Mutex
+	readCh    	*chan []byte
+	closeSign 	*chan byte
+	ws        	*websocket.Conn
+	isClosed  	bool
+	mutex     	sync.Mutex
 }
 
 // 新建一个User
@@ -83,9 +83,9 @@ func (u *User) readTransform() {
 			goto ERROR
 		}
 		textMsg := chatMsg.NewTextMsgUnmarshal(msg)
-		// log.Println("keepUserPool:",keepUserPool)
+		// glog.Info("keepUserPool:",keepUserPool)
 		if textMsg == nil {
-			glog.Errorln("[textMsg json error]")
+			glog.Errorln("textMsg json error: %v\n" ,msg)
 			continue
 		}
 		select {

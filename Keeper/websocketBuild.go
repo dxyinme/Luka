@@ -12,21 +12,21 @@ import (
 )
 
 type Connector struct {
-	keeperName 		string
-	keeperUrl   	string
-	userPool 		*UserPool
-	upgrade  		websocket.Upgrader
+	keeperName      string
+	keeperUrl       string
+	userPool        *UserPool
+	upgrade         websocket.Upgrader
 	registerSuccess bool
 }
 
 // 用于初始化Keeper的表 userPool 以及他们的连接
-func NewConnector(keeperNameNow string,keeperUrlNow string, checkOrigin func(r *http.Request) bool) *Connector {
+func NewConnector(keeperNameNow string, keeperUrlNow string, checkOrigin func(r *http.Request) bool) *Connector {
 	defer glog.Info("NewConnector build finished")
 	glog.Infof("this keeper's name is %s \n", keeperNameNow)
 	return &Connector{
 		keeperName: keeperNameNow,
 		keeperUrl:  keeperUrlNow,
-		userPool: InitUserPool(),
+		userPool:   InitUserPool(),
 		upgrade: websocket.Upgrader{
 			CheckOrigin: checkOrigin,
 		},
@@ -61,7 +61,7 @@ func (cot *Connector) ConnectIt(w http.ResponseWriter, r *http.Request) {
 // 将 keeper 注册到master-server上 url 为 master-server 的url
 func (cot *Connector) Register(url string) bool {
 	var (
-		err error
+		err  error
 		conn *grpc.ClientConn
 	)
 	conn, err = grpc.Dial(url, grpc.WithInsecure())

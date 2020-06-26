@@ -15,7 +15,7 @@ const (
 
 type UserPool struct {
 	mp        map[string]*User
-	TextMsgCh *chan chatMsg.TextMsg
+	MsgCh *chan chatMsg.TextMsg
 	closeSign *chan byte
 	isClosed  bool
 	mutex     sync.Mutex
@@ -27,10 +27,10 @@ func InitUserPool() *UserPool {
 	tmp1 := make(chan chatMsg.TextMsg, TextChannelSize)
 	tmp2 := make(chan byte, 1)
 	keepUserPool = &UserPool{
-		mp:        map[string]*User{},
-		TextMsgCh: &tmp1,
-		closeSign: &tmp2,
-		isClosed:  false,
+		mp:        	map[string]*User{},
+		MsgCh: 		&tmp1,
+		closeSign: 	&tmp2,
+		isClosed:  	false,
 	}
 	go reSend()
 	glog.Info("UserPool initial finished")
@@ -64,20 +64,20 @@ func reSend() {
 	)
 	for {
 		select {
-		case textData = <-(*keepUserPool.TextMsgCh):
+		case textData = <-(*keepUserPool.MsgCh):
 			{
 				glog.Info(textData)
 				textByte, errJson := json.Marshal(textData)
 				if errJson != nil {
-					glog.Infof("[msg]:%s", errJson)
+					glog.Infof("msg:%s", errJson)
 				}
 				if target, ok := keepUserPool.mp[textData.Target]; ok && target != nil {
 					errAdd := target.AddMessage(textByte)
 					if errAdd != nil {
-						glog.Infof("[reSend error] %v\n", errAdd)
+						glog.Infof("reSend error:%v\n", errAdd)
 					}
 				} else {
-					glog.Infof("user %s has logout\n", textData.Target)
+					glog.Infof("user %s is not in this keeper , message update\n", textData.Target)
 				}
 			}
 		case <-*keepUserPool.closeSign:

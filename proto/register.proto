@@ -31,6 +31,6 @@ message KeeperMsgReply {
 }
 
 service Register {
-    rpc KeeperAdd(KeeperConnectRequest) returns (KeeperReply) {}
-    rpc ClientMsgUpdate(KeeperMsgUpdateRequest) returns (KeeperMsgReply) {}
+    rpc KeeperAdd (KeeperConnectRequest) returns (KeeperReply) {}
+    rpc ClientMsgUpdate (KeeperMsgUpdateRequest) returns (KeeperMsgReply) {}
 }
