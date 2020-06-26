@@ -76,10 +76,12 @@ func (cot *Connector) Register(url string) bool {
 			KeeperUrl: cot.keeperUrl,
 		})
 	if res == nil {
-		glog.Errorln("rpc response is nil")
+		glog.Warningln("rpc response is nil")
+		return false
 	}
 	if err != nil {
-		glog.Errorf("rpc error : %v", err)
+		glog.Warningf("rpc error : %v", err)
+		return false
 	}
 
 	return res.Status == util.OK

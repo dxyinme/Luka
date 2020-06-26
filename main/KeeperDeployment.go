@@ -36,6 +36,8 @@ func main() {
 
 	if isRegister {
 		glog.Infof("keeper %s is register success", keeperName)
+	} else {
+		glog.Infof("have not a master , single keeper %s is working", keeperName)
 	}
 
 	http.HandleFunc("/ConnectIt", newKeeper.ConnectIt)

@@ -89,7 +89,7 @@ func (u *User) readTransform() {
 			continue
 		}
 		select {
-		case *keepUserPool.TextMsgCh <- *textMsg:
+		case *keepUserPool.MsgCh <- *textMsg:
 			{
 
 			}
