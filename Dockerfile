@@ -5,7 +5,7 @@ MAINTAINER dog1889 dxyinme@outlook.com
 ENV GOPROXY https://goproxy.io
 ENV GO111MODULE on
 
-WORKDIR /go/src/luka
+WORKDIR /
 COPY . .
 
 RUN go install ./main/KeeperDeployment.go

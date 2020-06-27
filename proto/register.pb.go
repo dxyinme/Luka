@@ -131,196 +131,6 @@ func (x *KeeperReply) GetStatus() string {
 	return ""
 }
 
-type Msg struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	From    string `protobuf:"bytes,1,opt,name=From,proto3" json:"From,omitempty"`
-	Target  string `protobuf:"bytes,2,opt,name=Target,proto3" json:"Target,omitempty"`
-	Content string `protobuf:"bytes,3,opt,name=Content,proto3" json:"Content,omitempty"`
-	MsgTime int64  `protobuf:"varint,4,opt,name=MsgTime,proto3" json:"MsgTime,omitempty"`
-	// 1:Group 2:Single
-	TargetType int64 `protobuf:"varint,5,opt,name=TargetType,proto3" json:"TargetType,omitempty"`
-}
-
-func (x *Msg) Reset() {
-	*x = Msg{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_register_proto_msgTypes[2]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *Msg) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*Msg) ProtoMessage() {}
-
-func (x *Msg) ProtoReflect() protoreflect.Message {
-	mi := &file_register_proto_msgTypes[2]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use Msg.ProtoReflect.Descriptor instead.
-func (*Msg) Descriptor() ([]byte, []int) {
-	return file_register_proto_rawDescGZIP(), []int{2}
-}
-
-func (x *Msg) GetFrom() string {
-	if x != nil {
-		return x.From
-	}
-	return ""
-}
-
-func (x *Msg) GetTarget() string {
-	if x != nil {
-		return x.Target
-	}
-	return ""
-}
-
-func (x *Msg) GetContent() string {
-	if x != nil {
-		return x.Content
-	}
-	return ""
-}
-
-func (x *Msg) GetMsgTime() int64 {
-	if x != nil {
-		return x.MsgTime
-	}
-	return 0
-}
-
-func (x *Msg) GetTargetType() int64 {
-	if x != nil {
-		return x.TargetType
-	}
-	return 0
-}
-
-type KeeperMsgUpdateRequest struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	Name       string   `protobuf:"bytes,1,opt,name=Name,proto3" json:"Name,omitempty"`
-	ClientName []string `protobuf:"bytes,2,rep,name=ClientName,proto3" json:"ClientName,omitempty"`
-	MsgS       []*Msg   `protobuf:"bytes,3,rep,name=MsgS,proto3" json:"MsgS,omitempty"`
-}
-
-func (x *KeeperMsgUpdateRequest) Reset() {
-	*x = KeeperMsgUpdateRequest{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_register_proto_msgTypes[3]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *KeeperMsgUpdateRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*KeeperMsgUpdateRequest) ProtoMessage() {}
-
-func (x *KeeperMsgUpdateRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_register_proto_msgTypes[3]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use KeeperMsgUpdateRequest.ProtoReflect.Descriptor instead.
-func (*KeeperMsgUpdateRequest) Descriptor() ([]byte, []int) {
-	return file_register_proto_rawDescGZIP(), []int{3}
-}
-
-func (x *KeeperMsgUpdateRequest) GetName() string {
-	if x != nil {
-		return x.Name
-	}
-	return ""
-}
-
-func (x *KeeperMsgUpdateRequest) GetClientName() []string {
-	if x != nil {
-		return x.ClientName
-	}
-	return nil
-}
-
-func (x *KeeperMsgUpdateRequest) GetMsgS() []*Msg {
-	if x != nil {
-		return x.MsgS
-	}
-	return nil
-}
-
-type KeeperMsgReply struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	MsgS []*Msg `protobuf:"bytes,1,rep,name=MsgS,proto3" json:"MsgS,omitempty"`
-}
-
-func (x *KeeperMsgReply) Reset() {
-	*x = KeeperMsgReply{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_register_proto_msgTypes[4]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *KeeperMsgReply) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*KeeperMsgReply) ProtoMessage() {}
-
-func (x *KeeperMsgReply) ProtoReflect() protoreflect.Message {
-	mi := &file_register_proto_msgTypes[4]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use KeeperMsgReply.ProtoReflect.Descriptor instead.
-func (*KeeperMsgReply) Descriptor() ([]byte, []int) {
-	return file_register_proto_rawDescGZIP(), []int{4}
-}
-
-func (x *KeeperMsgReply) GetMsgS() []*Msg {
-	if x != nil {
-		return x.MsgS
-	}
-	return nil
-}
-
 var File_register_proto protoreflect.FileDescriptor
 
 var file_register_proto_rawDesc = []byte{
@@ -332,36 +142,13 @@ var file_register_proto_rawDesc = []byte{
 	0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x6b, 0x65, 0x65, 0x70, 0x65, 0x72, 0x55, 0x72,
 	0x6c, 0x22, 0x25, 0x0a, 0x0b, 0x4b, 0x65, 0x65, 0x70, 0x65, 0x72, 0x52, 0x65, 0x70, 0x6c, 0x79,
 	0x12, 0x16, 0x0a, 0x06, 0x53, 0x74, 0x61, 0x74, 0x75, 0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09,
-	0x52, 0x06, 0x53, 0x74, 0x61, 0x74, 0x75, 0x73, 0x22, 0x85, 0x01, 0x0a, 0x03, 0x4d, 0x73, 0x67,
-	0x12, 0x12, 0x0a, 0x04, 0x46, 0x72, 0x6f, 0x6d, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04,
-	0x46, 0x72, 0x6f, 0x6d, 0x12, 0x16, 0x0a, 0x06, 0x54, 0x61, 0x72, 0x67, 0x65, 0x74, 0x18, 0x02,
-	0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x54, 0x61, 0x72, 0x67, 0x65, 0x74, 0x12, 0x18, 0x0a, 0x07,
-	0x43, 0x6f, 0x6e, 0x74, 0x65, 0x6e, 0x74, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x43,
-	0x6f, 0x6e, 0x74, 0x65, 0x6e, 0x74, 0x12, 0x18, 0x0a, 0x07, 0x4d, 0x73, 0x67, 0x54, 0x69, 0x6d,
-	0x65, 0x18, 0x04, 0x20, 0x01, 0x28, 0x03, 0x52, 0x07, 0x4d, 0x73, 0x67, 0x54, 0x69, 0x6d, 0x65,
-	0x12, 0x1e, 0x0a, 0x0a, 0x54, 0x61, 0x72, 0x67, 0x65, 0x74, 0x54, 0x79, 0x70, 0x65, 0x18, 0x05,
-	0x20, 0x01, 0x28, 0x03, 0x52, 0x0a, 0x54, 0x61, 0x72, 0x67, 0x65, 0x74, 0x54, 0x79, 0x70, 0x65,
-	0x22, 0x6c, 0x0a, 0x16, 0x4b, 0x65, 0x65, 0x70, 0x65, 0x72, 0x4d, 0x73, 0x67, 0x55, 0x70, 0x64,
-	0x61, 0x74, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x12, 0x0a, 0x04, 0x4e, 0x61,
-	0x6d, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x4e, 0x61, 0x6d, 0x65, 0x12, 0x1e,
-	0x0a, 0x0a, 0x43, 0x6c, 0x69, 0x65, 0x6e, 0x74, 0x4e, 0x61, 0x6d, 0x65, 0x18, 0x02, 0x20, 0x03,
-	0x28, 0x09, 0x52, 0x0a, 0x43, 0x6c, 0x69, 0x65, 0x6e, 0x74, 0x4e, 0x61, 0x6d, 0x65, 0x12, 0x1e,
-	0x0a, 0x04, 0x4d, 0x73, 0x67, 0x53, 0x18, 0x03, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x0a, 0x2e, 0x70,
-	0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x4d, 0x73, 0x67, 0x52, 0x04, 0x4d, 0x73, 0x67, 0x53, 0x22, 0x30,
-	0x0a, 0x0e, 0x4b, 0x65, 0x65, 0x70, 0x65, 0x72, 0x4d, 0x73, 0x67, 0x52, 0x65, 0x70, 0x6c, 0x79,
-	0x12, 0x1e, 0x0a, 0x04, 0x4d, 0x73, 0x67, 0x53, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x0a,
-	0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x4d, 0x73, 0x67, 0x52, 0x04, 0x4d, 0x73, 0x67, 0x53,
-	0x32, 0x95, 0x01, 0x0a, 0x08, 0x52, 0x65, 0x67, 0x69, 0x73, 0x74, 0x65, 0x72, 0x12, 0x3e, 0x0a,
-	0x09, 0x4b, 0x65, 0x65, 0x70, 0x65, 0x72, 0x41, 0x64, 0x64, 0x12, 0x1b, 0x2e, 0x70, 0x72, 0x6f,
-	0x74, 0x6f, 0x2e, 0x4b, 0x65, 0x65, 0x70, 0x65, 0x72, 0x43, 0x6f, 0x6e, 0x6e, 0x65, 0x63, 0x74,
-	0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x12, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e,
-	0x4b, 0x65, 0x65, 0x70, 0x65, 0x72, 0x52, 0x65, 0x70, 0x6c, 0x79, 0x22, 0x00, 0x12, 0x49, 0x0a,
-	0x0f, 0x43, 0x6c, 0x69, 0x65, 0x6e, 0x74, 0x4d, 0x73, 0x67, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65,
-	0x12, 0x1d, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x4b, 0x65, 0x65, 0x70, 0x65, 0x72, 0x4d,
-	0x73, 0x67, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a,
-	0x15, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x4b, 0x65, 0x65, 0x70, 0x65, 0x72, 0x4d, 0x73,
-	0x67, 0x52, 0x65, 0x70, 0x6c, 0x79, 0x22, 0x00, 0x42, 0x09, 0x5a, 0x07, 0x2e, 0x3b, 0x70, 0x72,
-	0x6f, 0x74, 0x6f, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x52, 0x06, 0x53, 0x74, 0x61, 0x74, 0x75, 0x73, 0x32, 0x4a, 0x0a, 0x08, 0x52, 0x65, 0x67, 0x69,
+	0x73, 0x74, 0x65, 0x72, 0x12, 0x3e, 0x0a, 0x09, 0x4b, 0x65, 0x65, 0x70, 0x65, 0x72, 0x41, 0x64,
+	0x64, 0x12, 0x1b, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x4b, 0x65, 0x65, 0x70, 0x65, 0x72,
+	0x43, 0x6f, 0x6e, 0x6e, 0x65, 0x63, 0x74, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x12,
+	0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2e, 0x4b, 0x65, 0x65, 0x70, 0x65, 0x72, 0x52, 0x65, 0x70,
+	0x6c, 0x79, 0x22, 0x00, 0x42, 0x09, 0x5a, 0x07, 0x2e, 0x3b, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62,
+	0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -376,26 +163,19 @@ func file_register_proto_rawDescGZIP() []byte {
 	return file_register_proto_rawDescData
 }
 
-var file_register_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
+var file_register_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_register_proto_goTypes = []interface{}{
-	(*KeeperConnectRequest)(nil),   // 0: proto.KeeperConnectRequest
-	(*KeeperReply)(nil),            // 1: proto.KeeperReply
-	(*Msg)(nil),                    // 2: proto.Msg
-	(*KeeperMsgUpdateRequest)(nil), // 3: proto.KeeperMsgUpdateRequest
-	(*KeeperMsgReply)(nil),         // 4: proto.KeeperMsgReply
+	(*KeeperConnectRequest)(nil), // 0: proto.KeeperConnectRequest
+	(*KeeperReply)(nil),          // 1: proto.KeeperReply
 }
 var file_register_proto_depIdxs = []int32{
-	2, // 0: proto.KeeperMsgUpdateRequest.MsgS:type_name -> proto.Msg
-	2, // 1: proto.KeeperMsgReply.MsgS:type_name -> proto.Msg
-	0, // 2: proto.Register.KeeperAdd:input_type -> proto.KeeperConnectRequest
-	3, // 3: proto.Register.ClientMsgUpdate:input_type -> proto.KeeperMsgUpdateRequest
-	1, // 4: proto.Register.KeeperAdd:output_type -> proto.KeeperReply
-	4, // 5: proto.Register.ClientMsgUpdate:output_type -> proto.KeeperMsgReply
-	4, // [4:6] is the sub-list for method output_type
-	2, // [2:4] is the sub-list for method input_type
-	2, // [2:2] is the sub-list for extension type_name
-	2, // [2:2] is the sub-list for extension extendee
-	0, // [0:2] is the sub-list for field type_name
+	0, // 0: proto.Register.KeeperAdd:input_type -> proto.KeeperConnectRequest
+	1, // 1: proto.Register.KeeperAdd:output_type -> proto.KeeperReply
+	1, // [1:2] is the sub-list for method output_type
+	0, // [0:1] is the sub-list for method input_type
+	0, // [0:0] is the sub-list for extension type_name
+	0, // [0:0] is the sub-list for extension extendee
+	0, // [0:0] is the sub-list for field type_name
 }
 
 func init() { file_register_proto_init() }
@@ -428,42 +208,6 @@ func file_register_proto_init() {
 				return nil
 			}
 		}
-		file_register_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Msg); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_register_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*KeeperMsgUpdateRequest); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_register_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*KeeperMsgReply); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
@@ -471,7 +215,7 @@ func file_register_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_register_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   5,
+			NumMessages:   2,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
@@ -498,7 +242,6 @@ const _ = grpc.SupportPackageIsVersion6
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type RegisterClient interface {
 	KeeperAdd(ctx context.Context, in *KeeperConnectRequest, opts ...grpc.CallOption) (*KeeperReply, error)
-	ClientMsgUpdate(ctx context.Context, in *KeeperMsgUpdateRequest, opts ...grpc.CallOption) (*KeeperMsgReply, error)
 }
 
 type registerClient struct {
@@ -518,19 +261,9 @@ func (c *registerClient) KeeperAdd(ctx context.Context, in *KeeperConnectRequest
 	return out, nil
 }
 
-func (c *registerClient) ClientMsgUpdate(ctx context.Context, in *KeeperMsgUpdateRequest, opts ...grpc.CallOption) (*KeeperMsgReply, error) {
-	out := new(KeeperMsgReply)
-	err := c.cc.Invoke(ctx, "/proto.Register/ClientMsgUpdate", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 // RegisterServer is the server API for Register service.
 type RegisterServer interface {
 	KeeperAdd(context.Context, *KeeperConnectRequest) (*KeeperReply, error)
-	ClientMsgUpdate(context.Context, *KeeperMsgUpdateRequest) (*KeeperMsgReply, error)
 }
 
 // UnimplementedRegisterServer can be embedded to have forward compatible implementations.
@@ -539,9 +272,6 @@ type UnimplementedRegisterServer struct {
 
 func (*UnimplementedRegisterServer) KeeperAdd(context.Context, *KeeperConnectRequest) (*KeeperReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method KeeperAdd not implemented")
-}
-func (*UnimplementedRegisterServer) ClientMsgUpdate(context.Context, *KeeperMsgUpdateRequest) (*KeeperMsgReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ClientMsgUpdate not implemented")
 }
 
 func RegisterRegisterServer(s *grpc.Server, srv RegisterServer) {
@@ -566,24 +296,6 @@ func _Register_KeeperAdd_Handler(srv interface{}, ctx context.Context, dec func(
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Register_ClientMsgUpdate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(KeeperMsgUpdateRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(RegisterServer).ClientMsgUpdate(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/proto.Register/ClientMsgUpdate",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(RegisterServer).ClientMsgUpdate(ctx, req.(*KeeperMsgUpdateRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 var _Register_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "proto.Register",
 	HandlerType: (*RegisterServer)(nil),
@@ -591,10 +303,6 @@ var _Register_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "KeeperAdd",
 			Handler:    _Register_KeeperAdd_Handler,
-		},
-		{
-			MethodName: "ClientMsgUpdate",
-			Handler:    _Register_ClientMsgUpdate_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

@@ -11,26 +11,6 @@ message KeeperReply {
     string Status = 1;
 }
 
-message Msg {
-    string From = 1;
-    string Target = 2;
-    string Content = 3;
-    int64 MsgTime = 4;
-    // 1:Group 2:Single
-    int64 TargetType = 5;
-}
-
-message KeeperMsgUpdateRequest {
-    string Name = 1;
-    repeated string ClientName = 2;
-    repeated Msg MsgS = 3;
-}
-
-message KeeperMsgReply {
-    repeated Msg MsgS = 1;
-}
-
 service Register {
     rpc KeeperAdd (KeeperConnectRequest) returns (KeeperReply) {}
-    rpc ClientMsgUpdate (KeeperMsgUpdateRequest) returns (KeeperMsgReply) {}
 }

@@ -26,7 +26,3 @@ func (s *Server) KeeperAdd(ctx context.Context, in *pb.KeeperConnectRequest) (*p
 	}, err
 }
 
-// Keeper和Server交换Client信息
-func (s *Server) ClientMsgUpdate(ctx context.Context, in *pb.KeeperMsgUpdateRequest) (*pb.KeeperMsgReply, error) {
-	panic("implement me")
-}

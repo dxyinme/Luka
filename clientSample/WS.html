@@ -29,10 +29,12 @@
 <button onclick="connect();">login</button>
 <button onclick="send();">Send Message</button>
 
+<script src="js/MessageForm.js">
+</script>
+
 <script type="text/javascript">
     let sock = null;
     const wsUrl = "ws://127.0.0.1:10137/ConnectIt";
-
     function connect() {
         const name = document.getElementById('name').value;
         sock = new WebSocket(wsUrl + '?name=' + name);
@@ -44,8 +46,9 @@
         }
         sock.onmessage = function (e) {
             console.log("message received: " + e.data);
-            s = JSON.parse(e.data)
-            document.getElementById('receive').innerHTML += '<p>' + s['From'] + ':</p>' + '<p>' + s['Content'] + '</p>'
+            const s = JSON.parse(e.data);
+            document.getElementById('receive').innerHTML += '<p>' + s['CommonField']['From'] +
+                ':' + s['CommonField']['MsgTime'] + '</p>' + '<p>' + s['Content'] + '</p>'
         }
         sock.onerror = function (e) {
             console.debug(e)
@@ -56,11 +59,7 @@
     function send() {
         const msg = document.getElementById('message').value;
         const target = document.getElementById('target').value;
-        sock.send(JSON.stringify({
-            From: document.getElementById('name').value,
-            Content: msg,
-            target: target
-        }));
+        sock.send(encodeLukaMsg(document.getElementById('name').value,target,LukaSingle,LukaText,msg));
         document.getElementById('send').innerHTML += '<p> to ' + target + ':</p>' + '<p>' + msg + '</p>'
     }
 </script>

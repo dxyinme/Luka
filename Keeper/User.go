@@ -18,7 +18,7 @@ const (
 type User struct {
 	name 		string
 	// 发送到客户端的channel
-	writeCh 	*chan []byte
+	writeCh 	*chan chatMsg.Msg
 	// 读取客户端写入的channel
 	readCh    	*chan []byte
 	closeSign 	*chan byte
@@ -29,7 +29,7 @@ type User struct {
 
 // 新建一个User
 func NewUser(name string, Ws *websocket.Conn) *User {
-	tmp1 := make(chan []byte, channelSize)
+	tmp1 := make(chan chatMsg.Msg, channelSize)
 	tmp2 := make(chan []byte, channelSize)
 	tmp3 := make(chan byte, 1)
 	now := &User{
@@ -49,7 +49,8 @@ func NewUser(name string, Ws *websocket.Conn) *User {
 // 将writeCh中的内容发送到客户端
 func (u *User) writeLoop() {
 	var (
-		data []byte
+		data chatMsg.Msg
+		dataByte []byte
 		err  error
 	)
 	for {
@@ -60,11 +61,11 @@ func (u *User) writeLoop() {
 				goto ERROR
 			}
 		}
-		if err = u.ws.WriteMessage(websocket.TextMessage, data); err != nil {
+		dataByte,err = data.Marshal()
+		if err = u.ws.WriteMessage(websocket.TextMessage, dataByte); err != nil {
 			glog.Errorln(err)
 			goto ERROR
 		}
-		glog.Info("ws to:" + string(data))
 	}
 ERROR:
 	u.Close()
@@ -82,14 +83,13 @@ func (u *User) readTransform() {
 			glog.Errorf("%s channel: %v\n", u.name, err)
 			goto ERROR
 		}
-		textMsg := chatMsg.NewTextMsgUnmarshal(msg)
-		// glog.Info("keepUserPool:",keepUserPool)
-		if textMsg == nil {
-			glog.Errorf("textMsg json error: %v\n" ,msg)
+		TmpMsg := chatMsg.NewTmpMsgUnmarshal(msg)
+		if TmpMsg == nil {
+			glog.Errorf("Msg json error: %v\n" ,msg)
 			continue
 		}
 		select {
-		case *keepUserPool.MsgCh <- *textMsg:
+		case *keepUserPool.MsgCh <- TmpMsg:
 			{
 
 			}
@@ -134,12 +134,11 @@ ERROR:
 }
 
 //将信息写入writeCh
-func (u *User) AddMessage(s []byte) error {
-	glog.Info(string(s))
+func (u *User) AddMessage(s chatMsg.Msg) error {
 	select {
 	case *(u.writeCh) <- s:
 		{
-			glog.Info("success: " + string(s))
+			glog.Info("success: [" + s.GetFrom() + "] to [" + s.GetTarget() + "] time is " + s.GetTime())
 		}
 	case <-(*u.closeSign):
 		return fmt.Errorf("write error : connection is closed")

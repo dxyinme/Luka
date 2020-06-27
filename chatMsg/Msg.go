@@ -1,7 +1,5 @@
 package chatMsg
 
-import "time"
-
 // 消息类型(1.群聊/2.单聊/)
 type MsgTypeEnum int
 // 消息内容类型(1.文本/2.图片/)
@@ -10,6 +8,7 @@ type MsgContentTypeEnum int
 const (
 	Group  MsgTypeEnum = 1
 	Single MsgTypeEnum = 2
+	CommonFieldLength  = 1<<8
 )
 
 const (
@@ -21,7 +20,7 @@ const (
 type Msg interface {
 
 	// 获取 传输内容的byte
-	GetContent() 	[]byte
+	GetContent() 	string
 
 	// 获取 传输时间
 	GetTime()		string
@@ -38,6 +37,9 @@ type Msg interface {
 	// 获取传送消息内容类型
 	GetMsgContentType()	MsgContentTypeEnum
 
+	// 获取转换之后的[]byte 即将发送给客户端
+	Marshal() ([]byte, error)
+
 }
 
 // 重复字段
@@ -47,16 +49,4 @@ type commonField struct {
 	MsgTime			string
 	MsgType 		MsgTypeEnum
 	MsgContentType 	MsgContentTypeEnum
-}
-
-// a new commonField
-func NewCommonField(from string, target string,
-	msgType MsgTypeEnum,msgContentType MsgContentTypeEnum) commonField {
-	return commonField{
-		From:           from,
-		Target:         target,
-		MsgTime: 		time.Now().String(),
-		MsgType:        msgType,
-		MsgContentType: msgContentType,
-	}
 }
