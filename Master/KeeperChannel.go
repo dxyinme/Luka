@@ -4,12 +4,12 @@ package Master
 //
 // todo
 type KeeperChannel struct {
-	name 	string
-	url 	string
+	name string
+	url  string
 }
 
 // constructor for keeperChannel
-func NewKeeperChannel(nameNow,urlNow string) *KeeperChannel{
+func NewKeeperChannel(nameNow, urlNow string) *KeeperChannel {
 	return &KeeperChannel{
 		name: nameNow,
 		url:  urlNow,
