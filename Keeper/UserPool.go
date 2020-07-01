@@ -48,6 +48,7 @@ func DeleteUser(name string) error {
 		return fmt.Errorf("%s is not connected", name)
 	}
 	keepUserPool.mp[name] = nil
+	glog.Infof("delete %s success.", name)
 	return nil
 }
 

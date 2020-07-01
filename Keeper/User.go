@@ -68,6 +68,7 @@ func (u *User) writeLoop() {
 		}
 	}
 ERROR:
+
 	u.Close()
 }
 
@@ -101,7 +102,7 @@ func (u *User) readTransform() {
 
 	}
 ERROR:
-	UserPoolClose()
+	u.Close()
 }
 
 // 接收长连接的消息,保存到readCh
@@ -117,11 +118,7 @@ func (u *User) readLoop() {
 		select {
 		case *u.readCh <- data:
 			{
-				//t := chatMsg.NewTextMsgUnmarshal(data)
-				//glog.Info(u.name , " : " , t)
-				//if err != nil {
-				//	glog.Info("failed !")
-				//}
+				glog.Infof("%s\n",string(data))
 			}
 		case <-*u.closeSign:
 			{

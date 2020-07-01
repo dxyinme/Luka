@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"net"
 
 	"github.com/dxyinme/Luka/Master"
@@ -17,6 +18,7 @@ func InitialMaster() {
 // 用于服务器注册和请求分配的 Master-server 详情见readme
 func main() {
 	InitialMaster()
+	flag.Parse()
 	conf, err := util.ReadYAML("Register.yaml")
 	if err != nil {
 		glog.Info(err)
