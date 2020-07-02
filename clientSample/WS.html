@@ -3,31 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <title>lukaClient</title>
+    <link rel="stylesheet" type="text/css" href="./WS.css">
 </head>
 <body>
-<h1>Luka hello!</h1>
-<form>
-    <p>
+<h1 style="text-align: center;">Luka hello!</h1>
+<form style="text-align: center;">
+    <span>
         <label for="name">name:</label><input id="name" type="text" value="luka">
-    </p>
+    </span>
     <p id="nameIs"></p>
+    <button style="margin-bottom: 12px" type="button" onclick="connect();">login</button>
 </form>
-<form>
-    <p>
-        <label for="target">target:</label><input id="target" type="text" value=""> <br/><br/><br/>
-        <label for="message">Message:</label><input id="message" type="text" value="写点什么吧">
-    </p>
-</form>
-<div>
-    <div id="receive">
-        <h2>RECEIVE</h2>
+<div id="main">
+    <div id="main-header">
+        <input id="target" type="text" value="发送对象">
     </div>
-    <div id="send">
-        <h2>SEND</h2>
+    <div id="main-body">
+    </div>
+    <div id="main-message">
+        <textarea id="message" value="写点什么吧" onkeydown="keydown()"></textarea> 
     </div>
 </div>
-<button onclick="connect();">login</button>
-<button onclick="send();">Send Message</button>
 
 <script src="js/MessageForm.js">
 </script>
@@ -37,6 +33,7 @@
     const wsUrl = "ws://127.0.0.1:10137/ConnectIt";
     function connect() {
         const name = document.getElementById('name').value;
+
         sock = new WebSocket(wsUrl + '?name=' + name);
         sock.onopen = function () {
             console.log("connected to " + wsUrl + '?name=' + name);
@@ -47,7 +44,7 @@
         sock.onmessage = function (e) {
             console.log("message received: " + e.data);
             const s = JSON.parse(e.data);
-            document.getElementById('receive').innerHTML += '<p>' + s['CommonField']['From'] +
+            document.getElementById('nameIs').innerHTML += '<p>' + s['CommonField']['From'] +
                 ':' + s['CommonField']['MsgTime'] + '</p>' + '<p>' + s['Content'] + '</p>'
         }
         sock.onerror = function (e) {
@@ -60,7 +57,14 @@
         const msg = document.getElementById('message').value;
         const target = document.getElementById('target').value;
         sock.send(encodeLukaMsg(document.getElementById('name').value,target,LukaSingle,LukaText,msg));
-        document.getElementById('send').innerHTML += '<p> to ' + target + ':</p>' + '<p>' + msg + '</p>'
+        document.getElementById('main-body').innerHTML += '<p> to ' + target + ':</p>' + '<p>' + msg + '</p>'
+    }
+    function keydown() {
+        // body...
+        let event = window.event ? window.event : event;
+        if(event.keyCode === 13) {
+            send();
+        }
     }
 </script>
 </body>
