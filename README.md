@@ -15,6 +15,6 @@
 <in linux>
 export GO111MODULE=on
 export GOPROXY=https://goproxy.io
-make
+make keeperD
 ./bin/KeeperDeployment
 ```
