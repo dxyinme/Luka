@@ -12,4 +12,4 @@ script:
   - go test -v ./Master
   - go test -v ./util
   - make server
-  - make keeper
+  - make keeperD
