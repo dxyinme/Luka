@@ -21,7 +21,7 @@
     <div id="main-body">
     </div>
     <div id="main-message">
-        <textarea id="message" value="写点什么吧" onkeydown="keydown()"></textarea> 
+        <textarea id="message" onkeydown="keydown()"></textarea> 
     </div>
 </div>
 
@@ -44,7 +44,7 @@
         sock.onmessage = function (e) {
             console.log("message received: " + e.data);
             const s = JSON.parse(e.data);
-            document.getElementById('nameIs').innerHTML += '<p>' + s['CommonField']['From'] +
+            document.getElementById('main-body').innerHTML += '<p>' + s['CommonField']['From'] +
                 ':' + s['CommonField']['MsgTime'] + '</p>' + '<p>' + s['Content'] + '</p>'
         }
         sock.onerror = function (e) {
@@ -58,6 +58,7 @@
         const target = document.getElementById('target').value;
         sock.send(encodeLukaMsg(document.getElementById('name').value,target,LukaSingle,LukaText,msg));
         document.getElementById('main-body').innerHTML += '<p> to ' + target + ':</p>' + '<p>' + msg + '</p>'
+        document.getElementById('message').value = "";
     }
     function keydown() {
         // body...
