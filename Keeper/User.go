@@ -3,6 +3,7 @@ package Keeper
 import (
 	"fmt"
 	"sync"
+	"time"
 
 	"github.com/dxyinme/Luka/chatMsg"
 	"github.com/golang/glog"
@@ -68,8 +69,11 @@ func (u *User) writeLoop() {
 		}
 	}
 ERROR:
-
 	u.Close()
+}
+
+func (u *User) Name() string {
+	return u.name
 }
 
 // 将消息加入转发内容，传入UserPool的转发队列进行转发
@@ -89,17 +93,21 @@ func (u *User) readTransform() {
 			glog.Errorf("Msg json error: %v\n" ,msg)
 			continue
 		}
-		select {
-		case *keepUserPool.MsgCh <- TmpMsg:
-			{
-
-			}
-		case <-*keepUserPool.closeSign:
-			{
-				goto ERROR
-			}
+		err = keepUserPool.Upload(TmpMsg)
+		if err != nil {
+			glog.Infof("Upload msg error : %v ", err)
+			goto ERROR
 		}
-
+		//select {
+		//case *keepUserPool.MsgCh <- TmpMsg:
+		//	{
+		//
+		//	}
+		//case <-*keepUserPool.closeSign:
+		//	{
+		//		goto ERROR
+		//	}
+		//}
 	}
 ERROR:
 	u.Close()
@@ -135,7 +143,7 @@ func (u *User) AddMessage(s chatMsg.Msg) error {
 	select {
 	case *(u.writeCh) <- s:
 		{
-			glog.Info("success: [" + s.GetFrom() + "] to [" + s.GetTarget() + "] time is " + s.GetTime())
+			glog.Info("success: [" + s.GetFrom() + "] to [" + s.GetTarget() + "] time is " + time.Now().String())
 		}
 	case <-(*u.closeSign):
 		return fmt.Errorf("write error : connection is closed")

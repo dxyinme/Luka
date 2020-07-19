@@ -14,7 +14,6 @@ import (
 type Connector struct {
 	keeperName      string
 	keeperUrl       string
-	userPool        *UserPool
 	upgrade         websocket.Upgrader
 	registerSuccess bool
 }
@@ -23,10 +22,10 @@ type Connector struct {
 func NewConnector(keeperNameNow string, keeperUrlNow string, checkOrigin func(r *http.Request) bool) *Connector {
 	defer glog.Info("NewConnector build finished")
 	glog.Infof("this keeper's name is %s \n", keeperNameNow)
+	InitUserPool()
 	return &Connector{
 		keeperName: keeperNameNow,
 		keeperUrl:  keeperUrlNow,
-		userPool:   InitUserPool(),
 		upgrade: websocket.Upgrader{
 			CheckOrigin: checkOrigin,
 		},

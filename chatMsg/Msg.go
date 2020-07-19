@@ -8,7 +8,6 @@ type MsgContentTypeEnum int
 const (
 	Group  MsgTypeEnum = 1
 	Single MsgTypeEnum = 2
-	CommonFieldLength  = 1<<8
 )
 
 const (
@@ -19,11 +18,8 @@ const (
 // chatMsg接口
 type Msg interface {
 
-	// 获取 传输内容的byte
+	// 获取 传输内容的byte转string(如果能转)
 	GetContent() 	string
-
-	// 获取 传输时间
-	GetTime()		string
 
 	// 获取发送者
 	GetFrom()		string
