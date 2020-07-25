@@ -37,12 +37,3 @@ type Msg interface {
 	Marshal() ([]byte, error)
 
 }
-
-// 重复字段
-type commonField struct {
-	From 			string
-	Target 			string
-	MsgTime			string
-	MsgType 		MsgTypeEnum
-	MsgContentType 	MsgContentTypeEnum
-}

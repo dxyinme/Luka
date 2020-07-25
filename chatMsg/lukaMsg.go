@@ -19,6 +19,7 @@ type LukaMsg struct {
 	s []byte
 }
 
+// 你会拿到的是base64加密后的content内容
 func (l LukaMsg) GetContent() string {
 	return string(l.s[contentBegin:])
 }
@@ -41,8 +42,8 @@ func (l LukaMsg) GetMsgContentType() MsgContentTypeEnum {
 	return MsgContentTypeEnum(util.ByteToInt16(MsgContentTypeByte))
 }
 
-func (l LukaMsg) Marshal() []byte {
-	return l.s
+func (l LukaMsg) Marshal() ([]byte,error) {
+	return l.s,nil
 }
 
 func NewLukaMsg(From,Target string,
@@ -58,7 +59,7 @@ func NewLukaMsg(From,Target string,
 	nows = append(nows, util.StringToByteStaticLength(Target, 32) ...)
 	nows = append(nows, util.Int16ToByte(int16(msgType)) ...)
 	nows = append(nows, util.Int16ToByte(int16(msgContentType)) ...)
-	nows = append(nows, content ...)
+	nows = append(nows, util.B64Encode(content) ...)
 	return &LukaMsg{nows}
 }
 

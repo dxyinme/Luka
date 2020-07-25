@@ -21,7 +21,7 @@ type Connector struct {
 // 用于初始化Keeper的表 userPool 以及他们的连接
 func NewConnector(keeperNameNow string, keeperUrlNow string, checkOrigin func(r *http.Request) bool) *Connector {
 	defer glog.Info("NewConnector build finished")
-	glog.Infof("this keeper's name is %s \n", keeperNameNow)
+	glog.Infof("this keeper's name is %s", keeperNameNow)
 	InitUserPool()
 	return &Connector{
 		keeperName: keeperNameNow,

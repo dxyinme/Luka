@@ -88,26 +88,12 @@ func (u *User) readTransform() {
 			glog.Errorf("%s channel: %v\n", u.name, err)
 			goto ERROR
 		}
-		TmpMsg := chatMsg.NewTmpMsgUnmarshal(msg)
-		if TmpMsg == nil {
-			glog.Errorf("Msg json error: %v\n" ,msg)
-			continue
-		}
-		err = keepUserPool.Upload(TmpMsg)
+		userMsg := chatMsg.NewUserMsgByte(msg)
+		err = keepUserPool.Upload(userMsg)
 		if err != nil {
 			glog.Infof("Upload msg error : %v ", err)
 			goto ERROR
 		}
-		//select {
-		//case *keepUserPool.MsgCh <- TmpMsg:
-		//	{
-		//
-		//	}
-		//case <-*keepUserPool.closeSign:
-		//	{
-		//		goto ERROR
-		//	}
-		//}
 	}
 ERROR:
 	u.Close()
@@ -126,7 +112,7 @@ func (u *User) readLoop() {
 		select {
 		case *u.readCh <- data:
 			{
-				glog.Infof("%s\n",string(data))
+				glog.Infof("%s",string(data))
 			}
 		case <-*u.closeSign:
 			{

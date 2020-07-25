@@ -1,7 +1,6 @@
 package Keeper
 
 import (
-	"fmt"
 	"github.com/dxyinme/Luka/vio"
 	"github.com/golang/glog"
 )
@@ -18,7 +17,7 @@ var keepUserPool *vio.PoolVio
 
 func InitUserPool() {
 	keepUserPool = vio.InitPool(MsgChannelSize)
-	fmt.Println("init!")
+	//fmt.Println("init!")
 }
 
 // 增加/更新 用户连接

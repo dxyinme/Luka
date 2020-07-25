@@ -30,7 +30,8 @@
 
 <script type="text/javascript">
     let sock = null;
-    const wsUrl = "ws://127.0.0.1:10137/ConnectIt";
+    let keeperUrl = "www.dxyinme.xyz"
+    const wsUrl = "ws://" + keeperUrl + ":10137/ConnectIt";
     function connect() {
         const name = document.getElementById('name').value;
 
@@ -44,8 +45,8 @@
         sock.onmessage = function (e) {
             console.log("message received: " + e.data);
             const s = JSON.parse(e.data);
-            document.getElementById('main-body').innerHTML += '<p>' + s['CommonField']['From'] +
-                ':' + s['CommonField']['MsgTime'] + '</p>' + '<p>' + s['Content'] + '</p>'
+            document.getElementById('main-body').innerHTML += '<p>' + s['From'] +
+                ':' + s['MsgTime'] + '</p>' + '<p>' + s['Content'] + '</p>'
         }
         sock.onerror = function (e) {
             console.debug(e)

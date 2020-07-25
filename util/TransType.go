@@ -1,5 +1,6 @@
 package util
 
+import "encoding/base64"
 
 func ByteToInt16(b []byte) int16 {
 	return int16(b[0]) << 8 | int16(b[1])
@@ -30,4 +31,12 @@ func ByteToString(b []byte) string {
 		ed ++
 	}
 	return string(b[:ed])
+}
+
+func B64Encode(b []byte) []byte {
+	return []byte(base64.StdEncoding.EncodeToString(b))
+}
+
+func B64Decode(s string) ([]byte,error) {
+	return base64.StdEncoding.DecodeString(s)
 }
