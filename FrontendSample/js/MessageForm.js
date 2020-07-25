@@ -5,14 +5,14 @@ const LukaSingle = 2
 
 
 function encodeLukaMsg(from,target,msgType,msgContentType,msg){
+    var myDate = new Date();
     return JSON.stringify(
         {
-            CommonField: {
-                From: from,
-                MsgType: msgType,
-                MsgContentType: msgContentType,
-                Target: target
-            },
+            From: from,
+            MsgType: msgType,
+            MsgTime: myDate.toLocaleString(),
+            MsgContentType: msgContentType,
+            Target: target,
             Content: msg
         })
 }

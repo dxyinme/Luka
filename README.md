@@ -11,10 +11,18 @@
     
         confirm your port 10137 is free, client-coder can reference clientSample/WS.html
 
+#### start
+
 ```
 <in linux/macOS>
 export GO111MODULE=on
 export GOPROXY=https://goproxy.io
 make keeperD
 ./bin/KeeperDeployment
+```
+#### Protocol design
+
+```
+ -- LukaMsg
+|checkpoint - 1byte|From - 32 byte|Target - 32 byte|MsgType - 2 byte|MsgContentType - 2 byte| content ... 
 ```
