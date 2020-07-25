@@ -12,4 +12,4 @@ RUN go install ./main/KeeperDeployment.go
 
 EXPOSE 10137
 
-CMD ["KeeperDeployment"]
+CMD ["KeeperDeployment --alsologtostderr"]
