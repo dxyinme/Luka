@@ -23,6 +23,10 @@ func NewConnector(keeperNameNow string, keeperUrlNow string, checkOrigin func(r 
 	defer glog.Info("NewConnector build finished")
 	glog.Infof("this keeper's name is %s", keeperNameNow)
 	InitUserPool()
+	err := InitInformer()
+	if err != nil {
+		glog.Errorln(err)
+	}
 	return &Connector{
 		keeperName: keeperNameNow,
 		keeperUrl:  keeperUrlNow,
