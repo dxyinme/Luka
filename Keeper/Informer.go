@@ -2,42 +2,58 @@ package Keeper
 
 import (
 	"github.com/dxyinme/Luka/chatMsg"
+	MSA "github.com/dxyinme/Luka/proto/MasterServerApi"
 	"github.com/dxyinme/Luka/util"
-	"sync"
-)
+	"github.com/golang/glog"
+	"golang.org/x/net/context"
+	"google.golang.org/grpc"
 
-const (
-	MessageLength = 200
 )
 
 var (
-	updateMessage chan chatMsg.Msg
-	mutexChan sync.Mutex
+	updateMessage *chan chatMsg.Msg
 )
 
 
-func InitInformer() error {
-	updateMessage = make(chan chatMsg.Msg, MessageLength)
+func InitInformer(msgChan *chan chatMsg.Msg) error {
+	updateMessage = msgChan
 	return util.NewTimeTask( "*/5 * * * * ?" , func() {
-		//fmt.Println("informer 5s")
-		// todo Inform message to Master
+		now := pack()
+		conn, err := grpc.Dial(util.MasterUrl, grpc.WithInsecure())
+		if err != nil {
+			glog.Error(err)
+		}
+		defer conn.Close()
+		client := MSA.NewMasterServiceApiClient(conn)
+		var packMsg [][]byte
+		for i := 0; i < len(now); i ++ {
+			nowBytes,err := now[i].Marshal()
+			if err != nil {
+				glog.Errorf("No. %d , msg is : %v", i, now[i])
+				continue
+			}
+			packMsg = append(packMsg, nowBytes)
+		}
+		resp, err := client.KeeperSync(context.Background(), &MSA.KeeperSyncReq{
+			PackMsg: packMsg,
+		})
+		if err != nil {
+			glog.Error(err)
+		}
+		glog.Info(resp)
 	})
 }
 
 func pack() []chatMsg.Msg {
-	mutexChan.Lock()
-	nowlen := len(updateMessage)
+	nowlen := len(*updateMessage)
 	var upSendPack []chatMsg.Msg
 	for i := 0; i < nowlen; i++ {
-		upSendPack = append(upSendPack, <-updateMessage)
+		msg, ok := <-*updateMessage
+		if ok {
+			upSendPack = append(upSendPack, msg)
+		} else {
+			glog.Info("updateMessageChan is closed")
+		}
 	}
-	mutexChan.Unlock()
 	return upSendPack
-}
-
-
-func ReceiveUpload(msg chatMsg.Msg) {
-	mutexChan.Lock()
-	updateMessage <- msg
-	mutexChan.Unlock()
 }

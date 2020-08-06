@@ -11,6 +11,13 @@ const (
 	FAIL = "FAIL"
 )
 
+var (
+	KeeperName string
+	KeeperUrl  string
+	MasterUrl  string
+)
+
+
 type YAML struct {
 	RegisterHost string `yaml:"RegisterHost"`
 	RegisterPort string `yaml:"RegisterPort"`
@@ -41,3 +48,5 @@ func GetRedisHost() string {
 func GetRedisLife() int {
 	return globalConf.RedisLife
 }
+
+

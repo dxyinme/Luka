@@ -10,6 +10,7 @@ import (
 type PoolVio struct {
 	mp        	map[string] ChVio
 	MsgCh 		*chan chatMsg.Msg
+	MsgUpload	*chan chatMsg.Msg
 	closeSign 	*chan byte
 	isClosed  	bool
 	mutex     	sync.Mutex
@@ -22,10 +23,12 @@ var vioPool *PoolVio
 func InitPool(Size int) *PoolVio {
 	tmp1 := make(chan chatMsg.Msg, Size)
 	tmp2 := make(chan byte, 1)
+	tmp3 := make(chan chatMsg.Msg, Size)
 	vioPool = &PoolVio{
 		mp:        	make(map[string] ChVio),
 		MsgCh: 		&tmp1,
 		closeSign: 	&tmp2,
+		MsgUpload:  &tmp3,
 		isClosed:  	false,
 	}
 	go reSend()
@@ -68,6 +71,11 @@ func (vp *PoolVio) Upload(msg chatMsg.Msg) error {
 	}
 }
 
+// 获取要被升级传送的消息管道指针
+func (vp *PoolVio) GetUploadChan() *chan chatMsg.Msg {
+	return vp.MsgUpload
+}
+
 
 // 消息转发器
 func reSend() {
@@ -86,6 +94,7 @@ func reSend() {
 					}
 				} else {
 					glog.Infof("user %s is not in this keeper , message update\n", textData.GetTarget())
+					*vioPool.MsgUpload <- textData
 				}
 			}
 		case <-*vioPool.closeSign:

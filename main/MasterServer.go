@@ -5,7 +5,7 @@ import (
 	"net"
 
 	"github.com/dxyinme/Luka/Master"
-	pb "github.com/dxyinme/Luka/proto"
+	MSA "github.com/dxyinme/Luka/proto/MasterServerApi"
 	"github.com/dxyinme/Luka/util"
 	"github.com/golang/glog"
 	"google.golang.org/grpc"
@@ -29,9 +29,9 @@ func main() {
 	if errTCP != nil {
 		glog.Fatalf("failed to listen %v", conf.RegisterPort)
 	}
-	serverRegister := grpc.NewServer()
-	pb.RegisterRegisterServer(serverRegister, &Master.Server{})
-	if errGRPC := serverRegister.Serve(lis); errGRPC != nil {
+	masterServer := grpc.NewServer()
+	MSA.RegisterMasterServiceApiServer(masterServer, &Master.Server{})
+	if errGRPC := masterServer.Serve(lis); errGRPC != nil {
 		glog.Fatal(errGRPC)
 	}
 }

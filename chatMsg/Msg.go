@@ -36,4 +36,5 @@ type Msg interface {
 	// 获取转换之后的[]byte 即将发送给客户端
 	Marshal() ([]byte, error)
 
+	// todo My2Luka, My2Json
 }
