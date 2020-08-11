@@ -49,6 +49,13 @@ func (l LukaMsg) Marshal() ([]byte,error) {
 func NewLukaMsg(From,Target string,
 	msgType MsgTypeEnum, msgContentType MsgContentTypeEnum,
 	content []byte, isContentLuka bool) *LukaMsg {
+	ret := NewLukaMsgClone(From, Target, msgType, msgContentType, content, isContentLuka)
+	return &ret
+}
+
+func NewLukaMsgClone(From,Target string,
+	msgType MsgTypeEnum, msgContentType MsgContentTypeEnum,
+	content []byte, isContentLuka bool) LukaMsg {
 	var nows []byte
 	if !isContentLuka {
 		nows = append(nows, byte(0))
@@ -60,9 +67,13 @@ func NewLukaMsg(From,Target string,
 	nows = append(nows, util.Int16ToByte(int16(msgType)) ...)
 	nows = append(nows, util.Int16ToByte(int16(msgContentType)) ...)
 	nows = append(nows, util.B64Encode(content) ...)
-	return &LukaMsg{nows}
+	return LukaMsg{nows}
 }
 
 func NewLukaMsgByte(s_ []byte) *LukaMsg {
 	return &LukaMsg{s: s_}
+}
+
+func NewLukaMsgByteClone(s_ []byte) LukaMsg {
+	return LukaMsg{s: s_}
 }

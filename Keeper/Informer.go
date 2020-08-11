@@ -44,13 +44,16 @@ func InitInformer(msgChan *chan chatMsg.Msg) error {
 	})
 }
 
-func pack() []chatMsg.Msg {
+// 请保证 , 打包的所有数据为LukaMsg
+func pack() []chatMsg.LukaMsg {
 	nowlen := len(*updateMessage)
-	var upSendPack []chatMsg.Msg
+	var upSendPack []chatMsg.LukaMsg
 	for i := 0; i < nowlen; i++ {
 		msg, ok := <-*updateMessage
 		if ok {
-			upSendPack = append(upSendPack, msg)
+			labs := chatMsg.NewLukaMsgClone(msg.GetFrom(),msg.GetTarget(),
+				msg.GetMsgType(),msg.GetMsgContentType(),[]byte(msg.GetContent()),false)
+			upSendPack = append(upSendPack, labs)
 		} else {
 			glog.Info("updateMessageChan is closed")
 		}

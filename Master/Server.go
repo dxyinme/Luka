@@ -17,20 +17,14 @@ type Server struct {
 func (s *Server) KeeperSync(ctx context.Context, req *MSA.KeeperSyncReq) (*MSA.KeeperSyncResp, error) {
 	glog.Infof("keeperSync receive, pack is %v", req.PackMsg)
 	var (
-		err error
-		res []chatMsg.UserMsg
+		res []chatMsg.LukaMsg
 	)
 	for _,v := range req.PackMsg {
-		var now chatMsg.UserMsg
-		err = util.IJson.Unmarshal(v, &now)
-		if err != nil {
-			glog.Info(err)
-		} else {
-			res = append(res, now)
-		}
+		now := chatMsg.NewLukaMsgByteClone(v)
+		res = append(res, now)
 	}
 	for _,v := range res {
-		fmt.Println(v)
+		fmt.Println(v.GetTarget())
 	}
 	return &MSA.KeeperSyncResp{}, nil
 }
