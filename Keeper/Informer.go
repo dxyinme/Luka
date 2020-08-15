@@ -29,7 +29,7 @@ func InitInformer(msgChan *chan chatMsg.Msg) error {
 		for i := 0; i < len(now); i ++ {
 			nowBytes,err := now[i].Marshal()
 			if err != nil {
-				glog.Errorf("No. %d , msg is : %v", i, now[i])
+				//glog.Errorf("No. %d , msg is : %v", i, now[i])
 				continue
 			}
 			packMsg = append(packMsg, nowBytes)

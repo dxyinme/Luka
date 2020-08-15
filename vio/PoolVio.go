@@ -86,7 +86,7 @@ func reSend() {
 		select {
 		case textData = <-(*vioPool.MsgCh):
 			{
-				glog.Info(textData)
+				//glog.Info(textData)
 				if target, ok := vioPool.mp[textData.GetTarget()]; ok && target != nil {
 					errAdd := target.AddMessage(textData)
 					if errAdd != nil {

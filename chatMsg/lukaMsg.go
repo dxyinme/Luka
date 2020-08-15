@@ -66,7 +66,7 @@ func NewLukaMsgClone(From,Target string,
 	nows = append(nows, util.StringToByteStaticLength(Target, 32) ...)
 	nows = append(nows, util.Int16ToByte(int16(msgType)) ...)
 	nows = append(nows, util.Int16ToByte(int16(msgContentType)) ...)
-	nows = append(nows, util.B64Encode(content) ...)
+	nows = append(nows, content ...)
 	return LukaMsg{nows}
 }
 

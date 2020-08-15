@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>video</title>
+</head>
+<body>
+    <span>
+        <label for="name">name:</label><input id="name" type="text" value="luka">
+        <label for="target">target:</label><input id="target" type="text" value="luka2">
+        <div id="nameIs"></div>
+        <button onclick="connect()">login</button>
+    </span>
+
+    <video id="video" autoplay="autoplay" width="600px" height="400px" hidden="hidden"></video>
+    <canvas id="Canvas" width="320" height="240"></canvas>
+    <img src="" id="slaveCanvas" width="640" height="480" />
+
+
+    <script src="js/MessageForm.js"></script>
+
+    <script type="text/javascript">
+        let sock = null;
+        let transUrl = "127.0.0.1"
+        const wsUrl = "ws://" + transUrl + ":10137/ConnectIt";
+        function connect() {
+            const name = document.getElementById('name').value;
+            sock = new WebSocket(wsUrl + '?name=' + name);
+            sock.onopen = function () {
+                console.log("connected to " + wsUrl + '?name=' + name);
+            }
+            sock.onclose = function (e) {
+                console.log("connection closed (" + e.code + ")");
+            }
+            sock.onmessage = function (e) {
+                let sc = document.getElementById('slaveCanvas')
+                let data = JSON.parse(e.data)
+                sc.src = data['Content']
+            }
+            sock.onerror = function (e) {
+                console.debug(e)
+            }
+            document.getElementById('nameIs').innerHTML += '<h2>' + name + '</h2>'
+        }
+
+        function drawCanvas(){
+            let videoElement = document.getElementById('video');
+            let canvasObj = document.getElementById('Canvas');
+            let canvas2d = canvasObj.getContext('2d');
+            canvas2d.fillStyle = "#223333";
+            canvas2d.fillRect(0, 0, 320, 240);
+            canvas2d.drawImage(videoElement, 0, 0, 320, 240);
+            if(sock === null) {
+                return
+            }
+            let msg = canvasObj.toDataURL("image/png", 0.01);
+            let target = document.getElementById("target").value;
+            sock.send(encodeLukaMsg(document.getElementById('name').value,target,LukaSingle,LukaImg,msg));
+        }
+
+        let videoShow = navigator.mediaDevices.getUserMedia({video: true, audio: true}).then(
+            function (MediaStream) {
+                let video = document.querySelector('video');
+                video.srcObject = MediaStream;
+                video.onloadedmetadata = function(e) {
+                    video.play();
+                };
+            }
+        ).catch(
+            function(err) {
+                console.log("The following error occured: " + err);
+            }
+        );
+        // function , time(ms)
+        setInterval(drawCanvas ,500);
+
+    </script>
+</body>
+</html>
