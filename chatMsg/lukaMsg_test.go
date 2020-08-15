@@ -1,7 +1,6 @@
 package chatMsg
 
 import (
-	"github.com/dxyinme/Luka/util"
 	"testing"
 )
 
@@ -13,7 +12,7 @@ func TestLukaMsg_GetContent(t *testing.T) {
 		"haha",
 	}
 	for i := 0; i < len(tests); i++ {
-		if string(util.B64Encode([]byte(wants[i]))) != tests[i].GetContent() {
+		if wants[i] != tests[i].GetContent() {
 			t.Errorf("test case %d, wants(%s) , but(%s)", i, wants[i], tests[i].GetContent())
 		}
 	}

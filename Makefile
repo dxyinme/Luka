@@ -15,12 +15,12 @@ default: keeperD
 
 server:
 	@echo "generate masterServer"
-	$(GOBUILD) -o bin/MasterServer main/MasterServer.go
+	$(GOBUILD) -o bin/MasterServer/MasterServer main/MasterServer.go
 	cp Register.yaml bin/
 
 keeperD:
 	@echo "generate keeper"
-	$(GOBUILD) -o bin/KeeperDeployment main/KeeperDeployment.go
+	$(GOBUILD) -o bin/KeeperDeployment/KeeperDeployment main/KeeperDeployment.go
 
 fmt:
 	@echo "gofmt (simplify)"

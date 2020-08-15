@@ -1,7 +1,7 @@
 package Keeper
 
 import (
-	pb "github.com/dxyinme/Luka/proto"
+	MSA "github.com/dxyinme/Luka/proto/MasterServerApi"
 	"github.com/dxyinme/Luka/util"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
@@ -22,7 +22,11 @@ type Connector struct {
 func NewConnector(keeperNameNow string, keeperUrlNow string, checkOrigin func(r *http.Request) bool) *Connector {
 	defer glog.Info("NewConnector build finished")
 	glog.Infof("this keeper's name is %s", keeperNameNow)
-	InitUserPool()
+	uploadChan := InitUserPool()
+	err := InitInformer(uploadChan)
+	if err != nil {
+		glog.Errorln(err)
+	}
 	return &Connector{
 		keeperName: keeperNameNow,
 		keeperUrl:  keeperUrlNow,
@@ -68,9 +72,9 @@ func (cot *Connector) Register(url string) bool {
 		glog.Fatalf("did not connect: %v", err)
 	}
 	defer conn.Close()
-	client := pb.NewRegisterClient(conn)
+	client := MSA.NewMasterServiceApiClient(conn)
 	res, err := client.KeeperAdd(context.Background(),
-		&pb.KeeperConnectRequest{
+		&MSA.KeeperAddReq{
 			Name:      cot.keeperName,
 			KeeperUrl: cot.keeperUrl,
 		})
@@ -83,5 +87,5 @@ func (cot *Connector) Register(url string) bool {
 		return false
 	}
 
-	return res.Status == util.OK
+	return res.GetStatus() == util.OK
 }

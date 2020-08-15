@@ -1,6 +1,7 @@
 package Keeper
 
 import (
+	"github.com/dxyinme/Luka/chatMsg"
 	"github.com/dxyinme/Luka/vio"
 	"github.com/golang/glog"
 )
@@ -15,8 +16,9 @@ type UserPool struct {
 
 var keepUserPool *vio.PoolVio
 
-func InitUserPool() {
+func InitUserPool() *chan chatMsg.Msg {
 	keepUserPool = vio.InitPool(MsgChannelSize)
+	return keepUserPool.GetUploadChan()
 	//fmt.Println("init!")
 }
 

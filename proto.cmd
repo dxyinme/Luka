@@ -1,1 +1,1 @@
-protoc --proto_path=proto --go_out=plugins=grpc:proto proto/register.proto
+protoc --go_out=plugins=grpc:. proto/MasterServerApi/MasterServerApi.proto

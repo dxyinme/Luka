@@ -112,7 +112,7 @@ func (u *User) readLoop() {
 		select {
 		case *u.readCh <- data:
 			{
-				glog.Infof("%s",string(data))
+				//glog.Infof("%s",string(data))
 			}
 		case <-*u.closeSign:
 			{
