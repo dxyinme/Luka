@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/dxyinme/Luka/chatMsg"
 	MSA "github.com/dxyinme/Luka/proto/MasterServerApi"
-	"github.com/dxyinme/Luka/util"
+	"github.com/dxyinme/Luka/util/config"
 	"github.com/golang/glog"
 	"golang.org/x/net/context"
 )
@@ -34,9 +34,9 @@ func (s *Server) KeeperAdd(ctx context.Context, req *MSA.KeeperAddReq) (*MSA.Kee
 	glog.Infof("new keeper added , name:[%s] url:[%s] ", req.Name, req.KeeperUrl)
 	newKCh := NewKeeperChannel(req.Name, req.KeeperUrl)
 	err := updateKeeper(req.Name, newKCh)
-	status := util.OK
+	status := config.OK
 	if err != nil {
-		status = util.FAIL
+		status = config.FAIL
 	}
 	return &MSA.KeeperAddResp{
 		Status: status,

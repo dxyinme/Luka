@@ -2,11 +2,11 @@ package main
 
 import (
 	"flag"
+	"github.com/dxyinme/Luka/util/config"
 	"net"
 
 	"github.com/dxyinme/Luka/Master"
 	MSA "github.com/dxyinme/Luka/proto/MasterServerApi"
-	"github.com/dxyinme/Luka/util"
 	"github.com/golang/glog"
 	"google.golang.org/grpc"
 )
@@ -19,7 +19,7 @@ func InitialMaster() {
 func main() {
 	InitialMaster()
 	flag.Parse()
-	conf, err := util.ReadYAML("Register.yaml")
+	conf, err := config.ReadYAML("Register.yaml")
 	if err != nil {
 		glog.Info(err)
 	}

@@ -4,10 +4,10 @@ import (
 	"github.com/dxyinme/Luka/chatMsg"
 	MSA "github.com/dxyinme/Luka/proto/MasterServerApi"
 	"github.com/dxyinme/Luka/util"
+	"github.com/dxyinme/Luka/util/config"
 	"github.com/golang/glog"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
-
 )
 
 var (
@@ -18,8 +18,11 @@ var (
 func InitInformer(msgChan *chan chatMsg.Msg) error {
 	updateMessage = msgChan
 	return util.NewTimeTask( "*/5 * * * * ?" , func() {
+		if !config.HasMaster {
+			return
+		}
 		now := pack()
-		conn, err := grpc.Dial(util.MasterUrl, grpc.WithInsecure())
+		conn, err := grpc.Dial(config.MasterUrl, grpc.WithInsecure())
 		if err != nil {
 			glog.Error(err)
 		}
@@ -29,7 +32,7 @@ func InitInformer(msgChan *chan chatMsg.Msg) error {
 		for i := 0; i < len(now); i ++ {
 			nowBytes,err := now[i].Marshal()
 			if err != nil {
-				//glog.Errorf("No. %d , msg is : %v", i, now[i])
+				glog.Errorf("No. %d , err is %v", i, err)
 				continue
 			}
 			packMsg = append(packMsg, nowBytes)
@@ -39,8 +42,9 @@ func InitInformer(msgChan *chan chatMsg.Msg) error {
 		})
 		if err != nil {
 			glog.Error(err)
+		} else {
+			glog.Info(resp)
 		}
-		glog.Info(resp)
 	})
 }
 
@@ -53,6 +57,10 @@ func pack() []chatMsg.LukaMsg {
 		if ok {
 			labs := chatMsg.NewLukaMsgClone(msg.GetFrom(),msg.GetTarget(),
 				msg.GetMsgType(),msg.GetMsgContentType(),[]byte(msg.GetContent()),false)
+			// 实时视频只能在单个keeper中通话，不会被上传到master转发
+			if labs.GetMsgContentType() == chatMsg.Img {
+				continue
+			}
 			upSendPack = append(upSendPack, labs)
 		} else {
 			glog.Info("updateMessageChan is closed")

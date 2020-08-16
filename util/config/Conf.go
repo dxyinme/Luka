@@ -1,9 +1,8 @@
-package util
+package config
 
 import (
-	"io/ioutil"
-
 	"gopkg.in/yaml.v2"
+	"io/ioutil"
 )
 
 const (
@@ -15,6 +14,7 @@ var (
 	KeeperName string
 	KeeperUrl  string
 	MasterUrl  string
+	HasMaster  bool
 )
 
 

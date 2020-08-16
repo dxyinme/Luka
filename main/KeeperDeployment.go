@@ -2,19 +2,18 @@ package main
 
 import (
 	"flag"
-	"net/http"
-
 	"github.com/dxyinme/Luka/Keeper"
-	"github.com/dxyinme/Luka/util"
+	"github.com/dxyinme/Luka/util/config"
 	"github.com/golang/glog"
+	"net/http"
 )
 
 
 
 func InitialKeeper() {
-	flag.StringVar(&util.KeeperName, "keeper", "test", "this keeper's name.")
-	flag.StringVar(&util.KeeperUrl, "keeperUrl", "127.0.0.1:10137", "this keeper's url.")
-	flag.StringVar(&util.MasterUrl, "masterUrl", "127.0.0.1:6965", "this master's url.")
+	flag.StringVar(&config.KeeperName, "keeper", "test", "this keeper's name.")
+	flag.StringVar(&config.KeeperUrl, "keeperUrl", "127.0.0.1:10137", "this keeper's url.")
+	flag.StringVar(&config.MasterUrl, "masterUrl", "127.0.0.1:6965", "this master's url.")
 }
 
 // 一个 Keeper 有且只能有一个 Connector
@@ -23,18 +22,18 @@ func main() {
 	flag.Parse()
 	defer glog.Flush()
 	newKeeper := Keeper.NewConnector(
-		util.KeeperName,
-		util.KeeperUrl,
+		config.KeeperName,
+		config.KeeperUrl,
 		// 跨域
 		func(r *http.Request) bool {
 			return true
 		})
-	isRegister := newKeeper.Register(util.MasterUrl)
+	config.HasMaster = newKeeper.Register(config.MasterUrl)
 
-	if isRegister {
-		glog.Infof("keeper %s is register success", util.KeeperName)
+	if config.HasMaster {
+		glog.Infof("keeper %s is register success", config.KeeperName)
 	} else {
-		glog.Infof("have not a master , single keeper %s is working", util.KeeperName)
+		glog.Infof("have not a master , single keeper %s is working", config.KeeperName)
 	}
 
 	http.HandleFunc("/ConnectIt", newKeeper.ConnectIt)
