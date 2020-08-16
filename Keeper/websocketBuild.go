@@ -2,7 +2,7 @@ package Keeper
 
 import (
 	MSA "github.com/dxyinme/Luka/proto/MasterServerApi"
-	"github.com/dxyinme/Luka/util"
+	"github.com/dxyinme/Luka/util/config"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
 	"net/http"
@@ -87,5 +87,5 @@ func (cot *Connector) Register(url string) bool {
 		return false
 	}
 
-	return res.GetStatus() == util.OK
+	return res.GetStatus() == config.OK
 }
