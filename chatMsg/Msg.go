@@ -11,8 +11,9 @@ const (
 )
 
 const (
-	Text MsgContentTypeEnum = 1
-	Img	 MsgContentTypeEnum = 2
+	Text  MsgContentTypeEnum = 1
+	Img	  MsgContentTypeEnum = 2
+	Video MsgContentTypeEnum = 3
 )
 
 // chatMsg接口
