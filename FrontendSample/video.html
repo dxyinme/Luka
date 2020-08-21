@@ -21,7 +21,7 @@
 
     <script type="text/javascript">
         let sock = null;
-        let transUrl = "127.0.0.1"
+        let transUrl = "www.dxyinme.xyz"
         const wsUrl = "ws://" + transUrl + ":10137/ConnectIt";
         function connect() {
             const name = document.getElementById('name').value;
@@ -55,15 +55,17 @@
             }
             let msg = canvasObj.toDataURL("image/png", 0.01);
             let target = document.getElementById("target").value;
-            sock.send(encodeLukaMsg(document.getElementById('name').value,target,LukaSingle,LukaImg,msg));
+            sock.send(encodeLukaMsg(document.getElementById('name').value,target,LukaSingle,LukaVideo,msg));
         }
 
         let videoShow = navigator.mediaDevices.getUserMedia({video: true, audio: true}).then(
             function (MediaStream) {
-                let video = document.querySelector('video');
+                let video = document.getElementById('video');
                 video.srcObject = MediaStream;
+                // console.log(MediaStream);
                 video.onloadedmetadata = function(e) {
                     video.play();
+                    console.log(video.dataset)
                 };
             }
         ).catch(

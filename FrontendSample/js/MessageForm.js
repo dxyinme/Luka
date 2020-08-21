@@ -1,5 +1,6 @@
 const LukaText = 1
 const LukaImg = 2
+const LukaVideo = 3
 const LukaGroup = 1
 const LukaSingle = 2
 

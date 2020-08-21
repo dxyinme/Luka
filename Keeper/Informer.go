@@ -58,7 +58,7 @@ func pack() []chatMsg.LukaMsg {
 			labs := chatMsg.NewLukaMsgClone(msg.GetFrom(),msg.GetTarget(),
 				msg.GetMsgType(),msg.GetMsgContentType(),[]byte(msg.GetContent()),false)
 			// 实时视频只能在单个keeper中通话，不会被上传到master转发
-			if labs.GetMsgContentType() == chatMsg.Img {
+			if labs.GetMsgContentType() == chatMsg.Video {
 				continue
 			}
 			upSendPack = append(upSendPack, labs)

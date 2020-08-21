@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>lukaClient</title>
-    <link rel="stylesheet" type="text/css" href="./WS.css">
+    <link rel="stylesheet" type="text/css" href="css/WS.css">
 </head>
 <body>
 <h1 style="text-align: center;">Luka hello!</h1>
@@ -20,8 +20,11 @@
     </div>
     <div id="main-body">
     </div>
+    <input type="file" id="message-img" multiple="multiple">
     <div id="main-message">
-        <textarea id="message" onkeydown="keydown()"></textarea> 
+        <textarea id="message" onkeydown="keydown()">
+            在这里输入，按回车发送
+        </textarea>
     </div>
 </div>
 
