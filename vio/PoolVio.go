@@ -2,7 +2,7 @@ package vio
 
 import (
 	"fmt"
-	"github.com/dxyinme/Luka/chatMsg"
+	"github.com/dxyinme/LukaComm/chatMsg"
 	"github.com/golang/glog"
 	"sync"
 )

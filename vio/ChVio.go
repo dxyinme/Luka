@@ -1,6 +1,6 @@
 package vio
 
-import "github.com/dxyinme/Luka/chatMsg"
+import "github.com/dxyinme/LukaComm/chatMsg"
 
 type ChVio interface {
 

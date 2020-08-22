@@ -20,9 +20,6 @@ export GOPROXY=https://goproxy.io
 make keeperD
 ./bin/KeeperDeployment
 ```
-#### Protocol design
 
-```
- -- LukaMsg
-|checkpoint - 1byte|From - 32 byte|Target - 32 byte|MsgType - 2 byte|MsgContentType - 2 byte| content ... 
-```
+#### about LukaMsg
+[LukaComm](https://github.com/dxyinme/LukaComm)

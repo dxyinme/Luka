@@ -5,7 +5,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/dxyinme/Luka/chatMsg"
+	"github.com/dxyinme/LukaComm/chatMsg"
 	"github.com/golang/glog"
 	"github.com/gorilla/websocket"
 )
