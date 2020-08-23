@@ -2,7 +2,7 @@ package Keeper
 
 import (
 	MSA "github.com/dxyinme/Luka/proto/MasterServerApi"
-	"github.com/dxyinme/Luka/util/config"
+	"github.com/dxyinme/LukaComm/util/config"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
 	"net/http"

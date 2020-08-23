@@ -2,7 +2,7 @@ package main
 
 import (
 	"flag"
-	"github.com/dxyinme/Luka/util/config"
+	"github.com/dxyinme/LukaComm/util/config"
 	"net"
 
 	"github.com/dxyinme/Luka/Master"

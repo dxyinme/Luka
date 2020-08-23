@@ -1,10 +1,10 @@
 package Keeper
 
 import (
-	"github.com/dxyinme/Luka/chatMsg"
 	MSA "github.com/dxyinme/Luka/proto/MasterServerApi"
-	"github.com/dxyinme/Luka/util"
-	"github.com/dxyinme/Luka/util/config"
+	"github.com/dxyinme/LukaComm/chatMsg"
+	"github.com/dxyinme/LukaComm/util"
+	"github.com/dxyinme/LukaComm/util/config"
 	"github.com/golang/glog"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"

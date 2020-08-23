@@ -2,7 +2,7 @@
 
 <p></p>
 
-[![Build Status](https://travis-ci.com/dxyinme/Luka.svg?branch=master)](https://travis-ci.com/dxyinme/Luka)
+[![Build Status](https://travis-ci.com/dxyinme/Luka.svg?branch=dxyinme)](https://travis-ci.com/dxyinme/Luka)
 
 <h3>a golang IM service</h3>
 
@@ -20,9 +20,6 @@ export GOPROXY=https://goproxy.io
 make keeperD
 ./bin/KeeperDeployment
 ```
-#### Protocol design
 
-```
- -- LukaMsg
-|checkpoint - 1byte|From - 32 byte|Target - 32 byte|MsgType - 2 byte|MsgContentType - 2 byte| content ... 
-```
+#### about LukaMsg
+[LukaComm](https://github.com/dxyinme/LukaComm)

@@ -3,7 +3,7 @@ package main
 import (
 	"flag"
 	"github.com/dxyinme/Luka/Keeper"
-	"github.com/dxyinme/Luka/util/config"
+	"github.com/dxyinme/LukaComm/util/config"
 	"github.com/golang/glog"
 	"net/http"
 )
