@@ -20,7 +20,3 @@ keeperD:
 fmt:
 	@echo "gofmt (simplify)"
 	@gofmt -s -l -w $(FILES) 2>&1 | $(FAIL_ON_STDOUT)
-
-gen:
-	@echo "generate protobuf"
-	@./proto.cmd

@@ -8,3 +8,4 @@ env:
 
 script:
   - go test -v ./WorkerPool
+  - make keeperD

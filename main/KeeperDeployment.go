@@ -10,7 +10,6 @@ var (
 	CynicUServerAddr = flag.String("addr", ":10137", "ServerAddr")
 )
 
-
 func main() {
 	flag.Parse()
 	defer glog.Flush()
