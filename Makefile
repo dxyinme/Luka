@@ -13,11 +13,6 @@ FILES     := $$(find . -name "*.go")
 
 default: keeperD
 
-server:
-	@echo "generate masterServer"
-	$(GOBUILD) -o bin/MasterServer/MasterServer main/MasterServer.go
-	cp Register.yaml bin/
-
 keeperD:
 	@echo "generate keeper"
 	$(GOBUILD) -o bin/KeeperDeployment/KeeperDeployment main/KeeperDeployment.go
