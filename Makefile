@@ -13,11 +13,6 @@ FILES     := $$(find . -name "*.go")
 
 default: keeperD
 
-server:
-	@echo "generate masterServer"
-	$(GOBUILD) -o bin/MasterServer/MasterServer main/MasterServer.go
-	cp Register.yaml bin/
-
 keeperD:
 	@echo "generate keeper"
 	$(GOBUILD) -o bin/KeeperDeployment/KeeperDeployment main/KeeperDeployment.go
@@ -25,7 +20,3 @@ keeperD:
 fmt:
 	@echo "gofmt (simplify)"
 	@gofmt -s -l -w $(FILES) 2>&1 | $(FAIL_ON_STDOUT)
-
-gen:
-	@echo "generate protobuf"
-	@./proto.cmd

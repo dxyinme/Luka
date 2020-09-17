@@ -7,7 +7,5 @@ env:
   - GO111MODULE=on
 
 script:
-  - go test -v ./Keeper
-  - go test -v ./Master
-  - make server
+  - go test -v ./WorkerPool
   - make keeperD
