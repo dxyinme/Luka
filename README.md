@@ -18,7 +18,7 @@
 export GO111MODULE=on
 export GOPROXY=https://goproxy.io
 make keeperD
-./bin/KeeperDeployment
+./bin/KeeperDeployment/KeeperDeployment
 ```
 
 #### about LukaMsg
