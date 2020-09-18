@@ -1,8 +1,8 @@
 package WorkerPool
 
 import (
-	"container/list"
 	"fmt"
+	"github.com/dxyinme/Luka/util/syncList"
 	"github.com/dxyinme/LukaComm/chatMsg"
 	"github.com/golang/glog"
 )
@@ -11,58 +11,45 @@ const (
 	PackLimit = 30
 )
 type NormalImpl struct {
-	cache map[string]*list.List
+	cache map[string]*syncList.SyncList
 }
 
 func (ni *NormalImpl) Initial() {
-	ni.cache = make(map[string]*list.List)
+	ni.cache = make(map[string]*syncList.SyncList)
 }
 
 func (ni *NormalImpl) SendTo(msg *chatMsg.Msg) {
 	var (
-		nowList *list.List
-		pack 	*chatMsg.MsgPack
+		nowList *syncList.SyncList
 		ok		bool
 	)
 	glog.Infof("from: %s target: %s : content: %s",msg.From, msg.Target, string(msg.Content))
 	nowList,ok = ni.cache[msg.Target]
 	if !ok {
-		nowList = list.New()
+		nowList = syncList.New()
 		ni.cache[msg.Target] = nowList
 	}
-	if nowList.Len() == 0 {
-		pack = &chatMsg.MsgPack{}
-		pack.MsgList = []*chatMsg.Msg {msg}
-		nowList.PushBack(pack)
-	} else {
-		pack = nowList.Back().Value.(*chatMsg.MsgPack)
-		if len(pack.MsgList) < PackLimit {
-			// 每个包的包大小上限是 ${PackLimit}
-			pack.MsgList = append(pack.MsgList, msg)
-		} else{
-			pack = &chatMsg.MsgPack{}
-			pack.MsgList = []*chatMsg.Msg {msg}
-			nowList.PushBack(pack)
-		}
-	}
-
+	nowList.PushBack(msg)
 }
 
 func (ni *NormalImpl) Pull(targetIs string) (*chatMsg.MsgPack,error) {
 	var (
-		nowList *list.List
+		nowList *syncList.SyncList
 		pack 	*chatMsg.MsgPack
 		ok 		bool
 	)
 	glog.Infof("Pull from : %s",targetIs)
 	nowList, ok = ni.cache[targetIs]
+	pack = &chatMsg.MsgPack{MsgList: []*chatMsg.Msg{} }
 	if !ok {
-		return nil, fmt.Errorf("NoMessage")
+		return pack, fmt.Errorf("NoMessage")
 	}
-	if nowList.Len() == 0 {
-		delete(ni.cache, targetIs)
-		return nil, fmt.Errorf("NoMessage")
+	for len(pack.MsgList) < PackLimit {
+		if nowList.Len() > 0 {
+			pack.MsgList = append(pack.MsgList, nowList.Remove(nowList.Back()).(*chatMsg.Msg))
+		} else {
+			break
+		}
 	}
-	pack = nowList.Remove(nowList.Back()).(*chatMsg.MsgPack)
 	return pack,nil
 }
