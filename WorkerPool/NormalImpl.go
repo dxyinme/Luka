@@ -33,6 +33,15 @@ func (ni *NormalImpl) SendTo(msg *chatMsg.Msg) {
 }
 
 func (ni *NormalImpl) Pull(targetIs string) (*chatMsg.MsgPack,error) {
+	return ni.pullSelf(targetIs)
+}
+
+func (ni *NormalImpl) PullAll(targetIs string) (*chatMsg.MsgPack, error) {
+	panic("implement me")
+}
+
+
+func (ni *NormalImpl) pullSelf(targetIs string) (*chatMsg.MsgPack, error) {
 	var (
 		nowList *syncList.SyncList
 		pack 	*chatMsg.MsgPack
