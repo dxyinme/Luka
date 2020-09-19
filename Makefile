@@ -16,7 +16,7 @@ default: keeperD
 keeperD:
 	@echo "generate keeper"
 	$(GOBUILD) -o bin/KeeperDeployment/KeeperDeployment main/KeeperDeployment.go
-	@cp -rf conf bin/conf
+	@cp -rf conf bin/KeeperDeployment/conf
 
 fmt:
 	@echo "gofmt (simplify)"
