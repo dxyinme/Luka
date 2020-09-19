@@ -23,7 +23,7 @@ func (b *BroadcasterForPull) Initial() error {
 	if clusterConfig.AllHosts == nil {
 		return fmt.Errorf("%s","No Cluster Hosts")
 	}
-	for i := 1 ; i < len(clusterConfig.AllHosts) ; i ++ {
+	for i := 0 ; i < len(clusterConfig.AllHosts) ; i ++ {
 		if clusterConfig.AllHosts[i] == clusterConfig.Host {
 			continue
 		}

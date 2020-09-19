@@ -38,7 +38,6 @@ func (ni *NormalImpl) Pull(targetIs string) (*chatMsg.MsgPack,error) {
 }
 
 func (ni *NormalImpl) PullAll(targetIs string) (*chatMsg.MsgPack, error) {
-	//panic("implement me")
 	var (
 		pack = &chatMsg.MsgPack{MsgList: []*chatMsg.Msg{} }
 		err error = nil
