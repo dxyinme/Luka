@@ -12,6 +12,8 @@ github.com/dxyinme/LukaComm v0.0.1-beta.1 h1:bUbbScbMoDxMBlBaE7QyiPcxBRJ4KIycorY
 github.com/dxyinme/LukaComm v0.0.1-beta.1/go.mod h1:MV7m0wFvWh4HSny+3t2Zx7hAzdqnlyCfOd8Ylg+gH/I=
 github.com/dxyinme/LukaComm v0.0.1-beta.2 h1:yA7SgvKCpafReOmVBrGhPUaFO60+c5hxm0uHTnlYrVY=
 github.com/dxyinme/LukaComm v0.0.1-beta.2/go.mod h1:boS6gBiqBT6hFIWNNKKJQCvZkXxC8TpMN+dMwDuiSQI=
+github.com/dxyinme/LukaComm v0.0.1-beta.3 h1:sggtLbH3thHg2w8QH8WuIjzX0k8KNJMctbTEC7fB2HM=
+github.com/dxyinme/LukaComm v0.0.1-beta.3/go.mod h1:boS6gBiqBT6hFIWNNKKJQCvZkXxC8TpMN+dMwDuiSQI=
 github.com/envoyproxy/go-control-plane v0.9.0/go.mod h1:YTl/9mNaCwkRvm6d1a2C3ymFceY/DCBVvsKhRF0iEA4=
 github.com/envoyproxy/go-control-plane v0.9.4/go.mod h1:6rpuAdCZL397s3pYoYcLgu1mIlRU8Am5FuJP05cCM98=
 github.com/envoyproxy/protoc-gen-validate v0.1.0/go.mod h1:iSmxcyjqTsJpI2R4NaDN7+kN2VEUnK/pcBlmesArF7c=

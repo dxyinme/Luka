@@ -18,8 +18,20 @@
 export GO111MODULE=on
 export GOPROXY=https://goproxy.io
 make keeperD
-./bin/KeeperDeployment
+./bin/KeeperDeployment/KeeperDeployment
 ```
+#### about config
+
+the host of this service serve for.
+```batch
+[host] host 
+```
+
+the host of all service hosts in this cluster.
+```batch
+[AllHostX] host
+```
+
 
 #### about LukaMsg
 [LukaComm](https://github.com/dxyinme/LukaComm)
