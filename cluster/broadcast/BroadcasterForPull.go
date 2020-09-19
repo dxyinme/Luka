@@ -13,6 +13,7 @@ type BroadcasterForPull struct {
 	respItems 	[]*chatMsg.MsgPack
 	errorItems 	[]error
 	targetIs 	string
+	finishChan  []chan bool
 }
 
 func (b *BroadcasterForPull) Initial() error {
@@ -34,12 +35,39 @@ func (b *BroadcasterForPull) Initial() error {
 		b.clients = append(b.clients, nowClient)
 		b.respItems = append(b.respItems, nil)
 		b.errorItems = append(b.errorItems, nil)
+		b.finishChan = append(b.finishChan, make(chan bool, 1))
 	}
 	return nil
 }
 
+func (b *BroadcasterForPull) outBroad(i int) bool {
+	return !(0 <= i && i < len(b.clients))
+}
+
+func (b *BroadcasterForPull) GetResp(i int) (*chatMsg.MsgPack,error) {
+	if b.outBroad(i) {
+		return nil,nil
+	} else {
+		select {
+			case <-b.finishChan[i] :
+		}
+		return b.respItems[i],b.errorItems[i]
+	}
+}
+
 func (b *BroadcasterForPull) pullItem(i int) {
-	b.respItems[i], b.errorItems[i] = b.clients[i].Pull(&chatMsg.Ack{From: b.targetIs})
+	if !b.outBroad(i) {
+		b.respItems[i], b.errorItems[i] = b.clients[i].Pull(&chatMsg.Ack{From: b.targetIs})
+		close(b.finishChan[i])
+	}
+}
+
+func (b *BroadcasterForPull) SetTarget(targetIs string) {
+	b.targetIs = targetIs
+}
+
+func (b *BroadcasterForPull) Size() int {
+	return len(b.clients)
 }
 
 func (b *BroadcasterForPull) Do() {

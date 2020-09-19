@@ -2,6 +2,7 @@ package WorkerPool
 
 import (
 	"fmt"
+	"github.com/dxyinme/Luka/cluster/broadcast"
 	"github.com/dxyinme/Luka/util/syncList"
 	"github.com/dxyinme/LukaComm/chatMsg"
 	"github.com/golang/glog"
@@ -37,7 +38,30 @@ func (ni *NormalImpl) Pull(targetIs string) (*chatMsg.MsgPack,error) {
 }
 
 func (ni *NormalImpl) PullAll(targetIs string) (*chatMsg.MsgPack, error) {
-	panic("implement me")
+	//panic("implement me")
+	var (
+		pack = &chatMsg.MsgPack{MsgList: []*chatMsg.Msg{} }
+		err error = nil
+		bcForPull *broadcast.BroadcasterForPull
+	)
+	pack, err = ni.pullSelf(targetIs)
+	bcForPull = &broadcast.BroadcasterForPull{}
+	err = bcForPull.Initial()
+	if err != nil {
+		glog.Error(err)
+	}
+	bcForPull.SetTarget(targetIs)
+	bcForPull.Do()
+
+	for i := 0; i < bcForPull.Size() ; i ++ {
+		respi,erri := bcForPull.GetResp(i)
+		if erri == nil {
+			for _,msg := range respi.MsgList {
+				pack.MsgList = append(pack.MsgList, msg)
+			}
+		}
+	}
+	return pack, err
 }
 
 
