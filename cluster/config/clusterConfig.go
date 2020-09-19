@@ -16,7 +16,7 @@ var (
 
 func SetHost(host string) {
 	Host = strings.TrimSpace(host)
-	Host = ":" + strings.TrimSpace(strings.Split(host, ":")[1])
+	HostAddr = ":" + strings.TrimSpace(strings.Split(host, ":")[1])
 }
 
 func SetAllHosts(hosts []string) {

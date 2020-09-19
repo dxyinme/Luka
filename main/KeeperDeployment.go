@@ -18,6 +18,7 @@ func main() {
 	s := &CynicUServer.Server{}
 	glog.Info(*ClusterFile)
 	ClusterConfig.LoadFromFile(*ClusterFile)
+	glog.Info(ClusterConfig.HostAddr)
 	server := s.NewCynicUServer(ClusterConfig.HostAddr,"luka")
 	// 先New，再bind，新的WorkerPool会被覆盖
 	// bind的时候记住，务必bind初始化完成的Impl
