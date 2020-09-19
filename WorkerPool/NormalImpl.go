@@ -59,6 +59,8 @@ func (ni *NormalImpl) PullAll(targetIs string) (*chatMsg.MsgPack, error) {
 			for _,msg := range respi.MsgList {
 				pack.MsgList = append(pack.MsgList, msg)
 			}
+		} else {
+			glog.Error(erri)
 		}
 	}
 	return pack, err
