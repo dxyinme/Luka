@@ -9,14 +9,15 @@ import (
 )
 
 var (
-	ClusterFile = *flag.String("ClusterFile", "", "the file of ClusterInfo")
+	ClusterFile = flag.String("ClusterFile", "", "the file of ClusterInfo")
 )
 
 func main() {
 	flag.Parse()
 	defer glog.Flush()
 	s := &CynicUServer.Server{}
-	ClusterConfig.LoadFromFile(ClusterFile)
+	glog.Info(*ClusterFile)
+	ClusterConfig.LoadFromFile(*ClusterFile)
 	server := s.NewCynicUServer(ClusterConfig.HostAddr,"luka")
 	// 先New，再bind，新的WorkerPool会被覆盖
 	// bind的时候记住，务必bind初始化完成的Impl
