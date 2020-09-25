@@ -2,6 +2,7 @@ package WorkerPool
 
 import (
 	"fmt"
+
 	"github.com/dxyinme/Luka/cluster/broadcast"
 	"github.com/dxyinme/Luka/util/syncList"
 	"github.com/dxyinme/LukaComm/chatMsg"
@@ -9,38 +10,52 @@ import (
 )
 
 const (
+	// PackLimit is the max size of one pull pack
 	PackLimit = 30
 )
+
+// NormalImpl :
+// **cache** the message queue of all user in this WorkerPool
 type NormalImpl struct {
 	cache map[string]*syncList.SyncList
 }
 
+// Initial this workerpool as NormalImpl
 func (ni *NormalImpl) Initial() {
 	ni.cache = make(map[string]*syncList.SyncList)
 }
 
+// SendTo in NormalImpl
 func (ni *NormalImpl) SendTo(msg *chatMsg.Msg) {
 	var (
 		nowList *syncList.SyncList
-		ok		bool
+		ok      bool
 	)
-	glog.Infof("from: %s target: %s : content: %s",msg.From, msg.Target, string(msg.Content))
-	nowList,ok = ni.cache[msg.Target]
+	glog.Infof("from: %s , target: %s : content: %s , Be transported.", msg.From, msg.Target, string(msg.Content))
+	nowList, ok = ni.cache[msg.Target]
 	if !ok {
 		nowList = syncList.New()
 		ni.cache[msg.Target] = nowList
 	}
 	nowList.PushBack(msg)
+	glog.Infof("from: %s , target: %s : content : %s , Be save into hardware.", msg.From, msg.Target, string(msg.Content))
+	ni.saveInto(msg)
 }
 
-func (ni *NormalImpl) Pull(targetIs string) (*chatMsg.MsgPack,error) {
+func (ni *NormalImpl) saveInto(msg *chatMsg.Msg) {
+	glog.Infof("save msg into hardware!")
+}
+
+// Pull in NormalImpl
+func (ni *NormalImpl) Pull(targetIs string) (*chatMsg.MsgPack, error) {
 	return ni.pullSelf(targetIs)
 }
 
+// PullAll in NormalImpl
 func (ni *NormalImpl) PullAll(targetIs string) (*chatMsg.MsgPack, error) {
 	var (
-		pack = &chatMsg.MsgPack{MsgList: []*chatMsg.Msg{} }
-		err error = nil
+		pack            = &chatMsg.MsgPack{MsgList: []*chatMsg.Msg{}}
+		err       error = nil
 		bcForPull *broadcast.BroadcasterForPull
 	)
 	pack, err = ni.pullSelf(targetIs)
@@ -52,10 +67,10 @@ func (ni *NormalImpl) PullAll(targetIs string) (*chatMsg.MsgPack, error) {
 	bcForPull.SetTarget(targetIs)
 	bcForPull.Do()
 
-	for i := 0; i < bcForPull.Size() ; i ++ {
-		respi,erri := bcForPull.GetResp(i)
+	for i := 0; i < bcForPull.Size(); i++ {
+		respi, erri := bcForPull.GetResp(i)
 		if erri == nil {
-			for _,msg := range respi.MsgList {
+			for _, msg := range respi.MsgList {
 				pack.MsgList = append(pack.MsgList, msg)
 			}
 		} else {
@@ -65,16 +80,15 @@ func (ni *NormalImpl) PullAll(targetIs string) (*chatMsg.MsgPack, error) {
 	return pack, err
 }
 
-
 func (ni *NormalImpl) pullSelf(targetIs string) (*chatMsg.MsgPack, error) {
 	var (
 		nowList *syncList.SyncList
-		pack 	*chatMsg.MsgPack
-		ok 		bool
+		pack    *chatMsg.MsgPack
+		ok      bool
 	)
-	glog.Infof("Pull from : %s",targetIs)
+	glog.Infof("Pull from : %s", targetIs)
 	nowList, ok = ni.cache[targetIs]
-	pack = &chatMsg.MsgPack{MsgList: []*chatMsg.Msg{} }
+	pack = &chatMsg.MsgPack{MsgList: []*chatMsg.Msg{}}
 	if !ok {
 		return pack, fmt.Errorf("NoMessage")
 	}
@@ -85,5 +99,5 @@ func (ni *NormalImpl) pullSelf(targetIs string) (*chatMsg.MsgPack, error) {
 			break
 		}
 	}
-	return pack,nil
+	return pack, nil
 }

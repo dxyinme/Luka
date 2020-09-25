@@ -32,6 +32,8 @@ the host of all service hosts in this cluster.
 [AllHostX] host
 ```
 
+#### Luka Wiki
+[LukaWiki](https://github.com/dxyinme/Luka/wiki)
 
 #### about LukaMsg
 [LukaComm](https://github.com/dxyinme/LukaComm)
