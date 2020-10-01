@@ -20,7 +20,7 @@ type NormalImpl struct {
 	cache map[string]*syncList.SyncList
 }
 
-// Initial this workerpool as NormalImpl
+// Initial this WorkerPool as NormalImpl
 func (ni *NormalImpl) Initial() {
 	ni.cache = make(map[string]*syncList.SyncList)
 }
@@ -31,19 +31,20 @@ func (ni *NormalImpl) SendTo(msg *chatMsg.Msg) {
 		nowList *syncList.SyncList
 		ok      bool
 	)
-	glog.Infof("from: %s , target: %s : content: %s , Be transported.", msg.From, msg.Target, string(msg.Content))
+	glog.Infof("from: [%s] , target: [%s] : content: %s , Be transported.",
+		msg.From, msg.Target, string(msg.Content))
 	nowList, ok = ni.cache[msg.Target]
 	if !ok {
 		nowList = syncList.New()
 		ni.cache[msg.Target] = nowList
 	}
 	nowList.PushBack(msg)
-	glog.Infof("from: %s , target: %s : content : %s , Be save into hardware.", msg.From, msg.Target, string(msg.Content))
 	ni.saveInto(msg)
 }
 
 func (ni *NormalImpl) saveInto(msg *chatMsg.Msg) {
-	glog.Infof("save msg into hardware!")
+	glog.Infof("from: [%s] , target: [%s] : content : %s , Be save into hardware.",
+		msg.From, msg.Target, string(msg.Content))
 }
 
 // Pull in NormalImpl
@@ -59,6 +60,9 @@ func (ni *NormalImpl) PullAll(targetIs string) (*chatMsg.MsgPack, error) {
 		bcForPull *broadcast.BroadcasterForPull
 	)
 	pack, err = ni.pullSelf(targetIs)
+	if err != nil {
+		glog.Error(err)
+	}
 	bcForPull = &broadcast.BroadcasterForPull{}
 	err = bcForPull.Initial()
 	if err != nil {
@@ -77,16 +81,19 @@ func (ni *NormalImpl) PullAll(targetIs string) (*chatMsg.MsgPack, error) {
 			glog.Error(erri)
 		}
 	}
+	glog.Infof("now pull result size : %d", len(pack.MsgList))
 	return pack, err
 }
 
+
+// pullSelf in this user. strategy is LIFO
 func (ni *NormalImpl) pullSelf(targetIs string) (*chatMsg.MsgPack, error) {
 	var (
 		nowList *syncList.SyncList
 		pack    *chatMsg.MsgPack
 		ok      bool
 	)
-	glog.Infof("Pull from : %s", targetIs)
+	glog.Infof("Pull from : [%s]", targetIs)
 	nowList, ok = ni.cache[targetIs]
 	pack = &chatMsg.MsgPack{MsgList: []*chatMsg.Msg{}}
 	if !ok {
