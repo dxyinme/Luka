@@ -21,7 +21,7 @@ func (b *BroadcasterForPull) Initial() error {
 		err error
 	)
 	if clusterConfig.AllHosts == nil {
-		return fmt.Errorf("%s","No Cluster Hosts")
+		return fmt.Errorf("No Cluster Hosts")
 	}
 	for i := 0 ; i < len(clusterConfig.AllHosts) ; i ++ {
 		if clusterConfig.AllHosts[i] == clusterConfig.Host {
@@ -57,7 +57,7 @@ func (b *BroadcasterForPull) GetResp(i int) (*chatMsg.MsgPack,error) {
 
 func (b *BroadcasterForPull) pullItem(i int) {
 	if !b.outBroad(i) {
-		b.respItems[i], b.errorItems[i] = b.clients[i].Pull(&chatMsg.Ack{From: b.targetIs})
+		b.respItems[i], b.errorItems[i] = b.clients[i].Pull(&chatMsg.PullReq{From: b.targetIs})
 		close(b.finishChan[i])
 	}
 }
