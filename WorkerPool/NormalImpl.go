@@ -1,8 +1,6 @@
 package WorkerPool
 
 import (
-	"fmt"
-
 	"github.com/dxyinme/Luka/cluster/broadcast"
 	"github.com/dxyinme/Luka/util/syncList"
 	"github.com/dxyinme/LukaComm/chatMsg"
@@ -26,6 +24,8 @@ func (ni *NormalImpl) Initial() {
 }
 
 // SendTo in NormalImpl
+// if the msg is in this keeper, send into cache,
+// else redirect to the keeper it belongs to.
 func (ni *NormalImpl) SendTo(msg *chatMsg.Msg) {
 	var (
 		nowList *syncList.SyncList
@@ -40,11 +40,6 @@ func (ni *NormalImpl) SendTo(msg *chatMsg.Msg) {
 	}
 	nowList.PushBack(msg)
 	ni.saveInto(msg)
-}
-
-func (ni *NormalImpl) saveInto(msg *chatMsg.Msg) {
-	glog.Infof("from: [%s] , target: [%s] : content : %s , Be save into hardware.",
-		msg.From, msg.Target, string(msg.Content))
 }
 
 // Pull in NormalImpl
@@ -85,6 +80,10 @@ func (ni *NormalImpl) PullAll(targetIs string) (*chatMsg.MsgPack, error) {
 	return pack, err
 }
 
+func (ni *NormalImpl) saveInto(msg *chatMsg.Msg) {
+	glog.Infof("from: [%s] , target: [%s] : content : %s , Be save into hardware.",
+		msg.From, msg.Target, string(msg.Content))
+}
 
 // pullSelf in this user. strategy is LIFO
 func (ni *NormalImpl) pullSelf(targetIs string) (*chatMsg.MsgPack, error) {
@@ -97,7 +96,7 @@ func (ni *NormalImpl) pullSelf(targetIs string) (*chatMsg.MsgPack, error) {
 	nowList, ok = ni.cache[targetIs]
 	pack = &chatMsg.MsgPack{MsgList: []*chatMsg.Msg{}}
 	if !ok {
-		return pack, fmt.Errorf("NoMessage")
+		return pack, nil
 	}
 	for len(pack.MsgList) < PackLimit {
 		if nowList.Len() > 0 {
