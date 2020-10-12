@@ -18,6 +18,10 @@ keeperD:
 	$(GOBUILD) -o bin/KeeperDeployment/KeeperDeployment main/KeeperDeployment.go
 	@cp -rf conf bin/KeeperDeployment/
 
+assigneerD:
+	@echo "generate assigneer"
+	$(GOBUILD) -o bin/AssigneerDeployment/AssigneerDeployment main/AssigneerDeployment.go
+
 fmt:
 	@echo "gofmt (simplify)"
 	@gofmt -s -l -w $(FILES) 2>&1 | $(FAIL_ON_STDOUT)
