@@ -88,17 +88,21 @@ func (ni *NormalImpl) syncLocationAssignToStruct() {
 func (ni *NormalImpl) SendTo(msg *chatMsg.Msg) {
 	glog.Infof("from: [%s] , target: [%s] : content: %s , Be transported.",
 		msg.From, msg.Target, string(msg.Content))
-	hashTarget := ni.assign.AssignTo((&CoHash.UID{Uid: msg.Target}).GetHash())
-	if hashTarget == uint32(config.KeeperID) {
-		if msg.MsgType == chatMsg.MsgType_Single {
-			ni.sendToCacheP2P(msg)
-		} else if msg.MsgType == chatMsg.MsgType_Group {
-			ni.sendToCacheP2G(msg)
+	if msg.MsgType == chatMsg.MsgType_Single {
+		// single chat
+		hashTarget := ni.assign.AssignTo((&CoHash.UID{Uid: msg.Target}).GetHash())
+		if hashTarget == uint32(config.KeeperID) {
+			if msg.MsgType == chatMsg.MsgType_Single {
+				ni.sendToCache(msg, msg.Target)
+			} else {
+				// todo
+			}
 		} else {
-			// todo
+			ni.redirectMessage(msg, hashTarget)
 		}
-	} else {
-		ni.redirectMessage(msg, hashTarget)
+	} else if msg.MsgType == chatMsg.MsgType_Group {
+		// group chat
+		ni.sendToCacheP2G(msg)
 	}
 	ni.saveInto(msg)
 }
@@ -141,12 +145,12 @@ func (ni *NormalImpl) PullAll(targetIs string) (*chatMsg.MsgPack, error) {
 	return pack, err
 }
 
-func (ni *NormalImpl) sendToCacheP2P(msg *chatMsg.Msg) {
+func (ni *NormalImpl) sendToCache(msg *chatMsg.Msg, target string) {
 	var (
 		nowList *syncList.SyncList
 		ok      bool
 	)
-	nowList, ok = ni.cache[msg.Target]
+	nowList, ok = ni.cache[target]
 	if !ok {
 		nowList = syncList.New()
 		ni.cache[msg.Target] = nowList
