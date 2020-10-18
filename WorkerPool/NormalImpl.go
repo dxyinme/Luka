@@ -83,12 +83,20 @@ func (ni *NormalImpl) syncLocationAssignToStruct() {
 // SendTo in NormalImpl
 // if the msg is in this keeper, send into cache,
 // else redirect to the keeper it belongs to.
+// user‘s position confirm by UID,
+// group's position confirm by GroupID(UID in other way)
 func (ni *NormalImpl) SendTo(msg *chatMsg.Msg) {
 	glog.Infof("from: [%s] , target: [%s] : content: %s , Be transported.",
 		msg.From, msg.Target, string(msg.Content))
 	hashTarget := ni.assign.AssignTo((&CoHash.UID{Uid: msg.Target}).GetHash())
 	if hashTarget == uint32(config.KeeperID) {
-		ni.sendToCache(msg)
+		if msg.MsgType == chatMsg.MsgType_Single {
+			ni.sendToCacheP2P(msg)
+		} else if msg.MsgType == chatMsg.MsgType_Group {
+			ni.sendToCacheP2G(msg)
+		} else {
+			// todo
+		}
 	} else {
 		ni.redirectMessage(msg, hashTarget)
 	}
@@ -133,7 +141,7 @@ func (ni *NormalImpl) PullAll(targetIs string) (*chatMsg.MsgPack, error) {
 	return pack, err
 }
 
-func (ni *NormalImpl) sendToCache(msg *chatMsg.Msg) {
+func (ni *NormalImpl) sendToCacheP2P(msg *chatMsg.Msg) {
 	var (
 		nowList *syncList.SyncList
 		ok      bool
@@ -146,6 +154,12 @@ func (ni *NormalImpl) sendToCache(msg *chatMsg.Msg) {
 	nowList.PushBack(msg)
 }
 
+// sendToCacheP2G to which users in this group in this keeper
+func (ni *NormalImpl) sendToCacheP2G(msg *chatMsg.Msg) {
+	// todo
+}
+
+// redirect message to correct keeper
 func (ni *NormalImpl) redirectMessage(msg *chatMsg.Msg, keeperID uint32) {
 	// todo
 }
