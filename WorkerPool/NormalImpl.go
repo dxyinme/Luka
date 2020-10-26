@@ -158,9 +158,16 @@ func (ni *NormalImpl) sendToCache(msg *chatMsg.Msg, target string) {
 	nowList.PushBack(msg)
 }
 
-// sendToCacheP2G to which users in this group in this keeper
+// sendToCacheP2G to which users in this group
 func (ni *NormalImpl) sendToCacheP2G(msg *chatMsg.Msg) {
 	// todo
+	_ = ni.getAllUserInThisGroup(msg.GroupName)
+}
+
+// getAllUserInThisGroup :
+func (ni *NormalImpl) getAllUserInThisGroup(groupName string) []string {
+	// todo
+	return make([]string, 5)
 }
 
 // redirect message to correct keeper
