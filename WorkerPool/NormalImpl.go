@@ -7,6 +7,7 @@ import (
 	"github.com/dxyinme/Luka/cluster/config"
 	"github.com/dxyinme/Luka/util/syncList"
 	"github.com/dxyinme/LukaComm/Assigneer"
+	CynicUClient "github.com/dxyinme/LukaComm/CynicU/Client"
 	"github.com/dxyinme/LukaComm/chatMsg"
 	"github.com/dxyinme/LukaComm/util/CoHash"
 	"github.com/golang/glog"
@@ -27,13 +28,24 @@ var (
 // **cache** the message queue of all user in this WorkerPool
 // **assignToStruct** the CoHash circle of keepers
 type NormalImpl struct {
-	cache 	map[string]*syncList.SyncList
-	assign 	CoHash.AssignToStruct
+	cache 			map[string]*syncList.SyncList
+
+	redirectClients map[uint32]*CynicUClient.Client
+
+	assign 			CoHash.AssignToStruct
+
+	hosts 			map[uint32]string
+}
+
+func (ni *NormalImpl) SyncLocationNotify() {
+	ni.SyncLocationAssignToStruct()
 }
 
 // Initial this WorkerPool as NormalImpl
 func (ni *NormalImpl) Initial() {
 	ni.cache = make(map[string]*syncList.SyncList)
+	ni.hosts = make(map[uint32]string)
+	ni.redirectClients = make(map[uint32]*CynicUClient.Client)
 	conn, err := grpc.Dial(*AssignHost, grpc.WithInsecure())
 	if err != nil {
 		glog.Fatal(err)
@@ -41,25 +53,25 @@ func (ni *NormalImpl) Initial() {
 	defer conn.Close()
 	c := Assigneer.NewAssigneerClient(conn)
 	_, err = c.AddKeeper(context.Background(), &Assigneer.AddKeeperReq{
-		KeeperID: uint32(config.KeeperID),
+		KeeperID: 	uint32(config.KeeperID),
+		Host:		config.Host,
 	})
-	go func() {
-		for {
-			select {
-			case <-time.After(time.Second):
-				ni.syncLocationAssignToStruct()
-				break
-			}
-		}
-	}()
 }
 
 func (ni *NormalImpl) Reduce() {
-
+	conn, err := grpc.Dial(*AssignHost, grpc.WithInsecure())
+	if err != nil {
+		glog.Fatal(err)
+	}
+	defer conn.Close()
+	c := Assigneer.NewAssigneerClient(conn)
+	_, err = c.RemoveKeeper(context.Background(), &Assigneer.RemoveKeeperReq{
+		KeeperID: uint32(config.KeeperID),
+	})
 }
 
 // SyncLocationAssignToStruct timeTask for sync the online AssignToStruct
-func (ni *NormalImpl) syncLocationAssignToStruct() {
+func (ni *NormalImpl) SyncLocationAssignToStruct() {
 	conn, err := grpc.Dial(*AssignHost, grpc.WithInsecure())
 	if err != nil {
 		glog.Info(err)
@@ -73,10 +85,11 @@ func (ni *NormalImpl) syncLocationAssignToStruct() {
 		glog.Info(err)
 	}
 	var NewKeeperIDs []int
-	for _,v := range ret.KeeperIDs {
-		NewKeeperIDs = append(NewKeeperIDs, int(v))
+	for i := 0 ; i < len(ret.KeeperIDs); i ++ {
+		NewKeeperIDs = append(NewKeeperIDs, int(ret.KeeperIDs[i]))
+		ni.hosts[ret.KeeperIDs[i]] = ret.Hosts[i]
 	}
-	//glog.Info(ret.KeeperIDs)
+	glog.Infof("keeperIds : %v, Hosts : %v", ret.KeeperIDs, ret.Hosts)
 	ni.assign.SetKeeperIDs(NewKeeperIDs)
 }
 
@@ -172,7 +185,23 @@ func (ni *NormalImpl) getAllUserInThisGroup(groupName string) []string {
 
 // redirect message to correct keeper
 func (ni *NormalImpl) redirectMessage(msg *chatMsg.Msg, keeperID uint32) {
-	// todo
+	glog.Infof("%v , keeperId : %v", msg, keeperID)
+	var (
+		client *CynicUClient.Client
+		ok bool
+		err error
+	)
+	if client, ok = ni.redirectClients[keeperID]; !ok {
+		client := &CynicUClient.Client{}
+		err = client.Initial(ni.hosts[keeperID], time.Second * 3)
+		if err != nil {
+			glog.Error(err)
+		}
+	}
+	err = client.SendTo(msg)
+	if err != nil {
+		glog.Error(err)
+	}
 }
 
 func (ni *NormalImpl) saveInto(msg *chatMsg.Msg) {

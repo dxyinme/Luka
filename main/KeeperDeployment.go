@@ -25,6 +25,7 @@ func main() {
 	// bind的时候记住，务必bind初始化完成的Impl
 	normalImpl := &WorkerPool.NormalImpl{}
 	normalImpl.Initial()
+	defer normalImpl.Reduce()
 	s.BindWorkerPool(normalImpl)
 	if err := server.Serve(s.Lis); err != nil {
 		glog.Fatalf("Server failed because of %v", err)

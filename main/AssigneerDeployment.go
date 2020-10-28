@@ -20,7 +20,9 @@ func main() {
 		log.Fatal(err)
 	}
 	s := grpc.NewServer()
-	Assigneer.RegisterAssigneerServer(s, &AssigneerServer.Server{})
+	assServer := &AssigneerServer.Server{}
+	assServer.Initial()
+	Assigneer.RegisterAssigneerServer(s, assServer)
 	if err = s.Serve(lis); err != nil {
 		log.Fatal(err)
 	}
