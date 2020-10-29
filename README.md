@@ -27,10 +27,6 @@ the host of this service serve for.
 [host] host keeperIDs
 ```
 
-the host of all service hosts in this cluster.
-```batch
-[AllHostX] host
-```
 
 #### Luka Wiki
 [LukaWiki](https://github.com/dxyinme/Luka/wiki)
