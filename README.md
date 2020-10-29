@@ -24,7 +24,7 @@ make keeperD
 
 the host of this service serve for.
 ```batch
-[host] host 
+[host] host keeperIDs
 ```
 
 the host of all service hosts in this cluster.
