@@ -17,6 +17,7 @@ keeperD:
 	@echo "generate keeper"
 	$(GOBUILD) -o bin/KeeperDeployment/KeeperDeployment main/KeeperDeployment.go
 	@cp -rf conf bin/KeeperDeployment/
+	@cp -rf script/keeper bin/KeeperDeployment/
 
 assigneerD:
 	@echo "generate assigneer"

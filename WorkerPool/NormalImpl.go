@@ -188,15 +188,16 @@ func (ni *NormalImpl) redirectMessage(msg *chatMsg.Msg, keeperID uint32) {
 	glog.Infof("%v , keeperId : %v", msg, keeperID)
 	var (
 		client *CynicUClient.Client
-		ok bool
 		err error
 	)
-	if client, ok = ni.redirectClients[keeperID]; !ok {
-		client := &CynicUClient.Client{}
+	client = ni.redirectClients[keeperID]
+	if client == nil {
+		client = &CynicUClient.Client{}
 		err = client.Initial(ni.hosts[keeperID], time.Second * 3)
 		if err != nil {
 			glog.Error(err)
 		}
+		ni.redirectClients[keeperID] = client
 	}
 	err = client.SendTo(msg)
 	if err != nil {
