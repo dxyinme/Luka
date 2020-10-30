@@ -22,6 +22,7 @@ keeperD:
 assigneerD:
 	@echo "generate assigneer"
 	$(GOBUILD) -o bin/AssigneerDeployment/AssigneerDeployment main/AssigneerDeployment.go
+	@cp -rf script/assigneer bin/AssigneerDeployment/
 
 fmt:
 	@echo "gofmt (simplify)"
