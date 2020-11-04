@@ -3,7 +3,7 @@ package main
 import (
 	"flag"
 	"github.com/dxyinme/LukaComm/Assigneer"
-	AssigneerServer "github.com/dxyinme/LukaComm/Assigneer/Server"
+	"github.com/dxyinme/Luka/assigneerServer"
 	"google.golang.org/grpc"
 	"log"
 	"net"
@@ -20,7 +20,7 @@ func main() {
 		log.Fatal(err)
 	}
 	s := grpc.NewServer()
-	assServer := &AssigneerServer.Server{}
+	assServer := &assigneerServer.Server{}
 	assServer.Initial()
 	Assigneer.RegisterAssigneerServer(s, assServer)
 	if err = s.Serve(lis); err != nil {
