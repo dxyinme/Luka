@@ -25,15 +25,20 @@ var (
 )
 
 // NormalImpl :
-// **cache** the message queue of all user in this WorkerPool
-// **assignToStruct** the CoHash circle of keepers
+// an impl for workerPool
 type NormalImpl struct {
-	cache 			map[string]*syncList.SyncList
+	// List<UID>		: the UID cache for this keeper.
+	groupCache		map[string]*syncList.SyncList
+	// List<*chatMsg> 	: the message queue of all user in this WorkerPool
+	personCache 	map[string]*syncList.SyncList
 
+	// Connection during each keeper in the cluster.
 	redirectClients map[uint32]*CynicUClient.Client
 
+	// the CoHash circle for keepers cluster.
 	assign 			CoHash.AssignToStruct
 
+	// the hosts for keeper in cluster.
 	hosts 			map[uint32]string
 }
 
@@ -43,9 +48,12 @@ func (ni *NormalImpl) SyncLocationNotify() {
 
 // Initial this WorkerPool as NormalImpl
 func (ni *NormalImpl) Initial() {
-	ni.cache = make(map[string]*syncList.SyncList)
+	ni.personCache = make(map[string]*syncList.SyncList)
+	ni.groupCache = make(map[string]*syncList.SyncList)
+
 	ni.hosts = make(map[uint32]string)
 	ni.redirectClients = make(map[uint32]*CynicUClient.Client)
+
 	conn, err := grpc.Dial(*AssignHost, grpc.WithInsecure())
 	if err != nil {
 		glog.Fatal(err)
@@ -107,8 +115,6 @@ func (ni *NormalImpl) SendTo(msg *chatMsg.Msg) {
 		if hashTarget == uint32(config.KeeperID) {
 			if msg.MsgType == chatMsg.MsgType_Single {
 				ni.sendToCache(msg, msg.Target)
-			} else {
-				// todo
 			}
 		} else {
 			ni.redirectMessage(msg, hashTarget)
@@ -163,27 +169,43 @@ func (ni *NormalImpl) sendToCache(msg *chatMsg.Msg, target string) {
 		nowList *syncList.SyncList
 		ok      bool
 	)
-	nowList, ok = ni.cache[target]
+	nowList, ok = ni.personCache[target]
 	if !ok {
 		nowList = syncList.New()
-		ni.cache[msg.Target] = nowList
+		ni.personCache[msg.Target] = nowList
 	}
 	nowList.PushBack(msg)
 }
 
 // sendToCacheP2G to which users in this group
+// ! waiting for testing
 func (ni *NormalImpl) sendToCacheP2G(msg *chatMsg.Msg) {
-	// todo
-	_ = ni.getAllUserInThisGroup(msg.GroupName)
+	nowList, ok := ni.groupCache[msg.GroupName]
+	if !ok {
+		return
+	}
+
+	if nowList == nil {
+		return
+	}
+	nowList.Lock()
+	for item := nowList.Front() ; item != nil ; item = item.Next() {
+		UID := item.Value.(string)
+		msgCopy := *msg
+		msgCopy.Spread = false
+		ni.sendToCache(&msgCopy, UID)
+	}
+	nowList.Unlock()
+	if msg.Spread {
+		for keeperID := range ni.hosts {
+			msgCopy := *msg
+			msgCopy.Spread = false
+			ni.redirectMessage(&msgCopy, keeperID)
+		}
+	}
 }
 
-// getAllUserInThisGroup :
-func (ni *NormalImpl) getAllUserInThisGroup(groupName string) []string {
-	// todo
-	return make([]string, 5)
-}
-
-// redirect message to correct keeper
+// redirect message to keeper 'keeperID'
 func (ni *NormalImpl) redirectMessage(msg *chatMsg.Msg, keeperID uint32) {
 	glog.Infof("%v , keeperId : %v", msg, keeperID)
 	var (
@@ -218,7 +240,7 @@ func (ni *NormalImpl) pullSelf(targetIs string) (*chatMsg.MsgPack, error) {
 		ok      bool
 	)
 	glog.Infof("Pull from : [%s]", targetIs)
-	nowList, ok = ni.cache[targetIs]
+	nowList, ok = ni.personCache[targetIs]
 	pack = &chatMsg.MsgPack{MsgList: []*chatMsg.Msg{}}
 	if !ok {
 		return pack, nil

@@ -10,6 +10,14 @@ type SyncList struct {
 	tmp *list.List
 }
 
+func (sl *SyncList) Lock() {
+	sl.mutex.Lock()
+}
+
+func (sl *SyncList) Unlock() {
+	sl.mutex.Unlock()
+}
+
 func (sl *SyncList) Back() *list.Element {
 	sl.mutex.Lock()
 	defer sl.mutex.Unlock()
