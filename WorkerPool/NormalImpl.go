@@ -5,6 +5,7 @@ import (
 	"flag"
 	"github.com/dxyinme/Luka/cluster/broadcast"
 	"github.com/dxyinme/Luka/cluster/config"
+	"github.com/dxyinme/Luka/util/ListCache"
 	"github.com/dxyinme/Luka/util/syncList"
 	"github.com/dxyinme/LukaComm/Assigneer"
 	CynicUClient "github.com/dxyinme/LukaComm/CynicU/Client"
@@ -28,9 +29,10 @@ var (
 // an impl for workerPool
 type NormalImpl struct {
 	// List<UID>		: the UID cache for this keeper.
-	groupCache		map[string]*syncList.SyncList
+	groupCache		*ListCache.ListCache
+
 	// List<*chatMsg> 	: the message queue of all user in this WorkerPool
-	personCache 	map[string]*syncList.SyncList
+	personCache 	*ListCache.ListCache
 
 	// Connection during each keeper in the cluster.
 	redirectClients map[uint32]*CynicUClient.Client
@@ -42,14 +44,25 @@ type NormalImpl struct {
 	hosts 			map[uint32]string
 }
 
+func (ni *NormalImpl) LeaveGroup(req *chatMsg.GroupReq) error {
+
+	return nil
+}
+
+func (ni *NormalImpl) JoinGroup(req *chatMsg.GroupReq) error {
+
+	return nil
+}
+
+// sync assign information
 func (ni *NormalImpl) SyncLocationNotify() {
 	ni.SyncLocationAssignToStruct()
 }
 
 // Initial this WorkerPool as NormalImpl
 func (ni *NormalImpl) Initial() {
-	ni.personCache = make(map[string]*syncList.SyncList)
-	ni.groupCache = make(map[string]*syncList.SyncList)
+	ni.personCache = ListCache.New()
+	ni.groupCache = ListCache.New()
 
 	ni.hosts = make(map[uint32]string)
 	ni.redirectClients = make(map[uint32]*CynicUClient.Client)
@@ -164,15 +177,16 @@ func (ni *NormalImpl) PullAll(targetIs string) (*chatMsg.MsgPack, error) {
 	return pack, err
 }
 
+// send msg[for person] to personCache
 func (ni *NormalImpl) sendToCache(msg *chatMsg.Msg, target string) {
 	var (
 		nowList *syncList.SyncList
 		ok      bool
 	)
-	nowList, ok = ni.personCache[target]
+	nowList, ok = ni.personCache.Get(target)
 	if !ok {
 		nowList = syncList.New()
-		ni.personCache[msg.Target] = nowList
+		ni.personCache.Set(msg.Target, nowList)
 	}
 	nowList.PushBack(msg)
 }
@@ -180,22 +194,21 @@ func (ni *NormalImpl) sendToCache(msg *chatMsg.Msg, target string) {
 // sendToCacheP2G to which users in this group
 // ! waiting for testing
 func (ni *NormalImpl) sendToCacheP2G(msg *chatMsg.Msg) {
-	nowList, ok := ni.groupCache[msg.GroupName]
-	if !ok {
+	nowList, ok := ni.groupCache.Get(msg.GroupName)
+	if !ok || nowList == nil {
 		return
 	}
-
-	if nowList == nil {
-		return
-	}
-	nowList.Lock()
+	// there is no need to lock , just broadcast the message.
 	for item := nowList.Front() ; item != nil ; item = item.Next() {
 		UID := item.Value.(string)
 		msgCopy := *msg
 		msgCopy.Spread = false
+		if msgCopy.From == UID {
+			// it is no need to send to self.
+			continue
+		}
 		ni.sendToCache(&msgCopy, UID)
 	}
-	nowList.Unlock()
 	if msg.Spread {
 		for keeperID := range ni.hosts {
 			msgCopy := *msg
@@ -227,8 +240,10 @@ func (ni *NormalImpl) redirectMessage(msg *chatMsg.Msg, keeperID uint32) {
 	}
 }
 
+// save msg into hard disk
 func (ni *NormalImpl) saveInto(msg *chatMsg.Msg) {
-	glog.Infof("from: [%s] , target: [%s] : content : %s , Be save into hardware.",
+	// todo
+	glog.Infof("from: [%s] , target: [%s] : content : %s , Be save into hard disk.",
 		msg.From, msg.Target, string(msg.Content))
 }
 
@@ -240,9 +255,9 @@ func (ni *NormalImpl) pullSelf(targetIs string) (*chatMsg.MsgPack, error) {
 		ok      bool
 	)
 	glog.Infof("Pull from : [%s]", targetIs)
-	nowList, ok = ni.personCache[targetIs]
+	nowList, ok = ni.personCache.Get(targetIs)
 	pack = &chatMsg.MsgPack{MsgList: []*chatMsg.Msg{}}
-	if !ok {
+	if !ok || nowList == nil {
 		return pack, nil
 	}
 	for len(pack.MsgList) < PackLimit {
@@ -253,4 +268,32 @@ func (ni *NormalImpl) pullSelf(targetIs string) (*chatMsg.MsgPack, error) {
 		}
 	}
 	return pack, nil
+}
+
+// save this group's message in this keeper.
+func (ni *NormalImpl) joinToGroupCache(groupName, uid string) {
+	var (
+		nowList *syncList.SyncList
+		ok      bool
+	)
+	nowList, ok = ni.groupCache.Get(groupName)
+	if !ok || nowList == nil {
+		nowList = syncList.New()
+		ni.groupCache.Set(groupName, nowList)
+	}
+	nowList.PushBack(uid)
+
+}
+
+// remove uid from the group.
+func (ni *NormalImpl) leaveFromGroupCache(groupName, uid string) {
+	var (
+		nowList *syncList.SyncList
+		ok      bool
+	)
+	nowList, ok = ni.groupCache.Get(groupName)
+	if !ok || nowList == nil {
+		return
+	}
+	nowList.SearchAndRemove(uid)
 }
