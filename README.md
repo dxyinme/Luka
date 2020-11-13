@@ -6,31 +6,23 @@
 
 <h3>a golang IM service</h3>
 
-
-**deployment Keeper (server is unnecessary)**
-    
-        confirm your port 10137 is free
-
-#### start
+#### compile
 
 ```
 <in linux/macOS>
 export GO111MODULE=on
 export GOPROXY=https://goproxy.io
 make keeperD
-./bin/KeeperDeployment/KeeperDeployment
+make assigneerD
 ```
+
 #### about config
 
 the host of this service serve for.
 ```batch
-[host] host keeperIDs
+[host] host keeperID
 ```
 
-the host of all service hosts in this cluster.
-```batch
-[AllHostX] host
-```
 
 #### Luka Wiki
 [LukaWiki](https://github.com/dxyinme/Luka/wiki)

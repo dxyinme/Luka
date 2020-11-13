@@ -2,8 +2,8 @@ package main
 
 import (
 	"flag"
+	"github.com/dxyinme/Luka/assigneerServer"
 	"github.com/dxyinme/LukaComm/Assigneer"
-	AssigneerServer "github.com/dxyinme/LukaComm/Assigneer/Server"
 	"google.golang.org/grpc"
 	"log"
 	"net"
@@ -15,12 +15,12 @@ var (
 
 func main() {
 	flag.Parse()
-	lis, err := net.Listen("tcp",*Addr)
+	lis, err := net.Listen("tcp", *Addr)
 	if err != nil {
 		log.Fatal(err)
 	}
 	s := grpc.NewServer()
-	assServer := &AssigneerServer.Server{}
+	assServer := &assigneerServer.Server{}
 	assServer.Initial()
 	Assigneer.RegisterAssigneerServer(s, assServer)
 	if err = s.Serve(lis); err != nil {
