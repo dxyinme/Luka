@@ -13,8 +13,8 @@ type ListCache struct {
 func (lc *ListCache) Get(key string) (*syncList.SyncList, bool) {
 	lc.mu.Lock()
 	defer lc.mu.Unlock()
-	v,ok := lc.mp[key]
-	return v,ok
+	v, ok := lc.mp[key]
+	return v, ok
 }
 
 func (lc *ListCache) Set(key string, v *syncList.SyncList) {
@@ -31,7 +31,7 @@ func (lc *ListCache) Delete(key string) {
 
 //constructor
 func New() *ListCache {
-	return &ListCache {
+	return &ListCache{
 		mp: make(map[string]*syncList.SyncList),
 	}
 }

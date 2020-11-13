@@ -9,26 +9,26 @@ import (
 )
 
 type BroadcasterForPull struct {
-	clients 	[]*CynicUClient.Client
-	respItems 	[]*chatMsg.MsgPack
-	errorItems 	[]error
-	targetIs 	string
-	finishChan  []chan bool
+	clients    []*CynicUClient.Client
+	respItems  []*chatMsg.MsgPack
+	errorItems []error
+	targetIs   string
+	finishChan []chan bool
 }
 
-func (b *BroadcasterForPull) Initial() error {
+func (b *BroadcasterForPull) Initial(HostList *[]string) error {
 	var (
 		err error
 	)
-	if clusterConfig.AllHosts == nil {
-		return fmt.Errorf("No Cluster Hosts")
+	if HostList == nil {
+		return fmt.Errorf("%s","No Cluster Host")
 	}
-	for i := 0 ; i < len(clusterConfig.AllHosts) ; i ++ {
-		if clusterConfig.AllHosts[i] == clusterConfig.Host {
+	for i := 0; i < len(*HostList); i++ {
+		if (*HostList)[i] == clusterConfig.Host {
 			continue
 		}
 		nowClient := &CynicUClient.Client{}
-		err = nowClient.Initial(clusterConfig.AllHosts[i], time.Second)
+		err = nowClient.Initial((*HostList)[i], time.Second)
 		if err != nil {
 			return err
 		}
@@ -44,14 +44,14 @@ func (b *BroadcasterForPull) outBroad(i int) bool {
 	return !(0 <= i && i < len(b.clients))
 }
 
-func (b *BroadcasterForPull) GetResp(i int) (*chatMsg.MsgPack,error) {
+func (b *BroadcasterForPull) GetResp(i int) (*chatMsg.MsgPack, error) {
 	if b.outBroad(i) {
-		return nil,nil
+		return nil, nil
 	} else {
 		select {
-			case <-b.finishChan[i] :
+		case <-b.finishChan[i]:
 		}
-		return b.respItems[i],b.errorItems[i]
+		return b.respItems[i], b.errorItems[i]
 	}
 }
 
@@ -71,7 +71,7 @@ func (b *BroadcasterForPull) Size() int {
 }
 
 func (b *BroadcasterForPull) Do() {
-	for i := 0 ; i < len(b.clients); i ++ {
+	for i := 0; i < len(b.clients); i++ {
 		go b.pullItem(i)
 	}
 }

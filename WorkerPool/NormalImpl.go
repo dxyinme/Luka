@@ -3,6 +3,8 @@ package WorkerPool
 import (
 	"context"
 	"flag"
+	"fmt"
+	"github.com/dxyinme/Luka/Group"
 	"github.com/dxyinme/Luka/cluster/broadcast"
 	"github.com/dxyinme/Luka/cluster/config"
 	"github.com/dxyinme/Luka/util/ListCache"
@@ -11,8 +13,10 @@ import (
 	CynicUClient "github.com/dxyinme/LukaComm/CynicU/Client"
 	"github.com/dxyinme/LukaComm/chatMsg"
 	"github.com/dxyinme/LukaComm/util/CoHash"
+	"github.com/dxyinme/LukaComm/util/Const"
 	"github.com/golang/glog"
 	"google.golang.org/grpc"
+	"sync"
 	"time"
 )
 
@@ -28,41 +32,92 @@ var (
 // NormalImpl :
 // an impl for workerPool
 type NormalImpl struct {
-	// List<UID>		: the UID cache for this keeper.
-	groupCache		*ListCache.ListCache
 
-	// List<*chatMsg> 	: the message queue of all user in this WorkerPool
-	personCache 	*ListCache.ListCache
+	groupCache					map[string]*Group.Impl
+
+	// List<*chatMsg> 	: the message queue for all users in this WorkerPool
+	personCache 				*ListCache.ListCache
 
 	// Connection during each keeper in the cluster.
-	redirectClients map[uint32]*CynicUClient.Client
+	redirectClients 			map[uint32]*CynicUClient.Client
+
+	// Lock assign and hosts.
+	CoHashRWLock				sync.RWMutex
 
 	// the CoHash circle for keepers cluster.
-	assign 			CoHash.AssignToStruct
+	assign 						CoHash.AssignToStruct
 
 	// the hosts for keeper in cluster.
-	hosts 			map[uint32]string
+	hosts 						map[uint32]string
+}
+
+func (ni *NormalImpl) DeleteGroup(req *chatMsg.GroupReq) error {
+	var err error
+	group, ok := ni.groupCache[req.GroupName]
+	if !ok || group == nil {
+		err = fmt.Errorf("group [%s] has not created", req.GroupName)
+	} else {
+		if group.GetMaster() != req.Uid {
+			return fmt.Errorf("only master can delete this " +
+				"group . want [%s], but [%s]", group.GetMaster(), req.Uid)
+		}
+		ni.spreadGroupOperator(Const.DeleteGroup, req)
+	}
+	return err
+}
+
+func (ni *NormalImpl) CreateGroup(req *chatMsg.GroupReq) error {
+	var err error
+	group, ok := ni.groupCache[req.GroupName]
+	if ok || group != nil {
+		err = fmt.Errorf("group [%s] has created", req.GroupName)
+	} else {
+		newGroup := Group.New(req.GroupName, req.Uid)
+		if !req.IsCopy {
+			err = newGroup.Join(req.Uid)
+		}
+		if err != nil {
+			return err
+		}
+		ni.groupCache[req.GroupName] = newGroup
+		ni.spreadGroupOperator(Const.CreateGroup, req)
+	}
+	return err
 }
 
 func (ni *NormalImpl) LeaveGroup(req *chatMsg.GroupReq) error {
-
-	return nil
+	var err error
+	group, ok := ni.groupCache[req.GroupName]
+	if !ok || group == nil {
+		err = fmt.Errorf("no such group which's name is [%s]", req.GroupName)
+	} else {
+		err = group.Leave(req.Uid)
+	}
+	return err
 }
 
 func (ni *NormalImpl) JoinGroup(req *chatMsg.GroupReq) error {
-
-	return nil
+	var err error
+	group, ok := ni.groupCache[req.GroupName]
+	if !ok || group == nil {
+		err = fmt.Errorf("no such group which's name is [%s]", req.GroupName)
+	} else {
+		err = group.Join(req.Uid)
+	}
+	return err
 }
 
 // sync assign information
 func (ni *NormalImpl) SyncLocationNotify() {
+	ni.CoHashRWLock.Lock()
+	defer ni.CoHashRWLock.Unlock()
 	ni.SyncLocationAssignToStruct()
 }
 
 // Initial this WorkerPool as NormalImpl
 func (ni *NormalImpl) Initial() {
 	ni.personCache = ListCache.New()
-	ni.groupCache = ListCache.New()
+	ni.groupCache = make(map[string]*Group.Impl)
 
 	ni.hosts = make(map[uint32]string)
 	ni.redirectClients = make(map[uint32]*CynicUClient.Client)
@@ -74,8 +129,8 @@ func (ni *NormalImpl) Initial() {
 	defer conn.Close()
 	c := Assigneer.NewAssigneerClient(conn)
 	_, err = c.AddKeeper(context.Background(), &Assigneer.AddKeeperReq{
-		KeeperID: 	uint32(config.KeeperID),
-		Host:		config.Host,
+		KeeperID: uint32(config.KeeperID),
+		Host:     config.Host,
 	})
 }
 
@@ -106,7 +161,7 @@ func (ni *NormalImpl) SyncLocationAssignToStruct() {
 		glog.Info(err)
 	}
 	var NewKeeperIDs []int
-	for i := 0 ; i < len(ret.KeeperIDs); i ++ {
+	for i := 0; i < len(ret.KeeperIDs); i++ {
 		NewKeeperIDs = append(NewKeeperIDs, int(ret.KeeperIDs[i]))
 		ni.hosts[ret.KeeperIDs[i]] = ret.Hosts[i]
 	}
@@ -126,14 +181,15 @@ func (ni *NormalImpl) SendTo(msg *chatMsg.Msg) {
 		// single chat
 		hashTarget := ni.assign.AssignTo((&CoHash.UID{Uid: msg.Target}).GetHash())
 		if hashTarget == uint32(config.KeeperID) {
-			if msg.MsgType == chatMsg.MsgType_Single {
-				ni.sendToCache(msg, msg.Target)
-			}
+			ni.sendToCache(msg, msg.Target)
 		} else {
 			ni.redirectMessage(msg, hashTarget)
 		}
 	} else if msg.MsgType == chatMsg.MsgType_Group {
 		// group chat
+		if msg.Spread {
+			ni.spread(msg)
+		}
 		ni.sendToCacheP2G(msg)
 	}
 	ni.saveInto(msg)
@@ -156,7 +212,13 @@ func (ni *NormalImpl) PullAll(targetIs string) (*chatMsg.MsgPack, error) {
 		glog.Error(err)
 	}
 	bcForPull = &broadcast.BroadcasterForPull{}
-	err = bcForPull.Initial()
+	var HostList []string
+	ni.CoHashRWLock.RLock()
+	for _,v := range ni.hosts {
+		HostList = append(HostList, v)
+	}
+	ni.CoHashRWLock.RUnlock()
+	err = bcForPull.Initial(&HostList)
 	if err != nil {
 		glog.Error(err)
 	}
@@ -194,26 +256,20 @@ func (ni *NormalImpl) sendToCache(msg *chatMsg.Msg, target string) {
 // sendToCacheP2G to which users in this group
 // ! waiting for testing
 func (ni *NormalImpl) sendToCacheP2G(msg *chatMsg.Msg) {
-	nowList, ok := ni.groupCache.Get(msg.GroupName)
-	if !ok || nowList == nil {
+	var group *Group.Impl
+	group, ok := ni.groupCache[msg.GroupName]
+	if !ok || group == nil {
 		return
 	}
-	// there is no need to lock , just broadcast the message.
-	for item := nowList.Front() ; item != nil ; item = item.Next() {
-		UID := item.Value.(string)
-		msgCopy := *msg
-		msgCopy.Spread = false
-		if msgCopy.From == UID {
-			// it is no need to send to self.
-			continue
-		}
-		ni.sendToCache(&msgCopy, UID)
-	}
-	if msg.Spread {
-		for keeperID := range ni.hosts {
+	glog.Infof("group [%s], from [%s]", msg.GroupName, msg.From)
+	group.RWmu.RLock()
+	defer group.RWmu.RUnlock()
+	for k,v := range group.Members {
+		if v && k != msg.From {
 			msgCopy := *msg
 			msgCopy.Spread = false
-			ni.redirectMessage(&msgCopy, keeperID)
+			msgCopy.Target = k
+			ni.sendToCache(&msgCopy, k)
 		}
 	}
 }
@@ -223,18 +279,40 @@ func (ni *NormalImpl) redirectMessage(msg *chatMsg.Msg, keeperID uint32) {
 	glog.Infof("%v , keeperId : %v", msg, keeperID)
 	var (
 		client *CynicUClient.Client
-		err error
+		err    error
 	)
 	client = ni.redirectClients[keeperID]
 	if client == nil {
 		client = &CynicUClient.Client{}
-		err = client.Initial(ni.hosts[keeperID], time.Second * 3)
+		err = client.Initial(ni.hosts[keeperID], time.Second*3)
 		if err != nil {
 			glog.Error(err)
 		}
 		ni.redirectClients[keeperID] = client
 	}
 	err = client.SendTo(msg)
+	if err != nil {
+		glog.Error(err)
+	}
+}
+
+// redirect group operators to keeper 'keeperID'
+func (ni *NormalImpl) redirectGroupOperator(opNum string, req *chatMsg.GroupReq, keeperID uint32) {
+	glog.Infof("%v , keeperId : %v", req, keeperID)
+	var (
+		client *CynicUClient.Client
+		err    error
+	)
+	client = ni.redirectClients[keeperID]
+	if client == nil {
+		client = &CynicUClient.Client{}
+		err = client.Initial(ni.hosts[keeperID], time.Second*3)
+		if err != nil {
+			glog.Error(err)
+		}
+		ni.redirectClients[keeperID] = client
+	}
+	err = client.GroupOp(opNum, req)
 	if err != nil {
 		glog.Error(err)
 	}
@@ -270,30 +348,31 @@ func (ni *NormalImpl) pullSelf(targetIs string) (*chatMsg.MsgPack, error) {
 	return pack, nil
 }
 
-// save this group's message in this keeper.
-func (ni *NormalImpl) joinToGroupCache(groupName, uid string) {
-	var (
-		nowList *syncList.SyncList
-		ok      bool
-	)
-	nowList, ok = ni.groupCache.Get(groupName)
-	if !ok || nowList == nil {
-		nowList = syncList.New()
-		ni.groupCache.Set(groupName, nowList)
+// spread the group message among the cluster
+func (ni *NormalImpl) spread(msg *chatMsg.Msg) {
+	ni.CoHashRWLock.RLock()
+	defer ni.CoHashRWLock.RUnlock()
+	for k,_ := range ni.hosts {
+		if k == uint32(config.KeeperID) {
+			continue
+		}
+		msgCopy := *msg
+		// set Spread false.
+		msgCopy.Spread = false
+		ni.redirectMessage(&msgCopy, k)
 	}
-	nowList.PushBack(uid)
-
 }
 
-// remove uid from the group.
-func (ni *NormalImpl) leaveFromGroupCache(groupName, uid string) {
-	var (
-		nowList *syncList.SyncList
-		ok      bool
-	)
-	nowList, ok = ni.groupCache.Get(groupName)
-	if !ok || nowList == nil {
-		return
+func (ni *NormalImpl) spreadGroupOperator(opNum string, req *chatMsg.GroupReq) {
+	glog.Infof("opNum [%s], group [%s] , spread", opNum, req.GroupName)
+	ni.CoHashRWLock.RLock()
+	defer ni.CoHashRWLock.RUnlock()
+	for k,_  := range ni.hosts {
+		if k == uint32(config.KeeperID) {
+			continue
+		}
+		reqCopy := *req
+		reqCopy.IsCopy = true
+		ni.redirectGroupOperator(opNum, &reqCopy, k)
 	}
-	nowList.SearchAndRemove(uid)
 }

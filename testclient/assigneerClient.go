@@ -14,29 +14,29 @@ func main() {
 	}
 	defer conn.Close()
 	c := Assigneer.NewAssigneerClient(conn)
-	_,err = c.AddKeeper(context.Background(), &Assigneer.AddKeeperReq{
+	_, err = c.AddKeeper(context.Background(), &Assigneer.AddKeeperReq{
 		KeeperID: 224,
 	})
 	if err != nil {
 		log.Fatal(err)
 	}
-	_,err = c.AddKeeper(context.Background(), &Assigneer.AddKeeperReq{
+	_, err = c.AddKeeper(context.Background(), &Assigneer.AddKeeperReq{
 		KeeperID: 58,
 	})
 	if err != nil {
 		log.Fatal(err)
 	}
-	ret,err := c.SyncLocation(context.Background(), &Assigneer.SyncLocationReq{
+	ret, err := c.SyncLocation(context.Background(), &Assigneer.SyncLocationReq{
 		KeeperID: 0,
 	})
 	if err != nil {
 		log.Fatal(err)
 	}
 	log.Println(ret.KeeperIDs)
-	_,err = c.RemoveKeeper(context.Background(), &Assigneer.RemoveKeeperReq{
+	_, err = c.RemoveKeeper(context.Background(), &Assigneer.RemoveKeeperReq{
 		KeeperID: 58,
 	})
-	ret,err = c.SyncLocation(context.Background(), &Assigneer.SyncLocationReq{
+	ret, err = c.SyncLocation(context.Background(), &Assigneer.SyncLocationReq{
 		KeeperID: 0,
 	})
 	if err != nil {
@@ -44,4 +44,3 @@ func main() {
 	}
 	log.Println(ret.KeeperIDs)
 }
-

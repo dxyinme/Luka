@@ -3,9 +3,9 @@ package assigneerServer
 import (
 	"context"
 	"github.com/dxyinme/LukaComm/Assigneer"
+	CynicUClient "github.com/dxyinme/LukaComm/CynicU/Client"
 	"github.com/dxyinme/LukaComm/util/CoHash"
 	"github.com/golang/glog"
-	CynicUClient "github.com/dxyinme/LukaComm/CynicU/Client"
 	"time"
 )
 
@@ -23,16 +23,16 @@ func (s *Server) Initial() {
 func (s *Server) SyncLocation(context.Context, *Assigneer.SyncLocationReq) (*Assigneer.SyncLocationRsp, error) {
 	var ret []uint32
 	var retHost []string
-	for i := 0 ; i < len(s.assignToStruct.KeeperIDs); i ++ {
+	for i := 0; i < len(s.assignToStruct.KeeperIDs); i++ {
 		ret = append(ret, uint32(s.assignToStruct.KeeperIDs[i]))
 	}
-	for i := 0 ; i < len(ret); i ++ {
+	for i := 0; i < len(ret); i++ {
 		retHost = append(retHost, s.hosts[ret[i]])
 	}
 	return &Assigneer.SyncLocationRsp{
-		KeeperIDs: 	ret,
-		Hosts:		retHost,
-	},nil
+		KeeperIDs: ret,
+		Hosts:     retHost,
+	}, nil
 }
 
 func (s *Server) RemoveKeeper(ctx context.Context, in *Assigneer.RemoveKeeperReq) (*Assigneer.AssignAck, error) {
@@ -44,16 +44,16 @@ func (s *Server) RemoveKeeper(ctx context.Context, in *Assigneer.RemoveKeeperReq
 	s.syncLocationNotify()
 	return &Assigneer.AssignAck{
 		AckMessage: "",
-	},nil
+	}, nil
 }
 
-func (s *Server) AddKeeper(ctx context.Context,in *Assigneer.AddKeeperReq) (*Assigneer.AssignAck, error) {
+func (s *Server) AddKeeper(ctx context.Context, in *Assigneer.AddKeeperReq) (*Assigneer.AssignAck, error) {
 	s.assignToStruct.AppendKeeper(in.KeeperID)
 	s.hosts[in.KeeperID] = in.Host
 	s.syncLocationNotify()
 	return &Assigneer.AssignAck{
 		AckMessage: "",
-	},nil
+	}, nil
 }
 
 func (s *Server) SwitchKeeper(ctx context.Context, in *Assigneer.SwitchKeeperReq) (*Assigneer.SwitchKeeperRsp, error) {
@@ -66,11 +66,11 @@ func (s *Server) SwitchKeeper(ctx context.Context, in *Assigneer.SwitchKeeperReq
 }
 
 func (s *Server) syncLocationNotify() {
-	for _,v := range s.hosts {
+	for _, v := range s.hosts {
 		go func(host string) {
 			var err error
 			client := &CynicUClient.Client{}
-			err = client.Initial(host, time.Second * 3)
+			err = client.Initial(host, time.Second*3)
 			if err != nil {
 				glog.Error(err)
 				return

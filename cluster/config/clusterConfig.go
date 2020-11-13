@@ -26,7 +26,7 @@ func SetAllHosts(hosts []string) {
 }
 
 func LoadFromFile(filename string) {
-	file,err := os.Open(filename)
+	file, err := os.Open(filename)
 	if err != nil {
 		glog.Error(err)
 	}
@@ -38,14 +38,14 @@ func LoadFromFile(filename string) {
 		if ok == io.EOF {
 			break
 		}
-		nowLineInfo := strings.Split(line , " ")
+		nowLineInfo := strings.Split(line, " ")
 		if len(nowLineInfo) < 2 {
 			continue
 		} else {
 			// [Host] length is 3 , [AllHostX] length is 2
 			if nowLineInfo[0] == "[Host]" {
 				SetHost(nowLineInfo[1])
-				KeeperID,err = strconv.Atoi(strings.TrimSpace(nowLineInfo[2]))
+				KeeperID, err = strconv.Atoi(strings.TrimSpace(nowLineInfo[2]))
 				if err != nil {
 					glog.Fatal(err)
 				}

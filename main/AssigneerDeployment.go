@@ -2,8 +2,8 @@ package main
 
 import (
 	"flag"
-	"github.com/dxyinme/LukaComm/Assigneer"
 	"github.com/dxyinme/Luka/assigneerServer"
+	"github.com/dxyinme/LukaComm/Assigneer"
 	"google.golang.org/grpc"
 	"log"
 	"net"
@@ -15,7 +15,7 @@ var (
 
 func main() {
 	flag.Parse()
-	lis, err := net.Listen("tcp",*Addr)
+	lis, err := net.Listen("tcp", *Addr)
 	if err != nil {
 		log.Fatal(err)
 	}

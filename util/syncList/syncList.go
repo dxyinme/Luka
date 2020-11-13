@@ -8,7 +8,7 @@ import (
 // only be used in normal type or pointer[do not use SearchAndRemove in complex struct]
 type SyncList struct {
 	mutex sync.Mutex
-	tmp *list.List
+	tmp   *list.List
 }
 
 func (sl *SyncList) Lock() {
@@ -47,7 +47,7 @@ func (sl *SyncList) Remove(element *list.Element) interface{} {
 // search all the interface equal to v and delete them
 func (sl *SyncList) SearchAndRemove(v interface{}) {
 	sl.mutex.Lock()
-	for item := sl.tmp.Front() ; item != nil ; item = item.Next() {
+	for item := sl.tmp.Front(); item != nil; item = item.Next() {
 		if v == item.Value {
 			sl.tmp.Remove(item)
 		}
@@ -64,4 +64,3 @@ func (sl *SyncList) Len() int {
 func New() *SyncList {
 	return &SyncList{tmp: list.New()}
 }
-
