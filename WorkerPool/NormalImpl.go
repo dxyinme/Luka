@@ -340,7 +340,7 @@ func (ni *NormalImpl) pullSelf(targetIs string) (*chatMsg.MsgPack, error) {
 	}
 	for len(pack.MsgList) < PackLimit {
 		if nowList.Len() > 0 {
-			pack.MsgList = append(pack.MsgList, nowList.Remove(nowList.Back()).(*chatMsg.Msg))
+			pack.MsgList = append(pack.MsgList, nowList.Remove(nowList.Front()).(*chatMsg.Msg))
 		} else {
 			break
 		}
