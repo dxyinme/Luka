@@ -8,5 +8,6 @@ env:
 
 script:
   - go test -v ./WorkerPool
+  - go test -v ./assigneerServer/AssignUtil
   - make keeperD
   - make assigneerD

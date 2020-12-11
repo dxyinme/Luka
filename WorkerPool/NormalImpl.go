@@ -17,6 +17,7 @@ import (
 	"github.com/golang/glog"
 	"google.golang.org/grpc"
 	"sync"
+	"sync/atomic"
 	"time"
 )
 
@@ -49,6 +50,28 @@ type NormalImpl struct {
 
 	// the hosts for keeper in cluster.
 	hosts 						map[uint32]string
+
+
+	// about maintain
+	msgRecv						int32
+	msgSend						int32
+	msgNotLocal					int32
+
+}
+
+func (ni *NormalImpl) CheckAlive(req *chatMsg.KeepAlive) (ret *chatMsg.KeepAlive) {
+	ret = &chatMsg.KeepAlive{
+		CheckAlive: req.CheckAlive,
+	}
+	ret.Errors = make([]string, 1)
+
+	ret.MsgSend = atomic.LoadInt32(&ni.msgSend)
+	atomic.AddInt32(&ni.msgSend, -ret.MsgSend)
+	ret.MsgRecv = atomic.LoadInt32(&ni.msgRecv)
+	atomic.AddInt32(&ni.msgSend, -ret.MsgRecv)
+	ret.MsgNotLocal = atomic.LoadInt32(&ni.msgNotLocal)
+	atomic.AddInt32(&ni.msgSend, -ret.MsgRecv)
+	return
 }
 
 func (ni *NormalImpl) DeleteGroup(req *chatMsg.GroupReq) error {
@@ -116,6 +139,11 @@ func (ni *NormalImpl) SyncLocationNotify() {
 
 // Initial this WorkerPool as NormalImpl
 func (ni *NormalImpl) Initial() {
+
+	ni.msgNotLocal = 0
+	ni.msgSend = 0
+	ni.msgRecv = 0
+
 	ni.personCache = ListCache.New()
 	ni.groupCache = make(map[string]*Group.Impl)
 
@@ -177,6 +205,9 @@ func (ni *NormalImpl) SyncLocationAssignToStruct() {
 func (ni *NormalImpl) SendTo(msg *chatMsg.Msg) {
 	glog.Infof("from: [%s] , target: [%s] : content: %s , Be transported.",
 		msg.From, msg.Target, string(msg.Content))
+
+	atomic.AddInt32(&ni.msgRecv, 1)
+
 	if msg.MsgType == chatMsg.MsgType_Single {
 		// single chat
 		hashTarget := ni.assign.AssignTo((&CoHash.UID{Uid: msg.Target}).GetHash())
@@ -277,6 +308,9 @@ func (ni *NormalImpl) sendToCacheP2G(msg *chatMsg.Msg) {
 // redirect message to keeper 'keeperID'
 func (ni *NormalImpl) redirectMessage(msg *chatMsg.Msg, keeperID uint32) {
 	glog.Infof("%v , keeperId : %v", msg, keeperID)
+
+	atomic.AddInt32(&ni.msgNotLocal, 1)
+
 	var (
 		client *CynicUClient.Client
 		err    error
@@ -332,6 +366,7 @@ func (ni *NormalImpl) pullSelf(targetIs string) (*chatMsg.MsgPack, error) {
 		pack    *chatMsg.MsgPack
 		ok      bool
 	)
+
 	glog.Infof("Pull from : [%s]", targetIs)
 	nowList, ok = ni.personCache.Get(targetIs)
 	pack = &chatMsg.MsgPack{MsgList: []*chatMsg.Msg{}}
@@ -345,6 +380,8 @@ func (ni *NormalImpl) pullSelf(targetIs string) (*chatMsg.MsgPack, error) {
 			break
 		}
 	}
+
+	atomic.AddInt32(&ni.msgSend, int32(len(pack.MsgList)))
 	return pack, nil
 }
 

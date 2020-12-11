@@ -44,9 +44,15 @@ github.com/dxyinme/LukaComm v0.0.1-beta.5.7.10 h1:k9fp4zzXcK4u1oy5JBF95VlHCHENQF
 github.com/dxyinme/LukaComm v0.0.1-beta.5.7.10/go.mod h1:qmpZKSWp7nQSXOlabU5LW/gSv9FMF9IW+8thCnkx6mg=
 github.com/dxyinme/LukaComm v0.0.1-beta.5.7.10.0.20201204064407-663fa1156b9f h1:LqmeFGTyQXA0qAiZEiBkUgQnlbR1jK2L1FG/3bx1lfg=
 github.com/dxyinme/LukaComm v0.0.1-beta.5.7.10.0.20201204064407-663fa1156b9f/go.mod h1:qmpZKSWp7nQSXOlabU5LW/gSv9FMF9IW+8thCnkx6mg=
+github.com/dxyinme/LukaComm v0.0.1-beta.5.7.10.0.20201210112749-70965ea64512 h1:Le5p0T2N4+E3EqCZHRUArAesfatQma6TeOLIzRAPYHA=
+github.com/dxyinme/LukaComm v0.0.1-beta.5.7.10.0.20201210112749-70965ea64512/go.mod h1:qmpZKSWp7nQSXOlabU5LW/gSv9FMF9IW+8thCnkx6mg=
 github.com/dxyinme/LukaComm v0.0.1-beta.5.7.11 h1:9VmkcOngO7wLRY1FINJ95B1/H57Wv4CAnpuMhplFbFs=
 github.com/dxyinme/LukaComm v0.0.1-beta.5.7.11/go.mod h1:qmpZKSWp7nQSXOlabU5LW/gSv9FMF9IW+8thCnkx6mg=
 github.com/dxyinme/LukaComm v0.0.1-beta.5.7.11.0.20201204064407-663fa1156b9f/go.mod h1:qmpZKSWp7nQSXOlabU5LW/gSv9FMF9IW+8thCnkx6mg=
+github.com/dxyinme/LukaComm v0.0.1-beta.5.7.11.0.20201210064732-84d30394561b h1:cEacgFcSR/utKSI0Kc0ixuy7SKB70TGU5AcT2ORsNYc=
+github.com/dxyinme/LukaComm v0.0.1-beta.5.7.11.0.20201210064732-84d30394561b/go.mod h1:qmpZKSWp7nQSXOlabU5LW/gSv9FMF9IW+8thCnkx6mg=
+github.com/dxyinme/LukaComm v0.0.1-beta.5.7.11.0.20201210112749-70965ea64512 h1:yosMdYKva3aLb+Gao+r5pN/q4fU5xwcDgQdBn+Ch9DM=
+github.com/dxyinme/LukaComm v0.0.1-beta.5.7.11.0.20201210112749-70965ea64512/go.mod h1:qmpZKSWp7nQSXOlabU5LW/gSv9FMF9IW+8thCnkx6mg=
 github.com/envoyproxy/go-control-plane v0.9.0/go.mod h1:YTl/9mNaCwkRvm6d1a2C3ymFceY/DCBVvsKhRF0iEA4=
 github.com/envoyproxy/go-control-plane v0.9.4/go.mod h1:6rpuAdCZL397s3pYoYcLgu1mIlRU8Am5FuJP05cCM98=
 github.com/envoyproxy/protoc-gen-validate v0.1.0/go.mod h1:iSmxcyjqTsJpI2R4NaDN7+kN2VEUnK/pcBlmesArF7c=

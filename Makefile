@@ -24,6 +24,10 @@ assigneerD:
 	$(GOBUILD) -o bin/AssigneerDeployment/AssigneerDeployment main/AssigneerDeployment.go
 	@cp -rf script/assigneer bin/AssigneerDeployment/
 
+assign-cli:
+	@echo "generate assign-cli"
+	$(GOBUILD) -o bin/assign-cli main/assign-cli.go
+
 fmt:
 	@echo "gofmt (simplify)"
 	@gofmt -s -l -w $(FILES) 2>&1 | $(FAIL_ON_STDOUT)

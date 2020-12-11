@@ -2,8 +2,10 @@ package assigneerServer
 
 import (
 	"context"
+	"github.com/dxyinme/Luka/assigneerServer/AssignUtil"
 	"github.com/dxyinme/LukaComm/Assigneer"
 	CynicUClient "github.com/dxyinme/LukaComm/CynicU/Client"
+	"github.com/dxyinme/LukaComm/chatMsg"
 	"github.com/dxyinme/LukaComm/util/CoHash"
 	"github.com/golang/glog"
 	"time"
@@ -64,6 +66,47 @@ func (s *Server) SwitchKeeper(ctx context.Context, in *Assigneer.SwitchKeeperReq
 		Host:     s.hosts[keeperID],
 	}, nil
 }
+
+
+// operatorID :
+// 1: getAllKeeperInfo
+// 2: todo
+func (s *Server) MaintainInfo(ctx context.Context,in *Assigneer.ClusterReq) (ret *Assigneer.ClusterRsp,err error) {
+	ret = &Assigneer.ClusterRsp{}
+	if in.OperatorID == 1 {
+		res := s.getAllKeeperInfo()
+		ret.RspInfo = res.ToBytes()
+	} else if in.OperatorID == 2 {
+
+	}
+	return
+}
+
+
+// get all keeper information.
+func (s *Server) getAllKeeperInfo() (ret *AssignUtil.KeeperList) {
+	ret = &AssignUtil.KeeperList{
+		KeeperId: make([]uint32, 0),
+		Lis: make([]*chatMsg.KeepAlive, 0),
+	}
+	for k,v := range s.hosts {
+		c := CynicUClient.Client{}
+		err := c.Initial(v, 3 * time.Second)
+		if err != nil {
+			glog.Error(err)
+			continue
+		}
+		rsp, err := c.CheckAlive()
+		if err != nil {
+			glog.Error(rsp)
+			continue
+		}
+		ret.KeeperId = append(ret.KeeperId, k)
+		ret.Lis = append(ret.Lis, rsp)
+	}
+	return
+}
+
 
 func (s *Server) syncLocationNotify() {
 	for _, v := range s.hosts {
