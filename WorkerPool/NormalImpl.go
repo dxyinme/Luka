@@ -68,9 +68,9 @@ func (ni *NormalImpl) CheckAlive(req *chatMsg.KeepAlive) (ret *chatMsg.KeepAlive
 	ret.MsgSend = atomic.LoadInt32(&ni.msgSend)
 	atomic.AddInt32(&ni.msgSend, -ret.MsgSend)
 	ret.MsgRecv = atomic.LoadInt32(&ni.msgRecv)
-	atomic.AddInt32(&ni.msgSend, -ret.MsgRecv)
+	atomic.AddInt32(&ni.msgRecv, -ret.MsgRecv)
 	ret.MsgNotLocal = atomic.LoadInt32(&ni.msgNotLocal)
-	atomic.AddInt32(&ni.msgSend, -ret.MsgRecv)
+	atomic.AddInt32(&ni.msgNotLocal, -ret.MsgNotLocal)
 	return
 }
 

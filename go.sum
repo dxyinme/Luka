@@ -53,6 +53,8 @@ github.com/dxyinme/LukaComm v0.0.1-beta.5.7.11.0.20201210064732-84d30394561b h1:
 github.com/dxyinme/LukaComm v0.0.1-beta.5.7.11.0.20201210064732-84d30394561b/go.mod h1:qmpZKSWp7nQSXOlabU5LW/gSv9FMF9IW+8thCnkx6mg=
 github.com/dxyinme/LukaComm v0.0.1-beta.5.7.11.0.20201210112749-70965ea64512 h1:yosMdYKva3aLb+Gao+r5pN/q4fU5xwcDgQdBn+Ch9DM=
 github.com/dxyinme/LukaComm v0.0.1-beta.5.7.11.0.20201210112749-70965ea64512/go.mod h1:qmpZKSWp7nQSXOlabU5LW/gSv9FMF9IW+8thCnkx6mg=
+github.com/dxyinme/LukaComm v0.0.1-beta.5.7.12 h1:nZ33JfuncRpwsPMNwWilZ7PNfAIQdFZtuPDLRf9Kn+s=
+github.com/dxyinme/LukaComm v0.0.1-beta.5.7.12/go.mod h1:qmpZKSWp7nQSXOlabU5LW/gSv9FMF9IW+8thCnkx6mg=
 github.com/envoyproxy/go-control-plane v0.9.0/go.mod h1:YTl/9mNaCwkRvm6d1a2C3ymFceY/DCBVvsKhRF0iEA4=
 github.com/envoyproxy/go-control-plane v0.9.4/go.mod h1:6rpuAdCZL397s3pYoYcLgu1mIlRU8Am5FuJP05cCM98=
 github.com/envoyproxy/protoc-gen-validate v0.1.0/go.mod h1:iSmxcyjqTsJpI2R4NaDN7+kN2VEUnK/pcBlmesArF7c=

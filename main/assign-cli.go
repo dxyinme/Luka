@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"flag"
+	"github.com/dxyinme/Luka/assignCli"
 	"github.com/dxyinme/LukaComm/Assigneer"
 	"google.golang.org/grpc"
 	"log"
@@ -33,7 +34,7 @@ func main() {
 		if err != nil {
 			log.Println(err)
 		} else {
-			log.Println(rsp)
+			assignCli.PrintGetAllKeeperInfoRsp(rsp)
 		}
 	}
 }
