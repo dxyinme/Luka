@@ -6,6 +6,7 @@ import (
 	ClusterConfig "github.com/dxyinme/Luka/cluster/config"
 	CynicUServer "github.com/dxyinme/LukaComm/CynicU/Server"
 	"github.com/golang/glog"
+	"os"
 )
 
 var (
@@ -20,6 +21,7 @@ func main() {
 	glog.Info("clusterFile is : " + *ClusterFile)
 	ClusterConfig.LoadFromFile(*ClusterFile)
 	glog.Info("listen port is " + ClusterConfig.HostAddr)
+	glog.Info("pid is ", os.Getpid())
 	server := s.NewCynicUServer(ClusterConfig.HostAddr, "luka")
 	// 先New，再bind，新的WorkerPool会被覆盖
 	// bind的时候记住，务必bind初始化完成的Impl

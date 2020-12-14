@@ -16,6 +16,8 @@ import (
 	"github.com/dxyinme/LukaComm/util/Const"
 	"github.com/golang/glog"
 	"google.golang.org/grpc"
+	"os"
+	"strconv"
 	"sync"
 	"sync/atomic"
 	"time"
@@ -156,9 +158,11 @@ func (ni *NormalImpl) Initial() {
 	}
 	defer conn.Close()
 	c := Assigneer.NewAssigneerClient(conn)
+	pid := strconv.Itoa(os.Getpid())
 	_, err = c.AddKeeper(context.Background(), &Assigneer.AddKeeperReq{
 		KeeperID: uint32(config.KeeperID),
 		Host:     config.Host,
+		Pid: 	  pid,
 	})
 }
 
@@ -359,7 +363,7 @@ func (ni *NormalImpl) saveInto(msg *chatMsg.Msg) {
 		msg.From, msg.Target, string(msg.Content))
 }
 
-// pullSelf in this user. strategy is LIFO
+// pullSelf in this user. strategy is FIFO
 func (ni *NormalImpl) pullSelf(targetIs string) (*chatMsg.MsgPack, error) {
 	var (
 		nowList *syncList.SyncList

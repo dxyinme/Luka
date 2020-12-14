@@ -16,7 +16,9 @@ var (
 
 	// operatorID = 1
 	allKeeperInfo = flag.Bool("A", false, "get all KeeperInfo")
-
+	// operatorID = 2
+	killKeeperPro = flag.Bool("K", false, "kill such PID progress")
+	keeperID = flag.String("kid", "", "keeperID of which progress you want to kill")
 )
 
 func main() {
@@ -36,5 +38,10 @@ func main() {
 		} else {
 			assignCli.PrintGetAllKeeperInfoRsp(rsp)
 		}
+	} else if *killKeeperPro {
+		if *keeperID == "" {
+			log.Fatal("keeperID is required")
+		}
+
 	}
 }
