@@ -2,12 +2,13 @@ package sshc
 
 import (
 	"fmt"
+	"net"
 	"time"
 
 	"golang.org/x/crypto/ssh"
 )
 
-func Connect(user, password, host string, port int) (*ssh.Session, error) {
+func SSHConnect(user, password, host string, port int) (*ssh.Session, error) {
 	var (
 		auth  []ssh.AuthMethod
 		addr  string
@@ -24,6 +25,9 @@ func Connect(user, password, host string, port int) (*ssh.Session, error) {
 		User: user,
 		Auth: auth,
 		Timeout: 30 * time.Second,
+		HostKeyCallback: func(hostname string, remote net.Addr, key ssh.PublicKey) error {
+			return nil
+		},
 	}
 
 	// connet to ssh
@@ -39,4 +43,9 @@ func Connect(user, password, host string, port int) (*ssh.Session, error) {
 	}
 
 	return session, nil
+}
+
+func SSHConnectPublicKey(user, host string, port int) (*ssh.Session, error) {
+	//todo
+	panic("implement me")
 }

@@ -2,6 +2,7 @@ package assigneerServer
 
 import (
 	"context"
+	"fmt"
 	"github.com/dxyinme/Luka/assigneerServer/AssignUtil"
 	"github.com/dxyinme/Luka/sshc"
 	"github.com/dxyinme/LukaComm/Assigneer"
@@ -9,6 +10,7 @@ import (
 	"github.com/dxyinme/LukaComm/chatMsg"
 	"github.com/dxyinme/LukaComm/util/CoHash"
 	"github.com/golang/glog"
+	"strings"
 	"time"
 )
 
@@ -64,6 +66,15 @@ func (s *Server) AddKeeper(ctx context.Context, in *Assigneer.AddKeeperReq) (*As
 		PID: in.Pid,
 		KeeperId: in.KeeperID,
 	}
+	ip := strings.Split(in.Host, ":")[0]
+	pwd, ok := AssignUtil.Cfg.GetPassword(ip)
+	glog.Infof("pwd = [%s] , host = [%s] , in.Host = [%s]", pwd, ok, in.Host)
+	if !ok {
+		glog.Errorf("keeperID[%d] add keeper getPassword wrong", in.KeeperID)
+		return &Assigneer.AssignAck{
+			AckMessage: "host has not been registered",
+		}, nil
+	}
 	s.syncLocationNotify()
 	return &Assigneer.AssignAck{
 		AckMessage: "",
@@ -93,7 +104,6 @@ func (s *Server) MaintainInfo(ctx context.Context,in *Assigneer.ClusterReq) (ret
 	}
 	return
 }
-
 
 // get all keeper information.
 func (s *Server) getAllKeeperInfo() (ret *AssignUtil.KeeperList) {
@@ -129,7 +139,7 @@ func (s *Server) syncLocationNotify() {
 			var err error
 			client := &CynicUClient.Client{}
 			defer client.Close()
-			err = client.Initial(host, time.Second*3)
+			err = client.Initial(host, time.Second * 3)
 			if err != nil {
 				glog.Error(err)
 				return
@@ -144,7 +154,12 @@ func (s *Server) syncLocationNotify() {
 }
 
 func (s *Server) sshToCloseKeeper(keeper *AssignUtil.KeeperInfo) error {
-	session, err := sshc.Connect("root", "", keeper.Host, 22) // ssh port.
+	pwd,ok := AssignUtil.Cfg.GetPassword(keeper.Host)
+	if !ok {
+		return fmt.Errorf("no such host")
+	}
+	session, err := sshc.SSHConnect("worker",
+		pwd, keeper.Host, 22) // ssh port.
 	if err != nil {
 		return err
 	}

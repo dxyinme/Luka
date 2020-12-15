@@ -23,6 +23,7 @@ assigneerD:
 	@echo "generate assigneer"
 	$(GOBUILD) -o bin/AssigneerDeployment/AssigneerDeployment main/AssigneerDeployment.go
 	@cp -rf script/assigneer bin/AssigneerDeployment/
+	@cp -rf conf bin/AssigneerDeployment/
 
 assign-cli:
 	@echo "generate assign-cli"

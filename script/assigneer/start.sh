@@ -1,3 +1,3 @@
 #!/bin/bash
 rm -rf nohup.out
-nohup ./AssigneerDeployment --alsologtostderr &
+nohup ./AssigneerDeployment --alsologtostderr --config=conf/assign.conf &

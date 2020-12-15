@@ -159,11 +159,17 @@ func (ni *NormalImpl) Initial() {
 	defer conn.Close()
 	c := Assigneer.NewAssigneerClient(conn)
 	pid := strconv.Itoa(os.Getpid())
-	_, err = c.AddKeeper(context.Background(), &Assigneer.AddKeeperReq{
+	rsp, err := c.AddKeeper(context.Background(), &Assigneer.AddKeeperReq{
 		KeeperID: uint32(config.KeeperID),
 		Host:     config.Host,
 		Pid: 	  pid,
 	})
+	if err != nil {
+		glog.Fatal(err)
+	}
+	if rsp.AckMessage != "" {
+		glog.Fatal(rsp.AckMessage)
+	}
 }
 
 func (ni *NormalImpl) Reduce() {
