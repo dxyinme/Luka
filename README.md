@@ -2,7 +2,7 @@
 
 <p></p>
 
-[![Build Status](https://travis-ci.com/dxyinme/Luka.svg?branch=dxyinme)](https://travis-ci.com/dxyinme/Luka)
+[![Build Status](https://travis-ci.com/dxyinme/Luka.svg?branch=master)](https://travis-ci.com/dxyinme/Luka)
 
 <h3>a golang IM service</h3>
 
@@ -17,6 +17,7 @@ make assigneerD
 ```
 
 #### use 
+
 ```
 <in linux, start simple cluster>
 [compile]
@@ -35,11 +36,14 @@ bash start_ICC.sh
 
 <h4>cluster.conf</h4>
 the host of this service serve for.
+
 ```batch
 [host] host keeperID
 ```
+
 <h4>assign.conf</h4>
 the config for machines we prepare to use.
+
 ```batch
 IP Password
 ...
