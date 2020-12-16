@@ -2,6 +2,7 @@ package config
 
 import (
 	"bufio"
+	"flag"
 	"github.com/golang/glog"
 	"io"
 	"os"
@@ -10,22 +11,37 @@ import (
 )
 
 var (
+
+	// ClusterFile : the ipports for each server in cluster
+	ClusterFile = flag.String("ClusterFile", "", "the file of ClusterInfo")
+
+	// hostAddrPtr
+	hostAddrPtr = flag.String("HostAddr", "", "the addr of this keeper")
+	// keeperIDPtr
+	keeperIdPtr = flag.Int("KeeperID", 0, "the keeperID of this keeper")
+
 	Host     string
 	HostAddr string
 	AllHosts []string
 	KeeperID int
 )
 
+func GetIP() string {
+	return strings.Split(Host, ":")[0]
+}
+
 func SetHost(host string) {
 	Host = strings.TrimSpace(host)
 	HostAddr = ":" + strings.TrimSpace(strings.Split(host, ":")[1])
+	glog.Infof("Host=[%s], Port=[%s]", Host, HostAddr)
 }
 
 func SetAllHosts(hosts []string) {
 	AllHosts = hosts
 }
 
-func LoadFromFile(filename string) {
+func LoadFromFile() {
+	var filename = *ClusterFile
 	file, err := os.Open(filename)
 	if err != nil {
 		glog.Error(err)
@@ -54,4 +70,9 @@ func LoadFromFile(filename string) {
 			}
 		}
 	}
+}
+
+func LoadFromCmd() {
+	SetHost(*hostAddrPtr)
+	KeeperID = *keeperIdPtr
 }

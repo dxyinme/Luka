@@ -6,20 +6,32 @@ import (
 	ClusterConfig "github.com/dxyinme/Luka/cluster/config"
 	CynicUServer "github.com/dxyinme/LukaComm/CynicU/Server"
 	"github.com/golang/glog"
+	"os"
 )
 
 var (
-	// ClusterFile : the ipports for each server in cluster
-	ClusterFile = flag.String("ClusterFile", "", "the file of ClusterInfo")
+	// --IFC : is the config is in file
+	isFileConfig = flag.Bool("IFC", false, "is file config")
+	// --ICC : is commandline config
+	isCmdConfig = flag.Bool("ICC", false, "is commandline config")
 )
 
 func main() {
 	flag.Parse()
 	defer glog.Flush()
 	s := &CynicUServer.Server{}
-	glog.Info("clusterFile is : " + *ClusterFile)
-	ClusterConfig.LoadFromFile(*ClusterFile)
+	if *isFileConfig {
+		glog.Info("clusterFile is : " + *ClusterConfig.ClusterFile)
+		ClusterConfig.LoadFromFile()
+	} else if *isCmdConfig {
+		glog.Info("config is from commandline")
+		ClusterConfig.LoadFromCmd()
+	} else {
+		glog.Fatal("no config type!")
+	}
+	glog.Info("listen host is " + ClusterConfig.Host)
 	glog.Info("listen port is " + ClusterConfig.HostAddr)
+	glog.Info("pid is ", os.Getpid())
 	server := s.NewCynicUServer(ClusterConfig.HostAddr, "luka")
 	// 先New，再bind，新的WorkerPool会被覆盖
 	// bind的时候记住，务必bind初始化完成的Impl

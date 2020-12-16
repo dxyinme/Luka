@@ -16,7 +16,10 @@ import (
 	"github.com/dxyinme/LukaComm/util/Const"
 	"github.com/golang/glog"
 	"google.golang.org/grpc"
+	"os"
+	"strconv"
 	"sync"
+	"sync/atomic"
 	"time"
 )
 
@@ -49,6 +52,28 @@ type NormalImpl struct {
 
 	// the hosts for keeper in cluster.
 	hosts 						map[uint32]string
+
+
+	// about maintain
+	msgRecv						int32
+	msgSend						int32
+	msgNotLocal					int32
+
+}
+
+func (ni *NormalImpl) CheckAlive(req *chatMsg.KeepAlive) (ret *chatMsg.KeepAlive) {
+	ret = &chatMsg.KeepAlive{
+		CheckAlive: req.CheckAlive,
+	}
+	ret.Errors = make([]string, 1)
+
+	ret.MsgSend = atomic.LoadInt32(&ni.msgSend)
+	atomic.AddInt32(&ni.msgSend, -ret.MsgSend)
+	ret.MsgRecv = atomic.LoadInt32(&ni.msgRecv)
+	atomic.AddInt32(&ni.msgRecv, -ret.MsgRecv)
+	ret.MsgNotLocal = atomic.LoadInt32(&ni.msgNotLocal)
+	atomic.AddInt32(&ni.msgNotLocal, -ret.MsgNotLocal)
+	return
 }
 
 func (ni *NormalImpl) DeleteGroup(req *chatMsg.GroupReq) error {
@@ -116,6 +141,11 @@ func (ni *NormalImpl) SyncLocationNotify() {
 
 // Initial this WorkerPool as NormalImpl
 func (ni *NormalImpl) Initial() {
+
+	ni.msgNotLocal = 0
+	ni.msgSend = 0
+	ni.msgRecv = 0
+
 	ni.personCache = ListCache.New()
 	ni.groupCache = make(map[string]*Group.Impl)
 
@@ -128,10 +158,18 @@ func (ni *NormalImpl) Initial() {
 	}
 	defer conn.Close()
 	c := Assigneer.NewAssigneerClient(conn)
-	_, err = c.AddKeeper(context.Background(), &Assigneer.AddKeeperReq{
+	pid := strconv.Itoa(os.Getpid())
+	rsp, err := c.AddKeeper(context.Background(), &Assigneer.AddKeeperReq{
 		KeeperID: uint32(config.KeeperID),
 		Host:     config.Host,
+		Pid: 	  pid,
 	})
+	if err != nil {
+		glog.Fatal(err)
+	}
+	if rsp.AckMessage != "" {
+		glog.Fatal(rsp.AckMessage)
+	}
 }
 
 func (ni *NormalImpl) Reduce() {
@@ -177,6 +215,9 @@ func (ni *NormalImpl) SyncLocationAssignToStruct() {
 func (ni *NormalImpl) SendTo(msg *chatMsg.Msg) {
 	glog.Infof("from: [%s] , target: [%s] : content: %s , Be transported.",
 		msg.From, msg.Target, string(msg.Content))
+
+	atomic.AddInt32(&ni.msgRecv, 1)
+
 	if msg.MsgType == chatMsg.MsgType_Single {
 		// single chat
 		hashTarget := ni.assign.AssignTo((&CoHash.UID{Uid: msg.Target}).GetHash())
@@ -277,6 +318,9 @@ func (ni *NormalImpl) sendToCacheP2G(msg *chatMsg.Msg) {
 // redirect message to keeper 'keeperID'
 func (ni *NormalImpl) redirectMessage(msg *chatMsg.Msg, keeperID uint32) {
 	glog.Infof("%v , keeperId : %v", msg, keeperID)
+
+	atomic.AddInt32(&ni.msgNotLocal, 1)
+
 	var (
 		client *CynicUClient.Client
 		err    error
@@ -325,13 +369,14 @@ func (ni *NormalImpl) saveInto(msg *chatMsg.Msg) {
 		msg.From, msg.Target, string(msg.Content))
 }
 
-// pullSelf in this user. strategy is LIFO
+// pullSelf in this user. strategy is FIFO
 func (ni *NormalImpl) pullSelf(targetIs string) (*chatMsg.MsgPack, error) {
 	var (
 		nowList *syncList.SyncList
 		pack    *chatMsg.MsgPack
 		ok      bool
 	)
+
 	glog.Infof("Pull from : [%s]", targetIs)
 	nowList, ok = ni.personCache.Get(targetIs)
 	pack = &chatMsg.MsgPack{MsgList: []*chatMsg.Msg{}}
@@ -345,6 +390,8 @@ func (ni *NormalImpl) pullSelf(targetIs string) (*chatMsg.MsgPack, error) {
 			break
 		}
 	}
+
+	atomic.AddInt32(&ni.msgSend, int32(len(pack.MsgList)))
 	return pack, nil
 }
 
