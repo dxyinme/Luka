@@ -55,3 +55,7 @@ IP Password
 
 #### about client
 [LukaClient](https://github.com/dxyinme/LukaClient)
+
+#### communication
+QQ: 252896124 </p>
+mail: ProjectLuka@yandex.com 

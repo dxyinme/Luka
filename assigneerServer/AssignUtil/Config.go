@@ -47,8 +47,10 @@ func ConfigInitial() {
 	}
 }
 
-func AddNode(host, password string) {
+// add follow node.
+// Ip and Password
+func AddNode(ip, password string) {
 	Cfg.mu_.Lock()
 	defer Cfg.mu_.Unlock()
-	Cfg.Password[host] = password
+	Cfg.Password[ip] = password
 }

@@ -17,8 +17,15 @@ import (
 type Server struct {
 	assignToStruct CoHash.AssignToStruct
 	// KV :
-	// key [ keeperID ] , value [ host ]
+	// key [ keeperID ] , value [ keeper information ]
 	keepersInfo map[uint32]*AssignUtil.KeeperInfo
+}
+
+func (s *Server) RegisterNode(_ context.Context,in *Assigneer.RegisterNodeReq) (*Assigneer.RegisterNodeRsp, error) {
+	AssignUtil.AddNode(in.Ip, in.Pwd)
+	return &Assigneer.RegisterNodeRsp{
+		RegisterInfo: "",
+	},nil
 }
 
 func (s *Server) Initial() {
@@ -60,20 +67,22 @@ func (s *Server) RemoveKeeper(ctx context.Context, in *Assigneer.RemoveKeeperReq
 }
 
 func (s *Server) AddKeeper(ctx context.Context, in *Assigneer.AddKeeperReq) (*Assigneer.AssignAck, error) {
-	s.assignToStruct.AppendKeeper(in.KeeperID)
-	s.keepersInfo[in.KeeperID] = &AssignUtil.KeeperInfo{
-		Host: in.Host,
-		PID: in.Pid,
-		KeeperId: in.KeeperID,
-	}
+
 	ip := strings.Split(in.Host, ":")[0]
 	pwd, ok := AssignUtil.Cfg.GetPassword(ip)
-	glog.Infof("pwd = [%s] , host = [%s] , in.Host = [%s]", pwd, ok, in.Host)
+	glog.Infof("pwd = [%s] , host = [%v] , in.Host = [%s]", pwd, ok, in.Host)
 	if !ok {
 		glog.Errorf("keeperID[%d] add keeper getPassword wrong", in.KeeperID)
 		return &Assigneer.AssignAck{
 			AckMessage: "host has not been registered",
 		}, nil
+	}
+	// load to assignToStruct.
+	s.assignToStruct.AppendKeeper(in.KeeperID)
+	s.keepersInfo[in.KeeperID] = &AssignUtil.KeeperInfo{
+		Host: in.Host,
+		PID: in.Pid,
+		KeeperId: in.KeeperID,
 	}
 	s.syncLocationNotify()
 	return &Assigneer.AssignAck{
