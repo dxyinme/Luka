@@ -53,12 +53,20 @@ type NormalImpl struct {
 	// the hosts for keeper in cluster.
 	hosts 						map[uint32]string
 
-
 	// about maintain
 	msgRecv						int32
 	msgSend						int32
 	msgNotLocal					int32
 
+}
+
+func (ni *NormalImpl) UseCall(in *chatMsg.UseChannel) (ret *chatMsg.UseChannel, err error) {
+	ret = &chatMsg.UseChannel{}
+	err = nil
+	if in.ContentType == Const.GetGroupInfo {
+
+	}
+	return
 }
 
 func (ni *NormalImpl) CheckAlive(req *chatMsg.KeepAlive) (ret *chatMsg.KeepAlive) {
@@ -83,8 +91,9 @@ func (ni *NormalImpl) DeleteGroup(req *chatMsg.GroupReq) error {
 		err = fmt.Errorf("group [%s] has not created", req.GroupName)
 	} else {
 		if group.GetMaster() != req.Uid {
-			return fmt.Errorf("only master can delete this " +
-				"group . want [%s], but [%s]", group.GetMaster(), req.Uid)
+			return fmt.Errorf(
+				"only master can delete this group . want [%s], but [%s]",
+				group.GetMaster(), req.Uid)
 		}
 		ni.spreadGroupOperator(Const.DeleteGroup, req)
 	}
