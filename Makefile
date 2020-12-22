@@ -29,6 +29,9 @@ assign-cli:
 	@echo "generate assign-cli"
 	$(GOBUILD) -o bin/assign-cli main/assign-cli.go
 
+DBServer:
+	@echo "generate DBServer"
+	$(GOBUILD) -o bin/DBServer main/DBServer.go
 fmt:
 	@echo "gofmt (simplify)"
 	@gofmt -s -l -w $(FILES) 2>&1 | $(FAIL_ON_STDOUT)

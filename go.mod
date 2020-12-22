@@ -3,7 +3,7 @@ module github.com/dxyinme/Luka
 go 1.13
 
 require (
-	github.com/dxyinme/LukaComm v0.0.1-beta.5.8.3
+	github.com/dxyinme/LukaComm v0.0.1-beta.5.8.4
 	github.com/golang/glog v0.0.0-20160126235308-23def4e6c14b
 	github.com/gorilla/mux v1.8.0
 	golang.org/x/crypto v0.0.0-20201208171446-5f87f3452ae9
