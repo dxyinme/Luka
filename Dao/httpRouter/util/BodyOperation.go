@@ -1,4 +1,4 @@
-package httpRouter
+package util
 
 import (
 	"github.com/dxyinme/LukaComm/util"

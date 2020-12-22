@@ -1,8 +1,8 @@
 package main
 
 import (
-	UserHttpRouter "github.com/dxyinme/Luka/Dao/httpRouter/User"
-	"log"
+	"github.com/dxyinme/Luka/Dao/httpRouter"
+	"github.com/golang/glog"
 	"net/http"
 )
 
@@ -10,10 +10,9 @@ import (
 // after Glamorgann-kv https://github.com/Glamorgann/Glamorgann finished
 // this will be used to realize the business between kv and user.
 func main() {
-	UserHttpRouter.Initial()
-	http.Handle("/User", UserHttpRouter.Router)
-
-	if err := http.ListenAndServe(":12777", nil); err != nil {
-		log.Fatal(err)
+	httpRouter.Initial()
+	if err := http.ListenAndServe(":12777", httpRouter.Router); err != nil {
+		glog.Fatal(err)
 	}
+
 }
