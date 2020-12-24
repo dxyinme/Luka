@@ -10,6 +10,7 @@ type Group interface {
 	Leave(uid string) error
 	GetMaster() string
 	SetMaster(uid string) error
+	GetGroupName() string
 }
 
 type Impl struct {
@@ -20,7 +21,6 @@ type Impl struct {
 	Members  	map[string]bool
 
 	mu 			sync.Mutex
-
 }
 
 func (i *Impl) Join(uid string) error {
@@ -39,7 +39,7 @@ func (i *Impl) Leave(uid string) error {
 	if _, ok := i.Members[uid]; !ok {
 		return fmt.Errorf("user [%s] hasn't join in group [%s]", uid, i.groupName)
 	}
-	delete(i.Members,uid)
+	delete(i.Members, uid)
 	return nil
 }
 
@@ -60,6 +60,12 @@ func (i *Impl) SetMaster(uid string) error {
 	}
 	i.masterUid = uid
 	return nil
+}
+
+func (i *Impl) GetGroupName() string {
+	i.RWmu.RLock()
+	defer i.RWmu.RUnlock()
+	return i.groupName
 }
 
 func New(groupName, masterUid string) *Impl {

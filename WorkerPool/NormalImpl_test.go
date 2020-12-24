@@ -2,7 +2,11 @@ package WorkerPool
 
 import (
 	"github.com/dxyinme/LukaComm/chatMsg"
+	"github.com/dxyinme/LukaComm/util"
+	"io/ioutil"
 	"log"
+	"net/http"
+	"net/url"
 	"testing"
 )
 
@@ -24,4 +28,30 @@ func TestCopy(t *testing.T) {
 	if T1.Spread {
 		t.Fatal("error")
 	}
+}
+
+func TestNormalImpl_SyncGroupInfo(t *testing.T) {
+	type respType struct {
+		GroupNameList []string
+		UidList []string
+	}
+	var (
+		body []byte
+		respItem respType
+	)
+	GetUrl := "http://" + "localhost:12777" + "/group/GroupInfo/GetAllGroup"
+	c := http.Client{}
+	resp, err := c.PostForm(GetUrl, url.Values{})
+	if err != nil {
+		log.Fatal(err)
+	}
+	body, err = ioutil.ReadAll(resp.Body)
+	if err != nil {
+		log.Fatal(err)
+	}
+	err = util.IJson.Unmarshal(body, &respItem)
+	if err != nil {
+		log.Fatal(err)
+	}
+	log.Println(respItem)
 }

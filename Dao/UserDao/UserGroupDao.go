@@ -9,4 +9,3 @@ type UserGroupDao interface {
 	DeleteGroupDao(uid string, groupName string) error
 	GetGroupNameList(uid string) ([]string, error)
 }
-
