@@ -481,7 +481,10 @@ func (ni *NormalImpl) SyncGroupInfo() {
 	if err != nil {
 		glog.Fatal(err)
 	}
+
 	for i := 0; i < len(respItem.GroupNameList); i ++ {
+		glog.Infof("groupName [%s] , Uid [%s]",
+			respItem.GroupNameList[i], respItem.UidList[i])
 		err = ni.CreateGroup(&chatMsg.GroupReq{
 			Uid:       respItem.UidList[i],
 			GroupName: respItem.GroupNameList[i],
