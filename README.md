@@ -27,7 +27,7 @@ cd AssigneerDeployment
 bash assigneer/start.sh
 cd ..
 cd KeeperDeployment
-bash keeper/new_keeper [keeper_name] [machineIP:ListeningPort] [keeperID]
+bash keeper/new_keeper [keeper_name] [machineIP:ListeningPort] [keeperID] [DBServerHost]
 cd [keeper_name]
 bash start_ICC.sh
 ```
