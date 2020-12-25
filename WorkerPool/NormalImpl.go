@@ -340,7 +340,7 @@ func (ni *NormalImpl) sendToCacheP2G(msg *chatMsg.Msg) {
 	for k,v := range group.Members {
 
 		if v && k != msg.From {
-			glog.Infof("group [%s] , member[%s] received", msg.GroupName, v)
+			glog.Infof("group [%s] , member[%s] received", msg.GroupName, k)
 
 			msgCopy := *msg
 			msgCopy.Spread = false
