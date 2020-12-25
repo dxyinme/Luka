@@ -2,6 +2,7 @@ package Group
 
 import (
 	"fmt"
+	"github.com/golang/glog"
 	"sync"
 )
 
@@ -26,6 +27,7 @@ type Impl struct {
 func (i *Impl) Join(uid string) error {
 	i.mu.Lock()
 	defer i.mu.Unlock()
+	glog.Info("user [%s] join in group [%s]", uid, i.groupName)
 	if _, ok := i.Members[uid]; ok {
 		return fmt.Errorf("user [%s] has join in group [%s]", uid, i.groupName)
 	}

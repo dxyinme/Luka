@@ -332,11 +332,16 @@ func (ni *NormalImpl) sendToCacheP2G(msg *chatMsg.Msg) {
 	if !ok || group == nil {
 		return
 	}
+
 	glog.Infof("group [%s], from [%s]", msg.GroupName, msg.From)
 	group.RWmu.RLock()
 	defer group.RWmu.RUnlock()
+
 	for k,v := range group.Members {
+
 		if v && k != msg.From {
+			glog.Infof("group [%s] , member[%s] received", msg.GroupName, v)
+
 			msgCopy := *msg
 			msgCopy.Spread = false
 			msgCopy.Target = k
