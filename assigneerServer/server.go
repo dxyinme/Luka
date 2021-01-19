@@ -78,16 +78,20 @@ func (s *Server) AddKeeper(ctx context.Context, in *Assigneer.AddKeeperReq) (*As
 		}, nil
 	}
 	// load to assignToStruct.
-	s.assignToStruct.AppendKeeper(in.KeeperID)
+	rsp := &Assigneer.AssignAck{
+		AckMessage: "",
+	}
+	err := s.assignToStruct.AppendKeeper(in.KeeperID)
+	if err != nil {
+		glog.Error(err)
+	}
 	s.keepersInfo[in.KeeperID] = &AssignUtil.KeeperInfo{
 		Host: in.Host,
 		PID: in.Pid,
 		KeeperId: in.KeeperID,
 	}
 	s.syncLocationNotify()
-	return &Assigneer.AssignAck{
-		AckMessage: "",
-	}, nil
+	return rsp, nil
 }
 
 func (s *Server) SwitchKeeper(ctx context.Context, in *Assigneer.SwitchKeeperReq) (*Assigneer.SwitchKeeperRsp, error) {

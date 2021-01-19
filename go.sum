@@ -28,6 +28,8 @@ github.com/dxyinme/LukaComm v0.0.1-beta.5.8.5 h1:IS5btMqQRJ5NmWKQznJXtIVxMXWn52D
 github.com/dxyinme/LukaComm v0.0.1-beta.5.8.5/go.mod h1:qmpZKSWp7nQSXOlabU5LW/gSv9FMF9IW+8thCnkx6mg=
 github.com/dxyinme/LukaComm v0.0.1-beta.5.8.6 h1:cxvy/hxEgj+ftZY8hcZIJt5Rg2k9K6dvmFFQIq6uDx8=
 github.com/dxyinme/LukaComm v0.0.1-beta.5.8.6/go.mod h1:tkP9gP57lhfgr+qgPQs8ouYtNgYccMtDpEXIYvgp03o=
+github.com/dxyinme/LukaComm v0.0.1-beta.5.8.7 h1:5j6fBM7IAurpNUQJHGkVHUkcHjdflA1iTSQLg6knRZY=
+github.com/dxyinme/LukaComm v0.0.1-beta.5.8.7/go.mod h1:tkP9gP57lhfgr+qgPQs8ouYtNgYccMtDpEXIYvgp03o=
 github.com/envoyproxy/go-control-plane v0.9.0/go.mod h1:YTl/9mNaCwkRvm6d1a2C3ymFceY/DCBVvsKhRF0iEA4=
 github.com/envoyproxy/go-control-plane v0.9.4/go.mod h1:6rpuAdCZL397s3pYoYcLgu1mIlRU8Am5FuJP05cCM98=
 github.com/envoyproxy/protoc-gen-validate v0.1.0/go.mod h1:iSmxcyjqTsJpI2R4NaDN7+kN2VEUnK/pcBlmesArF7c=
@@ -108,6 +110,7 @@ golang.org/x/crypto v0.0.0-20200622213623-75b288015ac9/go.mod h1:LzIPMQfyMNhhGPh
 golang.org/x/crypto v0.0.0-20200728195943-123391ffb6de/go.mod h1:LzIPMQfyMNhhGPhUkYOs5KpL4U8rLKemX1yGLhDgUto=
 golang.org/x/crypto v0.0.0-20201208171446-5f87f3452ae9 h1:sYNJzB4J8toYPQTM6pAkcmBRgw9SnQKP9oXCHfgy604=
 golang.org/x/crypto v0.0.0-20201208171446-5f87f3452ae9/go.mod h1:jdWPYTVW3xRLrWPugEBEK3UY2ZEsg3UU495nc5E+M+I=
+golang.org/x/crypto v0.0.0-20201221181555-eec23a3978ad h1:DN0cp81fZ3njFcrLCytUHRSUkqBjfTo4Tx9RJTWs0EY=
 golang.org/x/crypto v0.0.0-20201221181555-eec23a3978ad/go.mod h1:jdWPYTVW3xRLrWPugEBEK3UY2ZEsg3UU495nc5E+M+I=
 golang.org/x/exp v0.0.0-20190121172915-509febef88a4/go.mod h1:CJ0aWSM057203Lf6IL+f9T1iT9GByDxfZKAQTCR3kQA=
 golang.org/x/lint v0.0.0-20181026193005-c67002cb31c3/go.mod h1:UVdnD1Gm6xHRNCYTkRU2/jEulfH38KcIWyp/GAMgvoE=

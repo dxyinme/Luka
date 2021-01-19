@@ -16,14 +16,14 @@ var (
 	// -ICC : is commandline config
 	isCmdConfig = flag.Bool("ICC", false, "is commandline config")
 
-	udpServerAddr = flag.String("udpAddr", ":12999", "udp sendMsg.Server listener")
+	//udpServerAddr = flag.String("udpAddr", ":12999", "udp sendMsg.Server listener")
 )
 
 func setUpUDPServer(w *WorkerPool.NormalImpl) {
 	s := SendMsg.NewServer()
 
 	go func() {
-		if err := s.Listen(*udpServerAddr); err != nil {
+		if err := s.Listen(ClusterConfig.HostAddr); err != nil {
 			glog.Fatal(err)
 		}
 
