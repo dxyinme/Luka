@@ -11,3 +11,4 @@ script:
   - go test -v ./assigneerServer/AssignUtil
   - make keeperD
   - make assigneerD
+  - make DBServer

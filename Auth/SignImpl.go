@@ -1,14 +1,14 @@
 package Auth
 
 import (
-	"github.com/dxyinme/Luka/User"
+	"github.com/dxyinme/LukaComm/Auth"
 )
 
 type SignImpl struct {
 
 }
 
-func (s SignImpl) SignUp(user *User.User) (err error) {
+func (s SignImpl) SignUp(user *Auth.UserInfo) (err error) {
 	panic("implement me")
 }
 

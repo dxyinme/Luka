@@ -2,6 +2,7 @@ package WorkerPool
 
 import (
 	"context"
+	"errors"
 	"flag"
 	"fmt"
 	"github.com/dxyinme/Luka/Group"
@@ -12,10 +13,14 @@ import (
 	"github.com/dxyinme/LukaComm/Assigneer"
 	CynicUClient "github.com/dxyinme/LukaComm/CynicU/Client"
 	"github.com/dxyinme/LukaComm/chatMsg"
+	"github.com/dxyinme/LukaComm/util"
 	"github.com/dxyinme/LukaComm/util/CoHash"
 	"github.com/dxyinme/LukaComm/util/Const"
 	"github.com/golang/glog"
 	"google.golang.org/grpc"
+	"io/ioutil"
+	"net/http"
+	"net/url"
 	"os"
 	"strconv"
 	"sync"
@@ -30,6 +35,8 @@ const (
 
 var (
 	AssignHost = flag.String("assignHost", "127.0.0.1:10197", "the Assign Server Host")
+
+	DBServerHost = flag.String("DBServerHost", "", "DBServerHost for remove-kv")
 )
 
 // NormalImpl :
@@ -53,12 +60,25 @@ type NormalImpl struct {
 	// the hosts for keeper in cluster.
 	hosts 						map[uint32]string
 
-
 	// about maintain
 	msgRecv						int32
 	msgSend						int32
 	msgNotLocal					int32
 
+}
+
+func (ni *NormalImpl) UseCall(in *chatMsg.UseChannel) (ret *chatMsg.UseChannel, err error) {
+	ret = &chatMsg.UseChannel{
+		ContentType: in.ContentType,
+	}
+	if in.ContentType == Const.GetGroupInfo {
+		var groupNameList = make([]string ,0)
+		for k,_ := range ni.groupCache {
+			groupNameList = append(groupNameList, k)
+		}
+		ret.Content, err = util.IJson.Marshal(groupNameList)
+	}
+	return
 }
 
 func (ni *NormalImpl) CheckAlive(req *chatMsg.KeepAlive) (ret *chatMsg.KeepAlive) {
@@ -80,13 +100,19 @@ func (ni *NormalImpl) DeleteGroup(req *chatMsg.GroupReq) error {
 	var err error
 	group, ok := ni.groupCache[req.GroupName]
 	if !ok || group == nil {
-		err = fmt.Errorf("group [%s] has not created", req.GroupName)
+		err = errors.New("group has not created")
 	} else {
-		if group.GetMaster() != req.Uid {
-			return fmt.Errorf("only master can delete this " +
-				"group . want [%s], but [%s]", group.GetMaster(), req.Uid)
+		if group.GetMaster() != req.Uid && group.GetMaster() != "" {
+			return fmt.Errorf(
+				"only master can delete this group . want [%s], but [%s]",
+				group.GetMaster(), req.Uid)
 		}
-		ni.spreadGroupOperator(Const.DeleteGroup, req)
+
+		if !req.IsCopy {
+			ni.spreadGroupOperator(Const.DeleteGroup, req)
+		}
+		// delete the Group
+		delete(ni.groupCache, req.GroupName)
 	}
 	return err
 }
@@ -95,7 +121,7 @@ func (ni *NormalImpl) CreateGroup(req *chatMsg.GroupReq) error {
 	var err error
 	group, ok := ni.groupCache[req.GroupName]
 	if ok || group != nil {
-		err = fmt.Errorf("group [%s] has created", req.GroupName)
+		err = errors.New("group has created")
 	} else {
 		newGroup := Group.New(req.GroupName, req.Uid)
 		if !req.IsCopy {
@@ -105,7 +131,9 @@ func (ni *NormalImpl) CreateGroup(req *chatMsg.GroupReq) error {
 			return err
 		}
 		ni.groupCache[req.GroupName] = newGroup
-		ni.spreadGroupOperator(Const.CreateGroup, req)
+		if !req.IsCopy {
+			ni.spreadGroupOperator(Const.CreateGroup, req)
+		}
 	}
 	return err
 }
@@ -170,6 +198,8 @@ func (ni *NormalImpl) Initial() {
 	if rsp.AckMessage != "" {
 		glog.Fatal(rsp.AckMessage)
 	}
+
+	ni.SyncGroupInfo()
 }
 
 func (ni *NormalImpl) Reduce() {
@@ -302,11 +332,16 @@ func (ni *NormalImpl) sendToCacheP2G(msg *chatMsg.Msg) {
 	if !ok || group == nil {
 		return
 	}
+
 	glog.Infof("group [%s], from [%s]", msg.GroupName, msg.From)
 	group.RWmu.RLock()
 	defer group.RWmu.RUnlock()
+
 	for k,v := range group.Members {
+
 		if v && k != msg.From {
+			glog.Infof("group [%s] , member[%s] received", msg.GroupName, k)
+
 			msgCopy := *msg
 			msgCopy.Spread = false
 			msgCopy.Target = k
@@ -421,5 +456,47 @@ func (ni *NormalImpl) spreadGroupOperator(opNum string, req *chatMsg.GroupReq) {
 		reqCopy := *req
 		reqCopy.IsCopy = true
 		ni.redirectGroupOperator(opNum, &reqCopy, k)
+	}
+}
+
+// only be use in initial!
+// call a remote-kv for all groupInfo
+func (ni *NormalImpl) SyncGroupInfo() {
+
+	type respType struct {
+		GroupNameList []string
+		UidList []string
+	}
+	var (
+		body []byte
+		respItem respType
+	)
+
+	GetUrl := "http://" + *DBServerHost + "/group/GroupInfo/GetAllGroup"
+	c := http.Client{}
+	resp, err := c.PostForm(GetUrl, url.Values{})
+	if err != nil {
+		glog.Fatal(err)
+	}
+	body, err = ioutil.ReadAll(resp.Body)
+	if err != nil {
+		glog.Fatal(err)
+	}
+	err = util.IJson.Unmarshal(body, &respItem)
+	if err != nil {
+		glog.Fatal(err)
+	}
+
+	for i := 0; i < len(respItem.GroupNameList); i ++ {
+		glog.Infof("groupName [%s] , Uid [%s]",
+			respItem.GroupNameList[i], respItem.UidList[i])
+		err = ni.CreateGroup(&chatMsg.GroupReq{
+			Uid:       respItem.UidList[i],
+			GroupName: respItem.GroupNameList[i],
+			IsCopy:    true,
+		})
+		if err != nil {
+			glog.Fatal(err)
+		}
 	}
 }
