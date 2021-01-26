@@ -60,6 +60,18 @@ func (M *MIIGDImpl) GetAllGroup() (groupNameList,uidList []string, err error) {
 	return
 }
 
+func (M *MIIGDImpl) GroupGetAllUser(groupName string) (uidList []string, err error) {
+	M.mu.RLock()
+	defer M.mu.RUnlock()
+	var uidListInterface []interface{}
+	uidListInterface, err = M.dao.GetMembers(groupName)
+	if err != nil {
+		return nil, err
+	}
+	uidList, err = redis.Strings(uidListInterface, err)
+	return
+}
+
 func NewMIIGDImpl() *MIIGDImpl {
 	return &MIIGDImpl{dao: KvDao.NewRedisKv(*MainInfoInGroupHost)}
 }

@@ -472,7 +472,7 @@ func (ni *NormalImpl) SyncGroupInfo() {
 		respItem respType
 	)
 
-	GetUrl := "http://" + *DBServerHost + "/group/GroupInfo/GetAllGroup"
+	GetUrl := "http://" + *DBServerHost + "/Group/GroupInfo/GetAllGroup"
 	c := http.Client{}
 	resp, err := c.PostForm(GetUrl, url.Values{})
 	if err != nil {
