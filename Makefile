@@ -35,6 +35,10 @@ DBServer:
 	@echo "generate DBServer"
 	$(GOBUILD) -o bin/DBServer main/DBServer.go
 
+AuthMain:
+	@echo "generate AuthMain"
+	$(GOBUILD) -o bin/AuthMain main/AuthMain.go
+
 DBServerARM:
 	@echo "generate DBServerARM"
 	$(GOARMBUILD) -o arm_bin/DBServer_arm main/DBServer.go
@@ -54,6 +58,10 @@ assigneerDARM:
 assign-cliARM:
 	@echo "generate assign-cliARM"
 	$(GOARMBUILD) -o arm_bin/assign-cli main/assign-cli.go
+
+AuthMainARM:
+	@echo "generate AuthMainARM"
+	$(GOARMBUILD) -o arm_bin/AuthMain main/AuthMain.go
 
 fmt:
 	@echo "gofmt (simplify)"
