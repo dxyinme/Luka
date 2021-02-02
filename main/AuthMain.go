@@ -10,6 +10,8 @@ import (
 )
 
 var (
+	authServerMention = flag.String("authServerMention",
+		"", "\033[31mUserGroupRedisHost is useless\033[0m")
 	authServerPort = flag.String("authServerPort", ":20020", "authServer listen port")
 )
 

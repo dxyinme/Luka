@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/dxyinme/Luka/Dao/UserDao"
 	"github.com/dxyinme/LukaComm/Auth"
+	"github.com/golang/glog"
 )
 
 type Server struct {
@@ -15,6 +16,7 @@ func (s *Server) ChangeInfo(context.Context, *Auth.ChangeInfoReq) (*Auth.ChangeI
 }
 
 func (s *Server) SetAuthPubKey(ctx context.Context,req *Auth.SetAuthPubKeyReq) (*Auth.SetAuthPubKeyRsp, error) {
+	glog.Infof("SetAuthPubKey: %s, %v", req.Uid, req.AuthRsaPubKey)
 	err := s.userPubKeyDao.SetUserPubKey(req.Uid, req.AuthRsaPubKey)
 	rsp := &Auth.SetAuthPubKeyRsp{}
 	if err != nil {
@@ -38,6 +40,7 @@ func (s *Server) GetAuthPubKey(ctx context.Context, req *Auth.GetAuthPubKeyReq) 
 		err error
 	)
 	rsp.AuthRsaPubKey, err = s.userPubKeyDao.GetUserPubKey(req.Uid)
+	glog.Infof("GetAuthPubKey: %s, %v", req.Uid, rsp.AuthRsaPubKey)
 	if err != nil {
 		rsp.ErrorMsg = err.Error()
 	}
