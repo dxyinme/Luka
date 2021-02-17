@@ -6,6 +6,13 @@
 
 <h3>a golang IM service</h3>
 
+#### Feature
+
+- [x] chat in text
+- [x] chat in image
+- [ ] file transport
+- [x] video chat
+
 #### compile
 
 ```
