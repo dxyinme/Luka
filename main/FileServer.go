@@ -1,11 +1,23 @@
 package main
 
+import (
+	"flag"
+	"github.com/dxyinme/Luka/FileServer"
+	"github.com/golang/glog"
+	"github.com/gorilla/mux"
+	"net/http"
+)
 
 // FileServer for file transport
-// Api:
-// /api/upload : { MD5 code with salt (md5name) and File byte stream } we save file in server with [md5name].
-// /api/getFile : { MD5 code with salt (md5name) } get the file from server.
-//
-func main() {
+var (
+	Router = mux.NewRouter()
+	port = flag.String("port", ":10505", "port this fileServer listening")
+)
 
+func main() {
+	flag.Parse()
+	FileServer.Initial(Router.PathPrefix("/api").Subrouter())
+	if err := http.ListenAndServe(*port, Router); err != nil {
+		glog.Fatal(err)
+	}
 }
