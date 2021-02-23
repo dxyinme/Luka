@@ -69,5 +69,6 @@ func (f *fInfo) Locked() error {
 	defer f.lockMu.Unlock()
 	f.locked = true
 	f.uploadTime = time.Now()
-	return f.fp.Close()
+	f.fp.Close()
+	return nil
 }

@@ -1,6 +1,7 @@
 package FileServer
 
 import (
+	"log"
 	"os"
 	"testing"
 )
@@ -21,9 +22,21 @@ func TestFileClient_SendFile(t *testing.T) {
 		}
 	}
 	fp.Close()
-	err = fc.SendFile(testFilename, "testUser")
+	md5, err := fc.SendFile(testFilename, "testUser")
 	if err != nil {
 		t.Fatal(err)
 	}
-	err = os.Remove(testFilename)
+	log.Println("md5: ", md5)
+	//err = os.Remove(testFilename)
+}
+
+func TestFileClient_Download(t *testing.T) {
+	fc := &FileClient{
+		Host: "localhost:10505",
+	}
+	testFilename := "test.file.2"
+	err := fc.Download(testFilename, "7bde4a2f4db0aff01c3632f1dc446465", "testUser")
+	if err != nil {
+		t.Fatal(err)
+	}
 }

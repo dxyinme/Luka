@@ -3,8 +3,10 @@ package FileServer
 import (
 	"github.com/golang/glog"
 	"github.com/gorilla/mux"
+	"io"
 	"io/ioutil"
 	"net/http"
+	"os"
 )
 
 var (
@@ -107,5 +109,20 @@ func downloadSlice(w http.ResponseWriter, r *http.Request) {
 		returnErr("defect param `from`", w)
 		return
 	}
+	_, ok := fileMp[from + "/" + md5]
+	if ok {
+		returnErr("not yet for download", w)
+		return
+	}
+	fileDist, err := os.Open(from + "/" + md5)
+	if err != nil {
+		returnErr(err.Error(), w)
+		return
+	}
+	defer fileDist.Close()
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Content-Type", "application/octet-stream")
+	if _, err = io.Copy(w, fileDist); err != nil {
 
+	}
 }

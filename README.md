@@ -56,7 +56,8 @@ IP Password
 ...
 ```
 <h4>test restful</h4>
-```bash
+
+```
 <post form>
 curl -X POST http://[URL] -d "param1=xx&param2=xxx&..."
 ```
