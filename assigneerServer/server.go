@@ -52,13 +52,13 @@ func (s *Server) RemoveKeeper(ctx context.Context, in *Assigneer.RemoveKeeperReq
 	if err != nil {
 		glog.Error(err)
 	}
-	err = s.sshToCloseKeeper(s.keepersInfo[in.KeeperID])
-	if err != nil {
-		glog.Error(err)
-		return &Assigneer.AssignAck{
-			AckMessage: "",
-		}, err
-	}
+	_ = s.sshToCloseKeeper(s.keepersInfo[in.KeeperID])
+	//if err != nil {
+	//	glog.Error(err)
+	//	return &Assigneer.AssignAck{
+	//		AckMessage: "",
+	//	}, err
+	//}
 	delete(s.keepersInfo, in.KeeperID)
 	s.syncLocationNotify()
 	return &Assigneer.AssignAck{
@@ -167,9 +167,9 @@ func (s *Server) syncLocationNotify() {
 }
 
 func (s *Server) sshToCloseKeeper(keeper *AssignUtil.KeeperInfo) error {
-	pwd,ok := AssignUtil.Cfg.GetPassword(keeper.Host)
+	pwd,ok := AssignUtil.Cfg.GetPassword(strings.Split(keeper.Host, ":")[0])
 	if !ok {
-		return fmt.Errorf("no such host")
+		return fmt.Errorf("no such host like %s", strings.Split(keeper.Host, ":")[0])
 	}
 	session, err := sshc.SSHConnect("worker",
 		pwd, keeper.Host, 22) // ssh port.
