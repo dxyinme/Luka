@@ -6,6 +6,13 @@
 
 <h3>a golang IM service</h3>
 
+#### Feature
+
+- [x] chat in text
+- [x] chat in image
+- [ ] file transport
+- [x] video chat
+
 #### compile
 
 ```
@@ -49,7 +56,8 @@ IP Password
 ...
 ```
 <h4>test restful</h4>
-```bash
+
+```
 <post form>
 curl -X POST http://[URL] -d "param1=xx&param2=xxx&..."
 ```

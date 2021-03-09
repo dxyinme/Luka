@@ -36,7 +36,7 @@ const (
 var (
 	AssignHost = flag.String("assignHost", "127.0.0.1:10197", "the Assign Server Host")
 
-	DBServerHost = flag.String("DBServerHost", "", "DBServerHost for remove-kv")
+	DBServerHost = flag.String("DBServerHost", "", "DBServerHost for remote-kv")
 )
 
 // NormalImpl :
