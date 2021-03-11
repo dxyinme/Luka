@@ -39,6 +39,10 @@ AuthMain:
 	@echo "generate AuthMain"
 	$(GOBUILD) -o bin/AuthMain main/AuthMain.go
 
+FileServerD:
+	@echo "generate FileServer"
+	$(GOBUILD) -o bin/FileServer main/FileServer.go
+
 DBServerARM:
 	@echo "generate DBServerARM"
 	$(GOARMBUILD) -o arm_bin/DBServer_arm main/DBServer.go
@@ -63,11 +67,7 @@ AuthMainARM:
 	@echo "generate AuthMainARM"
 	$(GOARMBUILD) -o arm_bin/AuthMain main/AuthMain.go
 
-FileServer:
-	@echo "generate FileServer"
-	$(GOBUILD) -o bin/FileServer main/FileServer.go
-
-FileServerARM:
+FileServerDARM:
 	@echo "generate FileServerARM"
 	$(GOARMBUILD) -o arm_bin/FileServer main/FileServer.go
 
@@ -77,7 +77,8 @@ all:
 	@make assign-cli
 	@make DBServer
 	@make AuthMain
-	@make FileServer
+	@make FileServerD
+	@echo "finished"
 
 allARM:
 	@make keeperDARM
@@ -85,7 +86,12 @@ allARM:
 	@make assign-cliARM
 	@make DBServerARM
 	@make AuthMainARM
-	@make FileServerARM
+	@make FileServerDARM
+	@echo "finished"
+
+clean:
+	@rm -rf bin/
+	@rm -rf arm_bin/
 
 fmt:
 	@echo "gofmt (simplify)"
