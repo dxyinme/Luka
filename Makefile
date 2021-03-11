@@ -63,6 +63,30 @@ AuthMainARM:
 	@echo "generate AuthMainARM"
 	$(GOARMBUILD) -o arm_bin/AuthMain main/AuthMain.go
 
+FileServer:
+	@echo "generate FileServer"
+	$(GOBUILD) -o bin/FileServer main/FileServer.go
+
+FileServerARM:
+	@echo "generate FileServerARM"
+	$(GOARMBUILD) -o arm_bin/FileServer main/FileServer.go
+
+all:
+	@make keeperD
+	@make assigneerD
+	@make assign-cli
+	@make DBServer
+	@make AuthMain
+	@make FileServer
+
+allARM:
+	@make keeperDARM
+	@make assigneerDARM
+	@make assign-cliARM
+	@make DBServerARM
+	@make AuthMainARM
+	@make FileServerARM
+
 fmt:
 	@echo "gofmt (simplify)"
 	@gofmt -s -l -w $(FILES) 2>&1 | $(FAIL_ON_STDOUT)
