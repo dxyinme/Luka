@@ -71,6 +71,14 @@ FileServerDARM:
 	@echo "generate FileServerARM"
 	$(GOARMBUILD) -o arm_bin/FileServer main/FileServer.go
 
+LiveD:
+	@echo "generate LiveD"
+	$(GOBUILD) -o bin/lived main/lived.go
+
+LiveDARM:
+	@echo "generate LiveDARM"
+	$(GOARMBUILD) -o arm_bin/lived main/lived.go
+
 all:
 	@make keeperD
 	@make assigneerD
@@ -78,6 +86,7 @@ all:
 	@make DBServer
 	@make AuthMain
 	@make FileServerD
+	@make LiveD
 	@echo "finished"
 
 allARM:
@@ -87,6 +96,7 @@ allARM:
 	@make DBServerARM
 	@make AuthMainARM
 	@make FileServerDARM
+	@make LiveDARM
 	@echo "finished"
 
 clean:
